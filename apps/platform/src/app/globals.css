@@ -1920,3 +1920,258 @@ a {
     width: 100%;
   }
 }
+
+/* BOQ */
+
+.boqHeaderActions {
+  display: flex;
+  gap: 8px;
+}
+
+.boqTableWrapper {
+  padding: 22px;
+  overflow-x: auto;
+}
+
+.boqTable input,
+.boqTable select {
+  width: 100%;
+  min-width: 110px;
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  outline: none;
+  background: #ffffff;
+}
+
+.boqTable td:nth-child(2) input {
+  min-width: 310px;
+}
+
+.boqTable input:focus,
+.boqTable select:focus {
+  border-color: var(--primary);
+}
+
+.newBoqRow {
+  background: #f8fafc;
+}
+
+.dangerText {
+  color: #dc2626;
+}
+
+.boqSummary {
+  margin: 0 22px 22px;
+  padding: 14px;
+  display: flex;
+  gap: 32px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.boqSummary span,
+.boqSummary strong {
+  display: block;
+}
+
+.boqSummary span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.boqSummary strong {
+  margin-top: 4px;
+  font-size: 17px;
+}
+
+/* Business partner invitation */
+
+.selectedPartnerBadge {
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #166534;
+  background: #dcfce7;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.partnerSearchToolbar {
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) 150px 170px auto;
+  gap: 9px;
+  border-bottom: 1px solid var(--line);
+}
+
+.partnerSearchToolbar input,
+.partnerSearchToolbar select {
+  min-height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+}
+
+.partnerSelectionList {
+  padding: 18px 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.partnerSelectionCard {
+  min-height: 78px;
+  padding: 13px;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  cursor: pointer;
+}
+
+.partnerSelectionCard.selected,
+.partnerSelectionCard:has(input:checked) {
+  border-color: #818cf8;
+  background: #eef2ff;
+}
+
+.partnerSelectionCard input {
+  width: 16px;
+  height: 16px;
+}
+
+.partnerAvatar {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--primary), var(--cyan));
+  font-weight: 900;
+}
+
+.partnerInfo strong,
+.partnerInfo small,
+.partnerScore strong,
+.partnerScore small {
+  display: block;
+}
+
+.partnerInfo strong {
+  font-size: 13px;
+}
+
+.partnerInfo small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.verifiedBadge {
+  margin-right: 8px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #1d4ed8;
+  background: #dbeafe;
+  font-size: 8px;
+}
+
+.partnerScore {
+  min-width: 75px;
+  text-align: center;
+}
+
+.partnerScore small {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.partnerScore strong {
+  margin-top: 3px;
+  color: var(--success);
+  font-size: 15px;
+}
+
+.partnerSelectionCard button {
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--primary);
+  background: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.invitationSettings {
+  margin: 0 22px 22px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 20px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #f8fafc;
+}
+
+.invitationOptions {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+
+.invitationOptions label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .partnerSearchToolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .partnerSearchToolbar input {
+    grid-column: 1 / -1;
+  }
+
+  .invitationSettings {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .boqSummary {
+    gap: 18px;
+    overflow-x: auto;
+  }
+
+  .partnerSearchToolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .partnerSearchToolbar input {
+    grid-column: auto;
+  }
+
+  .partnerSelectionCard {
+    grid-template-columns: auto auto 1fr;
+  }
+
+  .partnerScore {
+    grid-column: 2;
+  }
+
+  .partnerSelectionCard button {
+    grid-column: 3;
+    width: max-content;
+  }
+}

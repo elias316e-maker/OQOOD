@@ -173,9 +173,12 @@ export default function NewOpportunityPage() {
           <div className="wizardFooter">
             <span>تم حفظ المسودة تلقائيًا</span>
 
-            <button className="primaryButton compactButton" type="button">
+            <Link
+              className="primaryButton compactButton"
+              href="/platform/opportunities/new/boq"
+            >
               حفظ والانتقال إلى جدول الكميات
-            </button>
+            </Link>
           </div>
         </section>
       </section>
