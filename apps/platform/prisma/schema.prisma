@@ -1,0 +1,485 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum WorkspaceStatus {
+  DRAFT
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum MembershipStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+  REMOVED
+}
+
+enum CompanyVerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum PartnerRole {
+  SUPPLIER
+  CONTRACTOR
+  CONSULTANT
+  MANUFACTURER
+  DISTRIBUTOR
+  SERVICE_PROVIDER
+  LOGISTICS_PROVIDER
+  INVESTMENT_PARTNER
+}
+
+enum ProjectStatus {
+  PLANNED
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum OpportunityType {
+  RFQ
+  RFP
+  TENDER
+  DIRECT_PURCHASE
+  SERVICE_REQUEST
+  SUBCONTRACT
+}
+
+enum OpportunityStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  PUBLISHED
+  CLARIFICATION
+  SUBMISSION_CLOSED
+  TECHNICAL_EVALUATION
+  FINANCIAL_EVALUATION
+  NEGOTIATION
+  AWARD_PENDING
+  AWARDED
+  CANCELLED
+  CLOSED
+  ARCHIVED
+}
+
+enum OpportunityVisibility {
+  PRIVATE
+  INVITED
+  PUBLIC
+}
+
+enum InvitationStatus {
+  PENDING
+  SENT
+  VIEWED
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+enum OfferStatus {
+  DRAFT
+  SUBMITTED
+  WITHDRAWN
+  UNDER_REVIEW
+  TECHNICALLY_ACCEPTED
+  TECHNICALLY_REJECTED
+  FINANCIALLY_EVALUATED
+  WINNER
+  LOST
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  phone         String?
+  imageUrl      String?
+  isActive      Boolean   @default(true)
+
+  memberships          WorkspaceMember[]
+  createdWorkspaces    Workspace[]       @relation("WorkspaceCreator")
+  createdProjects      Project[]         @relation("ProjectCreator")
+  createdOpportunities Opportunity[]     @relation("OpportunityCreator")
+  auditLogs            AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Workspace {
+  id              String          @id @default(cuid())
+  code            String          @unique
+  slug            String          @unique
+  nameAr          String
+  nameEn          String?
+  logoUrl         String?
+  countryCode     String          @default("SA")
+  timezone        String          @default("Asia/Riyadh")
+  defaultLanguage String          @default("ar")
+  defaultCurrency String          @default("SAR")
+  status          WorkspaceStatus @default(DRAFT)
+
+  createdById String
+  createdBy   User   @relation("WorkspaceCreator", fields: [createdById], references: [id])
+
+  members       WorkspaceMember[]
+  companies     Company[]
+  partners      BusinessPartner[]
+  projects      Project[]
+  opportunities Opportunity[]
+  roles         Role[]
+  auditLogs     AuditLog[]
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  archivedAt DateTime?
+
+  @@index([createdById])
+  @@index([status])
+}
+
+model WorkspaceMember {
+  id          String           @id @default(cuid())
+  workspaceId String
+  userId      String
+  status      MembershipStatus @default(ACTIVE)
+
+  workspace Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roles     WorkspaceMemberRole[]
+
+  joinedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, userId])
+  @@index([userId])
+  @@index([workspaceId, status])
+}
+
+model Company {
+  id                 String                    @id @default(cuid())
+  workspaceId        String
+  nameAr             String
+  nameEn             String?
+  commercialRegister String?
+  taxNumber          String?
+  nationalAddress    String?
+  website            String?
+  email              String?
+  phone              String?
+  description        String?
+  city               String?
+  countryCode        String                    @default("SA")
+  verificationStatus CompanyVerificationStatus @default(UNVERIFIED)
+
+  workspace Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  branches  CompanyBranch[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, commercialRegister])
+  @@index([workspaceId])
+  @@index([verificationStatus])
+}
+
+model CompanyBranch {
+  id           String  @id @default(cuid())
+  companyId    String
+  nameAr       String
+  nameEn       String?
+  city         String?
+  address      String?
+  phone        String?
+  email        String?
+  isHeadOffice Boolean @default(false)
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+}
+
+model BusinessPartner {
+  id                 String                    @id @default(cuid())
+  workspaceId        String
+  nameAr             String
+  nameEn             String?
+  commercialRegister String?
+  taxNumber          String?
+  email              String?
+  phone              String?
+  website            String?
+  city               String?
+  countryCode        String                    @default("SA")
+  trustScore         Decimal?                  @db.Decimal(5, 2)
+  verificationStatus CompanyVerificationStatus @default(UNVERIFIED)
+
+  workspace   Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  roles       BusinessPartnerRole[]
+  invitations OpportunityInvitation[]
+  offers      Offer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, commercialRegister])
+  @@index([workspaceId])
+  @@index([verificationStatus])
+}
+
+model BusinessPartnerRole {
+  id                String      @id @default(cuid())
+  businessPartnerId String
+  role              PartnerRole
+
+  businessPartner BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Cascade)
+
+  @@unique([businessPartnerId, role])
+  @@index([role])
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  workspaceId String
+  code        String
+  nameAr      String
+  nameEn      String?
+  description String?
+  status      ProjectStatus @default(PLANNED)
+  startDate   DateTime?
+  endDate     DateTime?
+  budget      Decimal?      @db.Decimal(18, 2)
+  currency    String        @default("SAR")
+
+  createdById String
+  createdBy   User      @relation("ProjectCreator", fields: [createdById], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  opportunities Opportunity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, code])
+  @@index([workspaceId, status])
+}
+
+model Opportunity {
+  id          String                @id @default(cuid())
+  workspaceId String
+  projectId   String?
+  number      String
+  title       String
+  description String?
+  type        OpportunityType
+  status      OpportunityStatus     @default(DRAFT)
+  visibility  OpportunityVisibility @default(INVITED)
+  category    String?
+  priority    String                @default("NORMAL")
+  budget      Decimal?              @db.Decimal(18, 2)
+  currency    String                @default("SAR")
+  issueDate   DateTime?
+  closingDate DateTime?
+
+  createdById String
+  createdBy   User      @relation("OpportunityCreator", fields: [createdById], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project     Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  items       OpportunityItem[]
+  invitations OpportunityInvitation[]
+  offers      Offer[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+  closedAt    DateTime?
+
+  @@unique([workspaceId, number])
+  @@index([workspaceId, status])
+  @@index([projectId])
+  @@index([closingDate])
+}
+
+model OpportunityItem {
+  id            String  @id @default(cuid())
+  opportunityId String
+  lineNumber    Int
+  description   String
+  quantity      Decimal @db.Decimal(18, 4)
+  unit          String
+  specification String?
+  notes         String?
+
+  opportunity Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  offerItems  OfferItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([opportunityId, lineNumber])
+  @@index([opportunityId])
+}
+
+model OpportunityInvitation {
+  id                String           @id @default(cuid())
+  opportunityId     String
+  businessPartnerId String
+  status            InvitationStatus @default(PENDING)
+  message           String?
+  sentAt            DateTime?
+  viewedAt          DateTime?
+  respondedAt       DateTime?
+
+  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  businessPartner BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([opportunityId, businessPartnerId])
+  @@index([businessPartnerId, status])
+}
+
+model Offer {
+  id                String      @id @default(cuid())
+  opportunityId     String
+  businessPartnerId String
+  referenceNumber   String?
+  status            OfferStatus @default(DRAFT)
+  currency          String      @default("SAR")
+  subtotal          Decimal?    @db.Decimal(18, 2)
+  taxAmount         Decimal?    @db.Decimal(18, 2)
+  totalAmount       Decimal?    @db.Decimal(18, 2)
+  validityDays      Int?
+  deliveryDays      Int?
+  paymentTerms      String?
+  technicalNotes    String?
+  commercialNotes   String?
+  submittedAt       DateTime?
+
+  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  businessPartner BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Cascade)
+  items           OfferItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([opportunityId, businessPartnerId])
+  @@index([opportunityId, status])
+  @@index([businessPartnerId])
+}
+
+model OfferItem {
+  id                String  @id @default(cuid())
+  offerId           String
+  opportunityItemId String
+  unitPrice         Decimal @db.Decimal(18, 4)
+  quantity          Decimal @db.Decimal(18, 4)
+  totalPrice        Decimal @db.Decimal(18, 2)
+  notes             String?
+
+  offer           Offer           @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  opportunityItem OpportunityItem @relation(fields: [opportunityItemId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([offerId, opportunityItemId])
+  @@index([opportunityItemId])
+}
+
+model Role {
+  id          String  @id @default(cuid())
+  workspaceId String
+  code        String
+  name        String
+  description String?
+  isSystem    Boolean @default(false)
+
+  workspace   Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members     WorkspaceMemberRole[]
+  permissions RolePermission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, code])
+}
+
+model Permission {
+  id          String  @id @default(cuid())
+  code        String  @unique
+  name        String
+  description String?
+
+  roles RolePermission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WorkspaceMemberRole {
+  id                String @id @default(cuid())
+  workspaceMemberId String
+  roleId            String
+
+  workspaceMember WorkspaceMember @relation(fields: [workspaceMemberId], references: [id], onDelete: Cascade)
+  role            Role            @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceMemberId, roleId])
+  @@index([roleId])
+}
+
+model RolePermission {
+  id           String @id @default(cuid())
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+}
+
+model AuditLog {
+  id          String  @id @default(cuid())
+  workspaceId String
+  userId      String?
+  action      String
+  entityType  String
+  entityId    String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([workspaceId, createdAt])
+  @@index([entityType, entityId])
+  @@index([userId])
+}
