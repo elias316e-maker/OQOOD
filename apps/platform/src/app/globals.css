@@ -1500,3 +1500,423 @@ a {
     display: none;
   }
 }
+
+/* Opportunities */
+
+.listPageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.listPageHeader h1 {
+  margin: 6px 0;
+  font-size: 30px;
+}
+
+.listPageHeader p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.listSummaryCards {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.listSummaryCards article {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.listSummaryCards span,
+.listSummaryCards small {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.listSummaryCards strong {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 27px;
+}
+
+.listSummaryCards small.positive {
+  color: var(--success);
+}
+
+.opportunityListPanel {
+  margin-top: 18px;
+}
+
+.opportunityToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.filterTabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px;
+  border-radius: 11px;
+  background: #f1f5f9;
+}
+
+.filterTabs button {
+  min-height: 34px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 8px;
+  color: var(--muted);
+  background: transparent;
+  font-weight: 700;
+}
+
+.filterTabs button.active {
+  color: var(--primary);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.toolbarActions {
+  display: flex;
+  gap: 8px;
+}
+
+.toolbarActions input {
+  min-width: 250px;
+}
+
+.toolbarActions input,
+.toolbarActions button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  outline: none;
+  color: #475569;
+  background: #ffffff;
+}
+
+.dataTableWrapper {
+  margin-top: 18px;
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.dataTable th,
+.dataTable td {
+  padding: 15px 13px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.dataTable th {
+  color: var(--muted);
+  background: #f8fafc;
+  font-weight: 800;
+}
+
+.dataTable tbody tr:hover {
+  background: #fafafa;
+}
+
+.dataTable td strong {
+  font-size: 12px;
+}
+
+.tablePrimaryLink {
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.tableActionButton {
+  border: 0;
+  background: transparent;
+}
+
+/* Opportunity wizard */
+
+.opportunityWizard {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.wizardSteps,
+.wizardContent {
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: #ffffff;
+}
+
+.wizardSteps {
+  padding: 12px;
+}
+
+.wizardStep {
+  min-height: 68px;
+  padding: 11px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+  border-radius: 11px;
+  color: var(--muted);
+}
+
+.wizardStep > span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #64748b;
+  background: #f1f5f9;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.wizardStep strong,
+.wizardStep small {
+  display: block;
+}
+
+.wizardStep strong {
+  font-size: 12px;
+}
+
+.wizardStep small {
+  margin-top: 3px;
+  font-size: 9px;
+}
+
+.wizardStep.active {
+  color: var(--primary-dark);
+  background: #eef2ff;
+}
+
+.wizardStep.active > span {
+  color: #ffffff;
+  background: var(--primary);
+}
+
+.wizardContent {
+  overflow: hidden;
+}
+
+.wizardSectionHeader {
+  padding: 22px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+
+.wizardSectionHeader h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.wizardSectionHeader p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.draftBadge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #475569;
+  background: #f1f5f9;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.opportunityForm {
+  padding: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.formField {
+  display: grid;
+  gap: 7px;
+}
+
+.formField.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.formField label {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.formField input,
+.formField select,
+.formField textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  color: var(--ink);
+  background: #ffffff;
+}
+
+.formField textarea {
+  resize: vertical;
+}
+
+.formField input:focus,
+.formField select:focus,
+.formField textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+}
+
+.formField > small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.choiceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.choiceCard {
+  min-height: 96px;
+  padding: 14px;
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  align-items: flex-start;
+  gap: 10px !important;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.choiceCard:has(input:checked) {
+  border-color: var(--primary);
+  background: #eef2ff;
+}
+
+.choiceCard input {
+  width: 16px;
+  min-height: auto;
+}
+
+.choiceCard strong,
+.choiceCard small {
+  display: block;
+}
+
+.choiceCard small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.wizardFooter {
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-top: 1px solid var(--line);
+  background: #f8fafc;
+}
+
+.wizardFooter > span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+@media (max-width: 1000px) {
+  .listSummaryCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .opportunityToolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .toolbarActions input {
+    flex: 1;
+  }
+
+  .opportunityWizard {
+    grid-template-columns: 1fr;
+  }
+
+  .wizardSteps {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .wizardStep {
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 720px) {
+  .listPageHeader {
+    flex-direction: column;
+  }
+
+  .listPageHeader > a {
+    width: 100%;
+  }
+
+  .listSummaryCards,
+  .opportunityForm,
+  .choiceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filterTabs {
+    overflow-x: auto;
+  }
+
+  .toolbarActions {
+    flex-wrap: wrap;
+  }
+
+  .toolbarActions input {
+    min-width: 100%;
+  }
+
+  .wizardFooter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .wizardFooter button {
+    width: 100%;
+  }
+}
