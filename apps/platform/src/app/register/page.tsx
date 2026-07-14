@@ -4,9 +4,9 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { OqoodLogo } from "@/components/brand/oqood-logo";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { OqoodLogo } from "@oqood/design-system";
+import { Button } from "@oqood/design-system";
+import { Input } from "@oqood/design-system";
 
 export default function RegisterPage() {
   const router = useRouter();

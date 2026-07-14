@@ -1,0 +1,151 @@
+
+/* =========================================================
+   OQOOD APP SHELL
+   ========================================================= */
+
+.odsAppShell {
+  --ods-app-shell-sidebar-width: 17rem;
+  --ods-app-shell-collapsed-width: 5.5rem;
+  --ods-app-shell-header-height: 4.5rem;
+  --ods-app-shell-right-panel-width: 21rem;
+
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns:
+    var(--ods-app-shell-sidebar-width)
+    minmax(0, 1fr);
+  direction: rtl;
+  background: var(--ods-color-page);
+}
+
+.odsAppShell--sidebar-sm {
+  --ods-app-shell-sidebar-width: 15rem;
+}
+
+.odsAppShell--sidebar-md {
+  --ods-app-shell-sidebar-width: 17rem;
+}
+
+.odsAppShell--sidebar-lg {
+  --ods-app-shell-sidebar-width: 19rem;
+}
+
+.odsAppShell--collapsed {
+  grid-template-columns:
+    var(--ods-app-shell-collapsed-width)
+    minmax(0, 1fr);
+}
+
+.odsAppShell__sidebar {
+  width: var(--ods-app-shell-sidebar-width);
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  overflow: hidden;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 80% 5%,
+      rgba(99, 91, 255, 0.18),
+      transparent 26%
+    ),
+    var(--ods-color-navy-950);
+  transition:
+    width var(--ods-motion-normal) var(--ods-easing-standard),
+    transform var(--ods-motion-normal) var(--ods-easing-standard);
+}
+
+.odsAppShell--collapsed .odsAppShell__sidebar {
+  width: var(--ods-app-shell-collapsed-width);
+}
+
+.odsAppShell__workspace {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.odsAppShell__header {
+  min-height: var(--ods-app-shell-header-height);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--ods-color-border);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(1rem);
+}
+
+.odsAppShell__body {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.odsAppShell--withRightPanel .odsAppShell__body {
+  grid-template-columns:
+    minmax(0, 1fr)
+    var(--ods-app-shell-right-panel-width);
+}
+
+.odsAppShell__content {
+  min-width: 0;
+}
+
+.odsAppShell__rightPanel {
+  min-width: 0;
+  padding: 1.5rem;
+  border-inline-start: 1px solid var(--ods-color-border);
+  background: var(--ods-color-surface);
+}
+
+.odsAppShell__overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  border: 0;
+  background: rgba(7, 17, 40, 0.58);
+  backdrop-filter: blur(0.25rem);
+}
+
+@media (max-width: 1024px) {
+  .odsAppShell {
+    --ods-app-shell-sidebar-width: 5.5rem;
+  }
+
+  .odsAppShell__rightPanel {
+    display: none;
+  }
+
+  .odsAppShell--withRightPanel .odsAppShell__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .odsAppShell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .odsAppShell__sidebar {
+    width: min(19rem, 86vw);
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    transform: translateX(110%);
+  }
+
+  [dir="ltr"] .odsAppShell__sidebar {
+    transform: translateX(-110%);
+  }
+
+  .odsAppShell__sidebar--mobileOpen {
+    transform: translateX(0);
+  }
+
+  .odsAppShell__overlay {
+    display: block;
+  }
+}

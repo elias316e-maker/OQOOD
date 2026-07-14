@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AppShell } from "@oqood/design-system";
 import { Sidebar } from "@/components/platform/sidebar";
 import { PlatformTopbar } from "@/components/platform/topbar";
 
@@ -8,13 +9,12 @@ export default function PlatformLayout({
   children: ReactNode;
 }>) {
   return (
-    <div className="platformShell">
-      <Sidebar />
-
-      <div className="platformMain">
-        <PlatformTopbar />
-        {children}
-      </div>
-    </div>
+    <AppShell
+      header={<PlatformTopbar />}
+      sidebar={<Sidebar />}
+      sidebarWidth="md"
+    >
+      {children}
+    </AppShell>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "@oqood/design-system/styles.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
