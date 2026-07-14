@@ -4,6 +4,9 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { OqoodLogo } from "@/components/brand/oqood-logo";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -16,11 +19,21 @@ export default function RegisterPage() {
     setMessage("");
 
     const formData = new FormData(event.currentTarget);
+    const name = String(formData.get("name") ?? "").trim();
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+    const confirmPassword = String(formData.get("confirmPassword") ?? "");
+
+    if (password !== confirmPassword) {
+      setMessage("كلمتا المرور غير متطابقتين.");
+      setLoading(false);
+      return;
+    }
 
     const result = await authClient.signUp.email({
-      name: String(formData.get("name")),
-      email: String(formData.get("email")),
-      password: String(formData.get("password")),
+      name,
+      email,
+      password,
     });
 
     if (result.error) {
@@ -34,43 +47,116 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="authPage">
-      <section className="authFormSection">
-        <div className="authFormCard">
-          <div className="authFormHeader">
-            <h2>إنشاء حساب</h2>
-            <p>أنشئ حسابك للبدء في استخدام منصة عقود.</p>
+    <main className="authLayout">
+      <section className="authBrandPanel">
+        <div className="authBrandHeader">
+          <OqoodLogo inverted />
+        </div>
+
+        <div className="authBrandContent">
+          <span className="authEyebrow">منصة الأعمال والتعاقدات الذكية</span>
+
+          <h1>
+            ابدأ إدارة المنافسات والمشتريات والعقود من منصة واحدة.
+          </h1>
+
+          <p>
+            أنشئ مساحة عمل شركتك، ادعُ فريقك، وابدأ أول طلب عرض سعر خلال
+            دقائق.
+          </p>
+
+          <div className="authFeatureList">
+            <span>إدارة متكاملة للمنافسات والعقود</span>
+            <span>بيئة عربية كاملة واتجاه RTL</span>
+            <span>سجل تدقيق وصلاحيات مؤسسية</span>
+          </div>
+        </div>
+
+        <div className="authBrandFooter">
+          <span>OQOOD Platform</span>
+          <span>Source-to-Contract</span>
+        </div>
+      </section>
+
+      <section className="authContentPanel">
+        <div className="authContentWrapper">
+          <div className="authMobileLogo">
+            <OqoodLogo />
           </div>
 
-          <form className="authForm" onSubmit={handleSubmit}>
-            <label>
-              الاسم الكامل
-              <input name="name" required />
+          <header className="authPageHeader">
+            <span className="authPageLabel">إنشاء حساب جديد</span>
+            <h2>مرحبًا بك في عقود</h2>
+            <p>أدخل بياناتك الأساسية لإنشاء حسابك.</p>
+          </header>
+
+          <form className="authModernForm" onSubmit={handleSubmit}>
+            <Input
+              autoComplete="name"
+              label="الاسم الكامل"
+              name="name"
+              placeholder="مثال: أحمد محمد"
+              required
+            />
+
+            <Input
+              autoComplete="email"
+              label="البريد الإلكتروني"
+              name="email"
+              placeholder="name@company.com"
+              required
+              type="email"
+            />
+
+            <Input
+              autoComplete="new-password"
+              hint="يجب ألا تقل كلمة المرور عن 8 أحرف."
+              label="كلمة المرور"
+              minLength={8}
+              name="password"
+              placeholder="أدخل كلمة مرور قوية"
+              required
+              type="password"
+            />
+
+            <Input
+              autoComplete="new-password"
+              label="تأكيد كلمة المرور"
+              minLength={8}
+              name="confirmPassword"
+              placeholder="أعد إدخال كلمة المرور"
+              required
+              type="password"
+            />
+
+            <label className="authAgreement">
+              <input name="terms" required type="checkbox" />
+              <span>
+                أوافق على
+                <Link href="/terms"> الشروط والأحكام </Link>
+                و
+                <Link href="/privacy"> سياسة الخصوصية</Link>.
+              </span>
             </label>
 
-            <label>
-              البريد الإلكتروني
-              <input name="email" type="email" required />
-            </label>
+            {message && (
+              <div className="authAlert authAlertError" role="alert">
+                {message}
+              </div>
+            )}
 
-            <label>
-              كلمة المرور
-              <input name="password" type="password" minLength={8} required />
-            </label>
-
-            {message && <p className="authError">{message}</p>}
-
-            <button
-              className="primaryButton authSubmit"
+            <Button
               disabled={loading}
+              fullWidth
+              size="lg"
               type="submit"
             >
               {loading ? "جارٍ إنشاء الحساب..." : "إنشاء الحساب"}
-            </button>
+            </Button>
           </form>
 
-          <p className="authRegister">
-            لديك حساب؟
+          <p className="authSwitchText">
+            لديك حساب بالفعل؟
             <Link href="/login"> تسجيل الدخول</Link>
           </p>
         </div>

@@ -1,91 +1,151 @@
+"use client";
+
 import Link from "next/link";
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { OqoodLogo } from "@/components/brand/oqood-logo";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function LoginPage() {
-  return (
-    <main className="authPage">
-      <section className="authVisual">
-        <Link className="brand authBrand" href="/">
-          <span className="brandMark">ع</span>
-          <span>
-            <strong>عقود</strong>
-            <small>OQOOD</small>
-          </span>
-        </Link>
+  const router = useRouter();
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-        <div className="authVisualContent">
-          <span className="eyebrow lightEyebrow">منصة التعاقدات الخاصة</span>
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading(true);
+    setMessage("");
+
+    const formData = new FormData(event.currentTarget);
+
+    const result = await authClient.signIn.email({
+      email: String(formData.get("email") ?? "").trim(),
+      password: String(formData.get("password") ?? ""),
+      rememberMe: Boolean(formData.get("rememberMe")),
+    });
+
+    if (result.error) {
+      setMessage(result.error.message ?? "بيانات الدخول غير صحيحة.");
+      setLoading(false);
+      return;
+    }
+
+    router.push("/platform");
+    router.refresh();
+  }
+
+  return (
+    <main className="authLayout">
+      <section className="authBrandPanel">
+        <div className="authBrandHeader">
+          <OqoodLogo inverted />
+        </div>
+
+        <div className="authBrandContent">
+          <span className="authEyebrow">منصة عقود الذكية</span>
 
           <h1>
-            أدِر المنافسات والعروض والعقود من مساحة عمل واحدة.
+            تحكم كامل في أعمال المشتريات والمنافسات والعقود.
           </h1>
 
           <p>
-            تابع فرص شركتك، استقبل عروض الموردين، قارن الأسعار واتخذ قرارات
-            الترسية ضمن إجراءات موثقة وآمنة.
+            ادخل إلى مساحة عمل شركتك وتابع الفرص، العروض، الاعتمادات،
+            والعقود ضمن تجربة موحدة وآمنة.
           </p>
 
-          <div className="authBenefits">
-            <span>✓ إدارة مركزية للفرص</span>
-            <span>✓ فصل التقييم الفني والمالي</span>
-            <span>✓ سجل كامل لجميع الإجراءات</span>
+          <div className="authStats">
+            <div>
+              <strong>100%</strong>
+              <span>واجهة عربية</span>
+            </div>
+            <div>
+              <strong>24/7</strong>
+              <span>وصول سحابي</span>
+            </div>
+            <div>
+              <strong>360°</strong>
+              <span>رؤية تشغيلية</span>
+            </div>
           </div>
+        </div>
+
+        <div className="authBrandFooter">
+          <span>Security by Design</span>
+          <span>Arabic First</span>
         </div>
       </section>
 
-      <section className="authFormSection">
-        <div className="authFormCard">
-          <div className="authFormHeader">
-            <span className="mobileAuthLogo">ع</span>
-            <h2>تسجيل الدخول</h2>
-            <p>أدخل بيانات حسابك للوصول إلى مساحة العمل.</p>
+      <section className="authContentPanel">
+        <div className="authContentWrapper">
+          <div className="authMobileLogo">
+            <OqoodLogo />
           </div>
 
-          <form className="authForm">
-            <label>
-              البريد الإلكتروني
-              <input
-                type="email"
-                name="email"
-                placeholder="name@company.com"
-                autoComplete="email"
-              />
-            </label>
+          <header className="authPageHeader">
+            <span className="authPageLabel">تسجيل الدخول</span>
+            <h2>مرحبًا بعودتك</h2>
+            <p>أدخل بيانات حسابك للوصول إلى مساحة العمل.</p>
+          </header>
 
-            <label>
-              كلمة المرور
-              <input
-                type="password"
-                name="password"
-                placeholder="أدخل كلمة المرور"
-                autoComplete="current-password"
-              />
-            </label>
+          <form className="authModernForm" onSubmit={handleSubmit}>
+            <Input
+              autoComplete="email"
+              label="البريد الإلكتروني"
+              name="email"
+              placeholder="name@company.com"
+              required
+              type="email"
+            />
 
-            <div className="authOptions">
-              <label className="checkboxLabel">
-                <input type="checkbox" />
-                تذكرني
+            <Input
+              autoComplete="current-password"
+              label="كلمة المرور"
+              name="password"
+              placeholder="أدخل كلمة المرور"
+              required
+              type="password"
+            />
+
+            <div className="authFormOptions">
+              <label>
+                <input name="rememberMe" type="checkbox" />
+                <span>تذكرني</span>
               </label>
 
-              <Link href="/forgot-password">نسيت كلمة المرور؟</Link>
+              <Link href="/forgot-password">
+                نسيت كلمة المرور؟
+              </Link>
             </div>
 
-            <Link className="primaryButton authSubmit" href="/platform">
-              الدخول إلى المنصة
-            </Link>
+            {message && (
+              <div className="authAlert authAlertError" role="alert">
+                {message}
+              </div>
+            )}
+
+            <Button
+              disabled={loading}
+              fullWidth
+              size="lg"
+              type="submit"
+            >
+              {loading ? "جارٍ تسجيل الدخول..." : "تسجيل الدخول"}
+            </Button>
           </form>
 
-          <div className="authDivider">
+          <div className="authDividerModern">
             <span>أو</span>
           </div>
 
-          <button className="secondaryButton authSecondary" type="button">
-            الدخول باستخدام حساب الشركة
-          </button>
+          <Button fullWidth size="lg" variant="outline">
+            تسجيل الدخول باستخدام حساب الشركة
+          </Button>
 
-          <p className="authRegister">
+          <p className="authSwitchText">
             ليس لديك حساب؟
-            <Link href="/register"> إنشاء حساب شركة</Link>
+            <Link href="/register"> إنشاء حساب جديد</Link>
           </p>
         </div>
       </section>
