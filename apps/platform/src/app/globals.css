@@ -2874,3 +2874,87 @@ a {
 .platformTopbar {
   position: static;
 }
+
+.platformSidebarLogo {
+  margin-bottom: 1.25rem;
+  padding-inline: 0.5rem;
+}
+
+.platformSidebarUser {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.platformSidebarUser > div {
+  min-width: 0;
+  display: grid;
+  gap: 0.125rem;
+}
+
+.platformSidebarUser strong {
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.platformSidebarUser small {
+  color: #64748b;
+  font-size: 0.5625rem;
+}
+
+.platformSidebarUser button {
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 0.5rem;
+  color: #94a3b8;
+  background: transparent;
+  cursor: pointer;
+}
+
+.platformSidebarUser button:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .platformSidebarLogo {
+    display: flex;
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .platformSidebarLogo .odsLogo__text,
+  .platformSidebarUser > div,
+  .platformSidebarUser button {
+    display: none;
+  }
+
+  .platformSidebarUser {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+}
+
+/* Top navigation is controlled by OQOOD Design System */
+
+.platformTopbar {
+  min-height: auto;
+  padding: 0;
+  display: contents;
+  position: static;
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.globalSearch,
+.platformTopActions,
+.iconButton,
+.notificationDot {
+  all: unset;
+}

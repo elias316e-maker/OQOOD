@@ -1,31 +1,66 @@
 import Link from "next/link";
+import {
+  Avatar,
+  Badge,
+  Button,
+  TopNavigation,
+  TopNavigationAction,
+  TopNavigationSearch,
+  TopNavigationUser,
+} from "@oqood/design-system";
 
 export function PlatformTopbar() {
   return (
-    <header className="platformTopbar">
-      <div className="globalSearch">
-        <span>⌕</span>
-        <input
-          type="search"
-          placeholder="ابحث في الفرص، العقود، الموردين والمستندات..."
+    <TopNavigation
+      center={
+        <TopNavigationSearch
+          icon={<span>⌕</span>}
+          placeholder="ابحث في الفرص، العقود، الشركاء والمستندات..."
+          shortcut="Ctrl K"
         />
-        <kbd>Ctrl K</kbd>
-      </div>
+      }
+      end={
+        <>
+          <TopNavigationAction
+            badge={<span>4</span>}
+            label="الإشعارات"
+          >
+            <span>♢</span>
+          </TopNavigationAction>
 
-      <div className="platformTopActions">
-        <button className="iconButton" type="button" aria-label="الإشعارات">
-          ♢
-          <span className="notificationDot" />
-        </button>
+          <TopNavigationAction label="المساعد الذكي">
+            <span>✦</span>
+          </TopNavigationAction>
 
-        <button className="iconButton" type="button" aria-label="المساعدة">
-          ؟
-        </button>
+          <TopNavigationAction label="المساعدة">
+            <span>؟</span>
+          </TopNavigationAction>
 
-        <Link className="primaryButton smallButton" href="/platform/opportunities/new">
-          + إنشاء
-        </Link>
-      </div>
-    </header>
+          <Link href="/platform/opportunities/new">
+            <Button size="sm">
+              + إنشاء
+            </Button>
+          </Link>
+
+          <TopNavigationUser
+            action={<span>⌄</span>}
+            avatar={
+              <Avatar
+                name="علي المشمّع"
+                size="sm"
+                status="online"
+              />
+            }
+            name="علي المشمّع"
+            role="مدير مساحة العمل"
+          />
+        </>
+      }
+      start={
+        <Badge dot tone="success">
+          النظام متصل
+        </Badge>
+      }
+    />
   );
 }
