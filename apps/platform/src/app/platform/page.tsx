@@ -1,4 +1,8 @@
+import { HeroCommandCenter } from "@/components/dashboard/hero";
+import { dashboardData } from "@/features/dashboard";
 import Link from "next/link";
+
+import { DashboardGrid, KpiCard } from "@oqood/design-system";
 
 const metrics = [
   {
@@ -96,20 +100,53 @@ export default function PlatformPage() {
         </div>
       </section>
 
-      <section className="platformMetrics">
-        {metrics.map((metric) => (
-          <article className="platformMetricCard" key={metric.label}>
-            <div className="metricCardHeader">
-              <span>{metric.label}</span>
-              <button type="button">•••</button>
-            </div>
+      
+      <HeroCommandCenter data={dashboardData.hero} />
 
-            <strong>{metric.value}</strong>
+      <section className="platformDashboardContent">
+        <DashboardGrid columns={4}>
+          <KpiCard
+            label="المنافسات النشطة"
+            value="12"
+            description="فرصة نشطة"
+            icon="◫"
+            tone="primary"
+            trend="up"
+            trendLabel="+3 هذا الأسبوع"
+          />
 
-            <small className={metric.tone}>{metric.detail}</small>
-          </article>
-        ))}
+          <KpiCard
+            label="العروض المستلمة"
+            value="47"
+            description="8 تحتاج إلى مراجعة"
+            icon="▤"
+            tone="info"
+            trend="up"
+            trendLabel="+11 خلال 30 يومًا"
+          />
+
+          <KpiCard
+            label="قيمة العقود النشطة"
+            value="18.4 م"
+            description="ريال سعودي"
+            icon="◇"
+            tone="warning"
+            trend="neutral"
+            trendLabel="ضمن 8 عقود"
+          />
+
+          <KpiCard
+            label="الوفورات المحققة"
+            value="8.2%"
+            description="وفورات مشتريات"
+            icon="↗"
+            tone="success"
+            trend="up"
+            trendLabel="+1.4% عن الشهر الماضي"
+          />
+        </DashboardGrid>
       </section>
+
 
       <section className="platformDashboardGrid">
         <div className="dashboardMainColumn">

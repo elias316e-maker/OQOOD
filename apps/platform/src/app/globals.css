@@ -2958,3 +2958,354 @@ a {
 .notificationDot {
   all: unset;
 }
+
+.platformDashboardContent {
+  padding: 1.5rem 1.75rem;
+}
+
+@media (max-width: 768px) {
+  .platformDashboardContent {
+    padding: 1rem;
+  }
+}
+
+/* =========================================================
+   OQOOD COMMAND CENTER HERO
+   ========================================================= */
+
+.commandHero {
+  margin: 1.5rem 1.75rem 0;
+  padding: 2rem;
+  min-height: 23rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(116, 103, 255, 0.2);
+  border-radius: 1.5rem;
+  color: #ffffff;
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(116, 103, 255, 0.42),
+      transparent 29%
+    ),
+    radial-gradient(
+      circle at 90% 85%,
+      rgba(20, 184, 212, 0.18),
+      transparent 27%
+    ),
+    linear-gradient(
+      135deg,
+      #071128 0%,
+      #0b1739 50%,
+      #172554 100%
+    );
+  box-shadow: 0 30px 80px rgba(7, 17, 40, 0.2);
+}
+
+.commandHero__content {
+  min-height: 19rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19rem;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.commandHero__intro {
+  min-width: 0;
+}
+
+.commandHero__date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #a5b4fc;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.commandHero__statusDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 0.3rem rgba(52, 211, 153, 0.12);
+}
+
+.commandHero__greeting {
+  margin: 1.25rem 0 0;
+  color: #cbd5e1;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.commandHero h1 {
+  max-width: 48rem;
+  margin: 0.5rem 0 0;
+  font-size: clamp(2.25rem, 4vw, 4.25rem);
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+}
+
+.commandHero__description {
+  max-width: 46rem;
+  margin: 1rem 0 0;
+  color: #cbd5e1;
+  font-size: 0.9375rem;
+  line-height: 1.9;
+}
+
+.commandHeroAlerts {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.commandHeroAlert {
+  min-width: 0;
+  padding: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(0.75rem);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.commandHeroAlert:hover {
+  transform: translateY(-0.15rem);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.commandHeroAlert__icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  font-weight: 900;
+}
+
+.commandHeroAlert--danger .commandHeroAlert__icon {
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.commandHeroAlert--warning .commandHeroAlert__icon {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+.commandHeroAlert--success .commandHeroAlert__icon {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.18);
+}
+
+.commandHeroAlert--info .commandHeroAlert__icon {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, 0.18);
+}
+
+.commandHeroAlert__content {
+  min-width: 0;
+  display: grid;
+}
+
+.commandHeroAlert__content strong {
+  font-size: 1.25rem;
+}
+
+.commandHeroAlert__content > span {
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.commandHeroAlert__content small {
+  margin-top: 0.15rem;
+  overflow: hidden;
+  color: #94a3b8;
+  font-size: 0.5625rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.commandHeroProgress {
+  padding: 1.25rem;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.13),
+      rgba(255, 255, 255, 0.055)
+    );
+  backdrop-filter: blur(1.25rem);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.18);
+}
+
+.commandHeroProgress header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.commandHeroProgress header span {
+  font-size: 0.8125rem;
+  font-weight: 800;
+}
+
+.commandHeroProgress header small {
+  color: #94a3b8;
+  font-size: 0.5625rem;
+}
+
+.commandHeroProgress__value {
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.commandHeroProgress__value > strong {
+  font-size: 2.75rem;
+  line-height: 1;
+}
+
+.commandHeroProgress__ring {
+  width: 6rem;
+  height: 6rem;
+  display: grid;
+  place-items: center;
+  position: relative;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle closest-side,
+      #101b3e 76%,
+      transparent 78%
+    ),
+    conic-gradient(
+      #7467ff var(--progress),
+      rgba(255, 255, 255, 0.1) 0
+    );
+}
+
+.commandHeroProgress__ring span {
+  font-size: 0.875rem;
+  font-weight: 900;
+}
+
+.commandHeroProgress__track {
+  height: 0.5rem;
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.commandHeroProgress__track span {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7467ff, #22d3ee);
+  box-shadow: 0 0 1rem rgba(116, 103, 255, 0.45);
+}
+
+.commandHeroProgress p {
+  margin: 0.75rem 0 1.25rem;
+  color: #94a3b8;
+  font-size: 0.6875rem;
+  line-height: 1.7;
+}
+
+.commandHeroProgress p strong {
+  color: #ffffff;
+}
+
+.commandHero__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(0.5rem);
+  pointer-events: none;
+}
+
+.commandHero__glow--one {
+  width: 15rem;
+  height: 15rem;
+  top: -8rem;
+  inset-inline-start: 15%;
+  background: rgba(99, 91, 255, 0.19);
+}
+
+.commandHero__glow--two {
+  width: 12rem;
+  height: 12rem;
+  bottom: -7rem;
+  inset-inline-end: 18%;
+  background: rgba(20, 184, 212, 0.13);
+}
+
+.commandHero__grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background-image:
+    linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+@media (max-width: 1180px) {
+  .commandHero__content {
+    grid-template-columns: 1fr;
+  }
+
+  .commandHeroProgress {
+    width: min(100%, 32rem);
+  }
+
+  .commandHeroAlerts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .commandHero {
+    margin: 1rem 1rem 0;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+  }
+
+  .commandHero__content {
+    min-height: auto;
+  }
+
+  .commandHero h1 {
+    font-size: 2.25rem;
+  }
+
+  .commandHeroAlerts {
+    grid-template-columns: 1fr;
+  }
+
+  .commandHeroProgress {
+    width: 100%;
+  }
+}
