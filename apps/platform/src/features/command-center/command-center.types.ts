@@ -47,4 +47,41 @@ export type CommandCenterData = {
     alerts: CommandCenterAlert[];
   };
   kpis: CommandCenterKpi[];
+  intelligence: CommandCenterIntelligenceData;
+  quickActions: CommandCenterActionsData;
+};
+
+export type AiInsightTone =
+  | "blue"
+  | "purple"
+  | "green"
+  | "orange"
+  | "red";
+
+export type AiInsight = {
+  id: string;
+  title: string;
+  description: string;
+  actionLabel: string;
+  tone: AiInsightTone;
+  icon: string;
+};
+
+export type QuickAction = {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  tone: CommandCenterTone;
+  icon: string;
+};
+
+export type CommandCenterIntelligenceData = {
+  winProbability: number;
+  change: string;
+  insights: AiInsight[];
+};
+
+export type CommandCenterActionsData = {
+  actions: QuickAction[];
 };

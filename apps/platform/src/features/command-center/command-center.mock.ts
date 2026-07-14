@@ -120,4 +120,91 @@ export const commandCenterData: CommandCenterData = {
       chart: [8, 10, 9, 12, 11, 14, 13, 18],
     },
   ],
+
+  intelligence: {
+    winProbability: 92,
+    change: "18%",
+    insights: [
+      {
+        id: "opportunity-match",
+        title: "فرصة مناسبة لنشاط الشركة",
+        description:
+          "توجد 3 منافسات جديدة تتوافق مع تصنيف الشركة وخبراتها السابقة.",
+        actionLabel: "عرض الفرص",
+        tone: "blue",
+        icon: "◇",
+      },
+      {
+        id: "contract-review",
+        title: "عقد يحتاج إلى مراجعة",
+        description:
+          "عقد مشروع مجمع الملك عبدالله يحتوي على بند يحتاج إلى الانتباه.",
+        actionLabel: "مراجعة العقد",
+        tone: "green",
+        icon: "▤",
+      },
+      {
+        id: "possible-delay",
+        title: "احتمال تأخر مشروع",
+        description:
+          "يتوقع النظام تأخرًا محتملًا في مشروعين بناءً على تقدم الأعمال.",
+        actionLabel: "عرض التفاصيل",
+        tone: "purple",
+        icon: "◷",
+      },
+    ],
+  },
+
+  quickActions: {
+    actions: [
+      {
+        id: "new-rfq",
+        title: "إنشاء منافسة",
+        description: "ابدأ طلب عرض سعر جديد",
+        href: "/platform/opportunities/new",
+        tone: "blue",
+        icon: "＋",
+      },
+      {
+        id: "new-contract",
+        title: "إنشاء عقد",
+        description: "إضافة عقد جديد",
+        href: "/platform/contracts/new",
+        tone: "green",
+        icon: "▤",
+      },
+      {
+        id: "new-supplier",
+        title: "إضافة مورد",
+        description: "تسجيل شريك أعمال",
+        href: "/platform/partners/new",
+        tone: "purple",
+        icon: "◎",
+      },
+      {
+        id: "new-project",
+        title: "إنشاء مشروع",
+        description: "فتح مشروع جديد",
+        href: "/platform/projects/new",
+        tone: "orange",
+        icon: "◇",
+      },
+      {
+        id: "upload-document",
+        title: "رفع مستند",
+        description: "إضافة ملف إلى المركز",
+        href: "/platform/documents",
+        tone: "cyan",
+        icon: "⇧",
+      },
+      {
+        id: "new-approval",
+        title: "طلب موافقة",
+        description: "إرسال طلب اعتماد",
+        href: "/platform/approvals/new",
+        tone: "green",
+        icon: "✓",
+      },
+    ],
+  },
 };
