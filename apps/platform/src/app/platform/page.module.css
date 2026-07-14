@@ -1,0 +1,51 @@
+.page {
+  min-height: 100%;
+  padding: 20px 22px 34px;
+  display: grid;
+  gap: 14px;
+  color: #f8fafc;
+}
+
+.placeholderGrid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 14px;
+}
+
+.placeholderGrid article {
+  min-height: 180px;
+  padding: 22px;
+  border: 1px dashed rgba(96, 165, 250, 0.17);
+  border-radius: 17px;
+  background:
+    linear-gradient(145deg, rgba(13, 24, 44, 0.72), rgba(7, 15, 29, 0.8));
+}
+
+.placeholderGrid span {
+  color: #60a5fa;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.placeholderGrid h2 {
+  margin: 12px 0 0;
+  font-size: 18px;
+}
+
+.placeholderGrid p {
+  max-width: 520px;
+  margin: 8px 0 0;
+  color: #71809a;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding-inline: 14px;
+  }
+
+  .placeholderGrid {
+    grid-template-columns: 1fr;
+  }
+}

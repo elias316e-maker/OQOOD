@@ -12,54 +12,61 @@ import {
 export function PlatformTopbar() {
   return (
     <TopNavigation
+      className="platformApprovedTopbar"
+      start={
+        <div className="approvedTopbarStatus">
+          <Badge dot tone="success">
+            النظام يعمل بكفاءة
+          </Badge>
+        </div>
+      }
       center={
         <TopNavigationSearch
-          icon={<span>⌕</span>}
-          placeholder="ابحث في الفرص، العقود، الشركاء والمستندات..."
+          icon={<span aria-hidden="true">⌕</span>}
+          placeholder="ابحث في العقود، المنافسات، المشاريع والمستندات..."
           shortcut="Ctrl K"
         />
       }
       end={
-        <>
+        <div className="approvedTopbarActions">
           <TopNavigationAction
             badge={<span>4</span>}
             label="الإشعارات"
           >
-            <span>♢</span>
+            <span aria-hidden="true">♢</span>
+          </TopNavigationAction>
+
+          <TopNavigationAction
+            badge={<span>2</span>}
+            label="الرسائل"
+          >
+            <span aria-hidden="true">✉</span>
           </TopNavigationAction>
 
           <TopNavigationAction label="المساعد الذكي">
-            <span>✦</span>
-          </TopNavigationAction>
-
-          <TopNavigationAction label="المساعدة">
-            <span>؟</span>
+            <span aria-hidden="true">✦</span>
           </TopNavigationAction>
 
           <Link href="/platform/opportunities/new">
-            <Button size="sm">
-              + إنشاء
+            <Button className="approvedTopbarCreate" size="sm">
+              <span aria-hidden="true">＋</span>
+              إنشاء جديد
             </Button>
           </Link>
 
           <TopNavigationUser
-            action={<span>⌄</span>}
+            action={<span aria-hidden="true">⌄</span>}
             avatar={
               <Avatar
-                name="علي المشمّع"
+                name="علي محمد"
                 size="sm"
                 status="online"
               />
             }
-            name="علي المشمّع"
-            role="مدير مساحة العمل"
+            name="علي محمد"
+            role="مدير المشتريات"
           />
-        </>
-      }
-      start={
-        <Badge dot tone="success">
-          النظام متصل
-        </Badge>
+        </div>
       }
     />
   );

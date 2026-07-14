@@ -9,37 +9,47 @@ import {
   SidebarGroup,
   SidebarHeader,
   SidebarNavItem,
-  SidebarWorkspace,
 } from "@oqood/design-system";
 
-const mainNavigation = [
+const navigation = [
   {
-    label: "مركز القيادة",
+    label: "الرئيسية",
     href: "/platform",
     icon: "⌂",
     active: true,
   },
   {
-    label: "الفرص والمنافسات",
+    label: "المنافسات",
     href: "/platform/opportunities",
-    icon: "◫",
+    icon: "☆",
     badge: "12",
-  },
-  {
-    label: "شركاء الأعمال",
-    href: "/platform/partners",
-    icon: "◎",
-  },
-  {
-    label: "المشاريع",
-    href: "/platform/projects",
-    icon: "◇",
   },
   {
     label: "العقود",
     href: "/platform/contracts",
-    icon: "▤",
+    icon: "▣",
     badge: "3",
+  },
+  {
+    label: "المشاريع",
+    href: "/platform/projects",
+    icon: "♙",
+  },
+  {
+    label: "الموردون",
+    href: "/platform/partners",
+    icon: "♧",
+  },
+  {
+    label: "الموافقات",
+    href: "/platform/approvals",
+    icon: "✓",
+    badge: "4",
+  },
+  {
+    label: "التقارير",
+    href: "/platform/reports",
+    icon: "▥",
   },
   {
     label: "المستندات",
@@ -47,20 +57,12 @@ const mainNavigation = [
     icon: "□",
   },
   {
-    label: "التقارير والتحليلات",
-    href: "/platform/reports",
-    icon: "▥",
-  },
-];
-
-const administrationNavigation = [
-  {
-    label: "المستخدمون والصلاحيات",
-    href: "/platform/users",
-    icon: "♙",
+    label: "التقويم",
+    href: "/platform/calendar",
+    icon: "▦",
   },
   {
-    label: "إعدادات المنصة",
+    label: "الإعدادات",
     href: "/platform/settings",
     icon: "⚙",
   },
@@ -68,25 +70,18 @@ const administrationNavigation = [
 
 export function Sidebar() {
   return (
-    <OqoodSidebar>
+    <OqoodSidebar className="platformApprovedSidebar">
       <SidebarHeader>
-        <div className="platformSidebarLogo">
-          <Link href="/">
+        <div className="approvedSidebarBrand">
+          <Link aria-label="OQOOD" href="/platform">
             <OqoodLogo compact inverted />
           </Link>
         </div>
-
-        <SidebarWorkspace
-          action={<span>⌄</span>}
-          description="مساحة العمل الرئيسية"
-          logo="ب"
-          name="شركة البحرين برو"
-        />
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup title="مساحة العمل">
-          {mainNavigation.map((item) => (
+        <SidebarGroup>
+          {navigation.map((item) => (
             <Link href={item.href} key={item.href}>
               <SidebarNavItem
                 active={item.active}
@@ -97,18 +92,7 @@ export function Sidebar() {
                     </Badge>
                   ) : undefined
                 }
-                icon={item.icon}
-                label={item.label}
-              />
-            </Link>
-          ))}
-        </SidebarGroup>
-
-        <SidebarGroup title="الإدارة">
-          {administrationNavigation.map((item) => (
-            <Link href={item.href} key={item.href}>
-              <SidebarNavItem
-                icon={item.icon}
+                icon={<span>{item.icon}</span>}
                 label={item.label}
               />
             </Link>
@@ -117,22 +101,27 @@ export function Sidebar() {
       </SidebarContent>
 
       <SidebarFooter>
-        <div className="platformSidebarUser">
+        <div className="approvedSidebarUser">
           <Avatar
-            name="علي المشمّع"
+            name="علي محمد"
             size="sm"
             status="online"
           />
 
-          <div>
-            <strong>علي المشمّع</strong>
-            <small>مدير مساحة العمل</small>
+          <div className="approvedSidebarUser__content">
+            <strong>علي محمد</strong>
+            <small>مدير المشتريات</small>
           </div>
 
           <button aria-label="قائمة المستخدم" type="button">
-            ⋮
+           ⌄
           </button>
         </div>
+
+        <button className="approvedSidebarCollapse" type="button">
+          <span aria-hidden="true">↔</span>
+          <span>طي القائمة</span>
+        </button>
       </SidebarFooter>
     </OqoodSidebar>
   );

@@ -10,9 +10,10 @@ export default function PlatformLayout({
 }>) {
   return (
     <AppShell
+      className="platformDarkShell"
       header={<PlatformTopbar />}
       sidebar={<Sidebar />}
-      sidebarWidth="md"
+      sidebarWidth="sm"
     >
       {children}
     </AppShell>

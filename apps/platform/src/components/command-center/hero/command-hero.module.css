@@ -1,0 +1,316 @@
+.hero {
+  min-height: 330px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(96, 165, 250, 0.17);
+  border-radius: 22px;
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at 14% 10%, rgba(79, 70, 229, 0.32), transparent 31%),
+    radial-gradient(circle at 88% 78%, rgba(6, 182, 212, 0.13), transparent 26%),
+    linear-gradient(135deg, #071128, #0a1630 55%, #071021);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.23),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.main {
+  min-height: 266px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  align-items: center;
+  gap: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.intro {
+  min-width: 0;
+}
+
+.date {
+  display: block;
+  color: #7f8da4;
+  font-size: 11px;
+}
+
+.eyebrow {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #93c5fd;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.09);
+}
+
+.intro h1 {
+  margin: 10px 0 0;
+  font-size: clamp(35px, 4vw, 58px);
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+}
+
+.intro > p {
+  max-width: 720px;
+  margin: 12px 0 0;
+  color: #aab7ca;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.alerts {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.alertCard {
+  min-width: 0;
+  padding: 13px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(12px);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.alertCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(96, 165, 250, 0.2);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.alertIcon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 11px;
+  color: currentColor;
+  background: color-mix(in srgb, currentColor 16%, transparent);
+  font-weight: 900;
+}
+
+.alertCard > div {
+  min-width: 0;
+  display: grid;
+}
+
+.alertCard strong {
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.alertCard span:not(.alertIcon) {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #dbe5f3;
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alertCard small {
+  margin-top: 3px;
+  overflow: hidden;
+  color: #71809a;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tone-red {
+  color: #fb7185;
+}
+
+.tone-orange {
+  color: #f59e0b;
+}
+
+.tone-blue {
+  color: #60a5fa;
+}
+
+.tone-green {
+  color: #34d399;
+}
+
+.progressCard {
+  padding: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.13);
+  border-radius: 19px;
+  background:
+    linear-gradient(145deg, rgba(17, 31, 56, 0.94), rgba(7, 17, 34, 0.96));
+  box-shadow:
+    0 24px 55px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(18px);
+}
+
+.progressCard header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.progressCard header > div {
+  display: grid;
+  gap: 4px;
+}
+
+.progressCard header strong {
+  font-size: 12px;
+}
+
+.progressCard header span {
+  color: #71809a;
+  font-size: 9px;
+}
+
+.progressStatus {
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #86efac !important;
+  background: rgba(16, 185, 129, 0.1);
+  font-weight: 700;
+}
+
+.progressRing {
+  width: 138px;
+  height: 138px;
+  margin: 24px auto 18px;
+  padding: 11px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from 0deg,
+      #2563eb 0deg,
+      #6366f1 calc(var(--progress-angle) * 0.66),
+      #06b6d4 var(--progress-angle),
+      rgba(148, 163, 184, 0.1) var(--progress-angle)
+    );
+  box-shadow:
+    0 0 35px rgba(37, 99, 235, 0.2),
+    inset 0 0 25px rgba(255, 255, 255, 0.04);
+}
+
+.progressRing > div {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 30%, #111f3a, #071224 72%);
+}
+
+.progressRing strong {
+  font-size: 30px;
+}
+
+.progressRing span {
+  margin-top: 4px;
+  color: #71809a;
+  font-size: 9px;
+}
+
+.progressCard > p {
+  margin: 0 0 17px;
+  text-align: center;
+  color: #7f8da4;
+  font-size: 10px;
+}
+
+.progressCard > p strong {
+  color: #ffffff;
+}
+
+.gridPattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image:
+    linear-gradient(rgba(96, 165, 250, 0.32) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96, 165, 250, 0.32) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+.glowOne,
+.glowTwo {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(20px);
+}
+
+.glowOne {
+  width: 260px;
+  height: 260px;
+  top: -170px;
+  inset-inline-start: 25%;
+  background: rgba(99, 102, 241, 0.18);
+}
+
+.glowTwo {
+  width: 210px;
+  height: 210px;
+  bottom: -150px;
+  inset-inline-end: 20%;
+  background: rgba(6, 182, 212, 0.13);
+}
+
+@media (max-width: 1180px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .progressCard {
+    width: min(100%, 430px);
+  }
+}
+
+@media (max-width: 780px) {
+  .hero {
+    padding: 21px;
+    border-radius: 18px;
+  }
+
+  .alerts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .alerts {
+    grid-template-columns: 1fr;
+  }
+
+  .intro h1 {
+    font-size: 32px;
+  }
+}
