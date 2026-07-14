@@ -2175,3 +2175,345 @@ a {
     width: max-content;
   }
 }
+
+/* =========================================================
+   OQOOD DESIGN SYSTEM — FOUNDATION
+   ========================================================= */
+
+:root {
+  --oqood-navy-950: #071128;
+  --oqood-navy-900: #0b1739;
+  --oqood-navy-800: #142451;
+
+  --oqood-primary-700: #4338ca;
+  --oqood-primary-600: #4f46e5;
+  --oqood-primary-500: #635bff;
+  --oqood-primary-400: #7467ff;
+  --oqood-primary-100: #eeecff;
+  --oqood-primary-50: #f6f5ff;
+
+  --oqood-blue-600: #2563eb;
+  --oqood-blue-100: #dbeafe;
+
+  --oqood-cyan-500: #14b8d4;
+  --oqood-cyan-100: #cffafe;
+
+  --oqood-green-600: #16a34a;
+  --oqood-green-100: #dcfce7;
+
+  --oqood-orange-500: #f59e0b;
+  --oqood-orange-100: #fef3c7;
+
+  --oqood-red-600: #dc2626;
+  --oqood-red-100: #fee2e2;
+
+  --oqood-gray-950: #0f172a;
+  --oqood-gray-800: #1e293b;
+  --oqood-gray-700: #334155;
+  --oqood-gray-600: #475569;
+  --oqood-gray-500: #64748b;
+  --oqood-gray-400: #94a3b8;
+  --oqood-gray-300: #cbd5e1;
+  --oqood-gray-200: #e2e8f0;
+  --oqood-gray-100: #f1f5f9;
+  --oqood-gray-50: #f8fafc;
+
+  --oqood-white: #ffffff;
+  --oqood-page-bg: #f7f8fc;
+
+  --oqood-radius-sm: 8px;
+  --oqood-radius-md: 12px;
+  --oqood-radius-lg: 16px;
+  --oqood-radius-xl: 22px;
+
+  --oqood-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --oqood-shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --oqood-shadow-lg: 0 24px 60px rgba(49, 46, 129, 0.14);
+
+  --oqood-transition: 180ms ease;
+}
+
+/* Logo */
+
+.oqoodLogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--oqood-navy-950);
+}
+
+.oqoodLogoMark {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 9px 15px rgba(79, 70, 229, 0.2));
+}
+
+.oqoodLogoText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.oqoodLogoText strong {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+}
+
+.oqoodLogoText small {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.oqoodLogoInverted {
+  color: var(--oqood-white);
+}
+
+/* Button */
+
+.uiButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--oqood-radius-md);
+  cursor: pointer;
+  font-weight: 750;
+  transition:
+    transform var(--oqood-transition),
+    background var(--oqood-transition),
+    border-color var(--oqood-transition),
+    box-shadow var(--oqood-transition);
+}
+
+.uiButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.uiButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.uiButton-sm {
+  min-height: 36px;
+  padding: 0 13px;
+  font-size: 12px;
+}
+
+.uiButton-md {
+  min-height: 44px;
+  padding: 0 18px;
+  font-size: 13px;
+}
+
+.uiButton-lg {
+  min-height: 50px;
+  padding: 0 24px;
+  font-size: 14px;
+}
+
+.uiButtonFull {
+  width: 100%;
+}
+
+.uiButton-primary {
+  color: var(--oqood-white);
+  background: linear-gradient(
+    135deg,
+    var(--oqood-primary-600),
+    var(--oqood-blue-600)
+  );
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.2);
+}
+
+.uiButton-secondary {
+  color: var(--oqood-white);
+  background: var(--oqood-navy-900);
+}
+
+.uiButton-outline {
+  color: var(--oqood-primary-600);
+  border-color: #c7d2fe;
+  background: var(--oqood-white);
+}
+
+.uiButton-ghost {
+  color: var(--oqood-gray-600);
+  background: transparent;
+}
+
+.uiButton-danger {
+  color: var(--oqood-white);
+  background: var(--oqood-red-600);
+}
+
+/* Fields */
+
+.uiField {
+  display: grid;
+  gap: 8px;
+}
+
+.uiFieldLabel {
+  color: var(--oqood-gray-700);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.uiInput {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 13px;
+  border: 1px solid var(--oqood-gray-200);
+  border-radius: var(--oqood-radius-md);
+  outline: none;
+  color: var(--oqood-gray-950);
+  background: var(--oqood-white);
+  transition:
+    border-color var(--oqood-transition),
+    box-shadow var(--oqood-transition);
+}
+
+.uiInput::placeholder {
+  color: var(--oqood-gray-400);
+}
+
+.uiInput:focus {
+  border-color: var(--oqood-primary-500);
+  box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.11);
+}
+
+.uiInputError {
+  border-color: var(--oqood-red-600);
+}
+
+.uiFieldHint,
+.uiFieldError {
+  font-size: 10px;
+}
+
+.uiFieldHint {
+  color: var(--oqood-gray-500);
+}
+
+.uiFieldError {
+  color: var(--oqood-red-600);
+}
+
+/* Card */
+
+.uiCard {
+  padding: 20px;
+  border: 1px solid var(--oqood-gray-200);
+  border-radius: var(--oqood-radius-lg);
+  background: var(--oqood-white);
+  box-shadow: var(--oqood-shadow-sm);
+}
+
+.uiCardElevated {
+  box-shadow: var(--oqood-shadow-md);
+}
+
+.uiCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.uiCardHeader h2 {
+  margin: 0;
+  color: var(--oqood-gray-950);
+  font-size: 17px;
+}
+
+.uiCardHeader p {
+  margin: 5px 0 0;
+  color: var(--oqood-gray-500);
+  font-size: 11px;
+}
+
+/* Badge */
+
+.uiBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.uiBadge-primary {
+  color: var(--oqood-primary-700);
+  background: var(--oqood-primary-100);
+}
+
+.uiBadge-success {
+  color: var(--oqood-green-600);
+  background: var(--oqood-green-100);
+}
+
+.uiBadge-warning {
+  color: #9a5800;
+  background: var(--oqood-orange-100);
+}
+
+.uiBadge-danger {
+  color: var(--oqood-red-600);
+  background: var(--oqood-red-100);
+}
+
+.uiBadge-neutral {
+  color: var(--oqood-gray-600);
+  background: var(--oqood-gray-100);
+}
+
+/* Avatar */
+
+.uiAvatar {
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--oqood-white);
+  border-radius: 50%;
+  color: var(--oqood-white);
+  background: linear-gradient(
+    135deg,
+    var(--oqood-primary-600),
+    var(--oqood-cyan-500)
+  );
+  box-shadow: var(--oqood-shadow-sm);
+  font-weight: 850;
+}
+
+.uiAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uiAvatar-sm {
+  width: 30px;
+  height: 30px;
+  font-size: 10px;
+}
+
+.uiAvatar-md {
+  width: 40px;
+  height: 40px;
+  font-size: 12px;
+}
+
+.uiAvatar-lg {
+  width: 54px;
+  height: 54px;
+  font-size: 15px;
+}
