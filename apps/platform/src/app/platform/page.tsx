@@ -1,3 +1,4 @@
+import { SummaryNotifications } from "@/components/command-center/summary";
 import { PerformanceAnalytics } from "@/components/command-center/performance";
 import { ActivityTimeline } from "@/components/command-center/activity";
 import { CommandHero } from "@/components/command-center/hero";
@@ -36,6 +37,11 @@ export default function PlatformPage() {
       <OpportunitiesCalendar
         events={operations.events}
         opportunities={operations.opportunities}
+      />
+
+      <SummaryNotifications
+        notifications={commandCenterData.notifications}
+        summary={commandCenterData.summary}
       />
 
       <section className={styles.performanceRow}>

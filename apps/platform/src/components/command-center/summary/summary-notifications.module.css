@@ -1,0 +1,368 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.8fr);
+  gap: 14px;
+}
+
+.summaryPanel,
+.notificationsPanel {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 18px;
+  color: #f8fafc;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 26, 47, 0.98),
+      rgba(7, 16, 31, 0.99)
+    );
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.summaryPanel {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 5% 0%,
+      rgba(37, 99, 235, 0.13),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 95% 100%,
+      rgba(139, 92, 246, 0.1),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(15, 26, 47, 0.99),
+      rgba(7, 16, 31, 0.99)
+    );
+}
+
+.summaryPanel > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.eyebrow {
+  color: #60a5fa;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.summaryPanel h2,
+.notificationsPanel h2 {
+  margin: 8px 0 0;
+  font-size: 17px;
+}
+
+.summaryPanel header p,
+.notificationsHeader p {
+  max-width: 580px;
+  margin: 7px 0 0;
+  color: #71809a;
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.healthScore {
+  width: 105px;
+  height: 105px;
+  padding: 8px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      #2563eb 0deg,
+      #8b5cf6 var(--health-angle),
+      rgba(148, 163, 184, 0.1) var(--health-angle)
+    );
+  box-shadow: 0 0 35px rgba(59, 130, 246, 0.16);
+}
+
+.healthScore > div {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  border-radius: 50%;
+  background: #091428;
+}
+
+.healthScore strong {
+  font-size: 20px;
+}
+
+.healthScore span {
+  margin-top: 3px;
+  color: #71809a;
+  font-size: 7px;
+}
+
+.summaryGrid {
+  margin-top: 21px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+  position: relative;
+  z-index: 2;
+}
+
+.summaryItem {
+  min-width: 0;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.075);
+  border-radius: 11px;
+  color: #60a5fa;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.summaryItem span {
+  overflow: hidden;
+  color: #71809a;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summaryItem strong {
+  color: #e5edf8;
+  font-size: 14px;
+}
+
+.tone-blue {
+  border-top-color: rgba(59, 130, 246, 0.35);
+}
+
+.tone-green {
+  border-top-color: rgba(16, 185, 129, 0.35);
+}
+
+.tone-orange {
+  border-top-color: rgba(245, 158, 11, 0.35);
+}
+
+.tone-purple {
+  border-top-color: rgba(139, 92, 246, 0.35);
+}
+
+.summaryPanel footer {
+  margin-top: 15px;
+  padding-top: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(148, 163, 184, 0.075);
+}
+
+.summaryPanel footer span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #71809a;
+  font-size: 8px;
+}
+
+.summaryPanel footer i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.08);
+}
+
+.summaryPanel footer button,
+.viewAll {
+  border: 0;
+  cursor: pointer;
+  color: #60a5fa;
+  background: transparent;
+  font: inherit;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.summaryGlow {
+  width: 190px;
+  height: 190px;
+  position: absolute;
+  top: -120px;
+  inset-inline-start: 30%;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.1);
+  filter: blur(30px);
+}
+
+.notificationsHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.notificationsPanel h2 {
+  margin-top: 0;
+}
+
+.notificationCount {
+  min-width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.16);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.notificationsList {
+  margin-top: 16px;
+  display: grid;
+  gap: 7px;
+}
+
+.notification {
+  min-width: 0;
+  padding: 9px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 9px;
+  position: relative;
+  border: 1px solid rgba(148, 163, 184, 0.07);
+  border-radius: 11px;
+  color: #60a5fa;
+  background: rgba(255, 255, 255, 0.017);
+}
+
+.notification.unread {
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, currentColor 5%, transparent),
+      rgba(255, 255, 255, 0.015)
+    );
+}
+
+.notificationIcon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: currentColor;
+  background: color-mix(in srgb, currentColor 13%, transparent);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.notificationContent {
+  min-width: 0;
+}
+
+.notificationContent strong {
+  display: block;
+  overflow: hidden;
+  color: #dbe5f3;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notificationContent p {
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: #65748b;
+  font-size: 7px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notificationContent small {
+  display: block;
+  margin-top: 5px;
+  color: #4f5d72;
+  font-size: 7px;
+}
+
+.unreadDot {
+  width: 6px;
+  height: 6px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.tone-red {
+  color: #fb7185;
+}
+
+.tone-orange {
+  color: #f59e0b;
+}
+
+.tone-green {
+  color: #34d399;
+}
+
+.tone-purple {
+  color: #a78bfa;
+}
+
+.notificationsPanel .tone-blue {
+  color: #60a5fa;
+}
+
+.viewAll {
+  width: 100%;
+  min-height: 32px;
+  margin-top: 11px;
+  border: 1px solid rgba(96, 165, 250, 0.12);
+  border-radius: 9px;
+  background: rgba(37, 99, 235, 0.045);
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .summaryPanel > header {
+    grid-template-columns: 1fr;
+  }
+
+  .healthScore {
+    justify-self: start;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+}

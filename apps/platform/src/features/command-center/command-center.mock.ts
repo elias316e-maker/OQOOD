@@ -451,4 +451,92 @@ export const commandCenterData: CommandCenterData = {
       },
     ],
   },
+  summary: {
+    headline: "ملخص اليوم التنفيذي",
+    description:
+      "الأداء العام لمساحة العمل مستقر، مع وجود ثلاث نقاط تحتاج إلى تدخل إداري خلال اليوم.",
+    healthScore: 92,
+    items: [
+      {
+        id: "active-value",
+        label: "قيمة المشاريع النشطة",
+        value: "18.4 م ر.س",
+        tone: "blue",
+      },
+      {
+        id: "approved-contracts",
+        label: "العقود المعتمدة هذا الشهر",
+        value: "5",
+        tone: "green",
+      },
+      {
+        id: "expiring-contracts",
+        label: "عقود تنتهي خلال 30 يومًا",
+        value: "3",
+        tone: "orange",
+      },
+      {
+        id: "pending-decisions",
+        label: "قرارات إدارية معلقة",
+        value: "4",
+        tone: "purple",
+      },
+    ],
+  },
+
+  notifications: {
+    unreadCount: 4,
+    items: [
+      {
+        id: "notification-1",
+        title: "عقد سينتهي خلال 5 أيام",
+        description:
+          "عقد التشغيل والصيانة السنوي يحتاج إلى قرار بشأن التجديد.",
+        time: "منذ 12 دقيقة",
+        tone: "red",
+        icon: "!",
+        unread: true,
+      },
+      {
+        id: "notification-2",
+        title: "مورد لم يرد على طلب التوضيح",
+        description:
+          "لم يتم استلام الرد منذ أكثر من 48 ساعة.",
+        time: "منذ 35 دقيقة",
+        tone: "orange",
+        icon: "◷",
+        unread: true,
+      },
+      {
+        id: "notification-3",
+        title: "تم اعتماد المنافسة",
+        description:
+          "تم اعتماد التقييم النهائي لمنافسة أنظمة المراقبة.",
+        time: "منذ ساعة",
+        tone: "green",
+        icon: "✓",
+        unread: true,
+      },
+      {
+        id: "notification-4",
+        title: "اقتراح من OQOOD AI",
+        description:
+          "يوصى بتمديد موعد الإغلاق لمدة ثلاثة أيام.",
+        time: "منذ ساعتين",
+        tone: "purple",
+        icon: "✦",
+        unread: true,
+      },
+      {
+        id: "notification-5",
+        title: "تم تحديث بيانات المشروع",
+        description:
+          "أضيفت مستندات جديدة إلى مشروع توسعة المستودع.",
+        time: "أمس",
+        tone: "blue",
+        icon: "⇧",
+        unread: false,
+      },
+    ],
+  },
 };

@@ -4120,3 +4120,33 @@ a {
     min-height: 2.65rem;
   }
 }
+
+/* =========================================================
+   COMMAND CENTER V1 — LEGACY CLEANUP
+   ========================================================= */
+
+.platformDarkShell .platformMetrics,
+.platformDarkShell .platformDashboardGrid,
+.platformDarkShell .dashboardMainColumn,
+.platformDarkShell .dashboardSideColumn,
+.platformDarkShell .dashboardPanel,
+.platformDarkShell .platformMetricCard,
+.platformDarkShell .procurementPipeline,
+.platformDarkShell .opportunityTable {
+  display: none !important;
+}
+
+.platformDarkShell .odsAppShell__content {
+  overflow-x: hidden;
+}
+
+.platformDarkShell * {
+  box-sizing: border-box;
+}
+
+.platformDarkShell a,
+.platformDarkShell button,
+.platformDarkShell input,
+.platformDarkShell select {
+  -webkit-tap-highlight-color: transparent;
+}

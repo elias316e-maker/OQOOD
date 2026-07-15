@@ -52,6 +52,8 @@ export type CommandCenterData = {
   operations: CommandCenterOperationsData;
   performance: CommandCenterPerformanceData;
   activity: CommandCenterActivityData;
+  summary: CommandCenterSummaryData;
+  notifications: CommandCenterNotificationsData;
 };
 
 export type AiInsightTone =
@@ -199,4 +201,40 @@ export type CommandCenterPerformanceData = {
 
 export type CommandCenterActivityData = {
   items: CommandActivity[];
+};
+
+export type ExecutiveSummaryItem = {
+  id: string;
+  label: string;
+  value: string;
+  tone: CommandCenterTone;
+};
+
+export type SmartNotificationTone =
+  | "blue"
+  | "green"
+  | "orange"
+  | "purple"
+  | "red";
+
+export type SmartNotification = {
+  id: string;
+  title: string;
+  description: string;
+  time: string;
+  tone: SmartNotificationTone;
+  icon: string;
+  unread: boolean;
+};
+
+export type CommandCenterSummaryData = {
+  headline: string;
+  description: string;
+  healthScore: number;
+  items: ExecutiveSummaryItem[];
+};
+
+export type CommandCenterNotificationsData = {
+  unreadCount: number;
+  items: SmartNotification[];
 };
