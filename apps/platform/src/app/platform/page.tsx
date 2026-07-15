@@ -1,11 +1,17 @@
+import { PerformanceAnalytics } from "@/components/command-center/performance";
+import { ActivityTimeline } from "@/components/command-center/activity";
 import { CommandHero } from "@/components/command-center/hero";
 import { IntelligencePanel } from "@/components/command-center/intelligence";
 import { KpiStrip } from "@/components/command-center/kpi";
+import { OpportunitiesCalendar } from "@/components/command-center/opportunities";
+import { PipelineTasks } from "@/components/command-center/operations";
 import { QuickActions } from "@/components/command-center/quick-actions";
 import { commandCenterData } from "@/features/command-center";
 import styles from "./page.module.css";
 
 export default function PlatformPage() {
+  const { operations } = commandCenterData;
+
   return (
     <main className={styles.page}>
       <CommandHero data={commandCenterData} />
@@ -22,24 +28,24 @@ export default function PlatformPage() {
         />
       </section>
 
-      <section className={styles.placeholderGrid}>
-        <article>
-          <span>المرحلة التالية</span>
-          <h2>مسار المنافسات والمهام</h2>
-          <p>
-            سيتم تنفيذ خط سير المنافسات والمهام اليومية
-            في المرحلة التالية.
-          </p>
-        </article>
+      <PipelineTasks
+        pipeline={operations.pipeline}
+        tasks={operations.tasks}
+      />
 
-        <article>
-          <span>المرحلة التالية</span>
-          <h2>أحدث الفرص والتقويم</h2>
-          <p>
-            سيتم تنفيذ أحدث المنافسات والمواعيد والتقويم
-            وفق التصميم المعتمد.
-          </p>
-        </article>
+      <OpportunitiesCalendar
+        events={operations.events}
+        opportunities={operations.opportunities}
+      />
+
+      <section className={styles.performanceRow}>
+        <PerformanceAnalytics
+          data={commandCenterData.performance}
+        />
+
+        <ActivityTimeline
+          data={commandCenterData.activity}
+        />
       </section>
     </main>
   );

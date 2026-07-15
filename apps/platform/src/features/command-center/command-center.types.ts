@@ -49,6 +49,9 @@ export type CommandCenterData = {
   kpis: CommandCenterKpi[];
   intelligence: CommandCenterIntelligenceData;
   quickActions: CommandCenterActionsData;
+  operations: CommandCenterOperationsData;
+  performance: CommandCenterPerformanceData;
+  activity: CommandCenterActivityData;
 };
 
 export type AiInsightTone =
@@ -84,4 +87,116 @@ export type CommandCenterIntelligenceData = {
 
 export type CommandCenterActionsData = {
   actions: QuickAction[];
+};
+
+export type PipelineStageTone =
+  | "blue"
+  | "cyan"
+  | "purple"
+  | "orange"
+  | "green";
+
+export type PipelineStage = {
+  id: string;
+  title: string;
+  value: number;
+  description: string;
+  tone: PipelineStageTone;
+};
+
+export type CommandTaskPriority =
+  | "high"
+  | "medium"
+  | "low";
+
+export type CommandTask = {
+  id: string;
+  title: string;
+  context: string;
+  dueLabel: string;
+  priority: CommandTaskPriority;
+  completed: boolean;
+};
+
+export type CommandOpportunityStatus =
+  | "draft"
+  | "published"
+  | "evaluation"
+  | "closing";
+
+export type CommandOpportunity = {
+  id: string;
+  reference: string;
+  title: string;
+  organization: string;
+  closingLabel: string;
+  progress: number;
+  status: CommandOpportunityStatus;
+  value: string;
+};
+
+export type CommandEventTone =
+  | "blue"
+  | "green"
+  | "orange"
+  | "purple"
+  | "red";
+
+export type CommandEvent = {
+  id: string;
+  day: string;
+  month: string;
+  title: string;
+  description: string;
+  time: string;
+  tone: CommandEventTone;
+};
+
+export type CommandCenterOperationsData = {
+  pipeline: PipelineStage[];
+  tasks: CommandTask[];
+  opportunities: CommandOpportunity[];
+  events: CommandEvent[];
+};
+
+export type PerformancePoint = {
+  label: string;
+  contracts: number;
+  procurement: number;
+};
+
+export type PerformanceMetric = {
+  id: string;
+  label: string;
+  value: string;
+  change: string;
+  trend: "up" | "down";
+  tone: CommandCenterTone;
+};
+
+export type ActivityTone =
+  | "blue"
+  | "green"
+  | "purple"
+  | "orange"
+  | "red";
+
+export type CommandActivity = {
+  id: string;
+  title: string;
+  description: string;
+  time: string;
+  actor: string;
+  icon: string;
+  tone: ActivityTone;
+};
+
+export type CommandCenterPerformanceData = {
+  periodLabel: string;
+  points: PerformancePoint[];
+  metrics: PerformanceMetric[];
+};
+
+export type CommandCenterActivityData = {
+  items: CommandActivity[];
 };

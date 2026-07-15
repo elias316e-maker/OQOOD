@@ -1,0 +1,294 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.75fr);
+  gap: 14px;
+}
+
+.pipelinePanel,
+.tasksPanel {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 18px;
+  color: #f8fafc;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 26, 47, 0.98),
+      rgba(7, 16, 31, 0.99)
+    );
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.panelHeader h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.panelHeader p {
+  margin: 5px 0 0;
+  color: #71809a;
+  font-size: 9px;
+}
+
+.panelHeader button,
+.viewTasks {
+  border: 0;
+  cursor: pointer;
+  color: #60a5fa;
+  background: transparent;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.pipeline {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.stage {
+  min-width: 0;
+  min-height: 139px;
+  padding: 14px;
+  position: relative;
+  border: 1px solid rgba(148, 163, 184, 0.09);
+  border-radius: 13px;
+  color: #60a5fa;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(19, 32, 56, 0.73),
+      rgba(8, 17, 33, 0.86)
+    );
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease;
+}
+
+.stage:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, currentColor 28%, transparent);
+}
+
+.stageTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+}
+
+.stageTop > span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: currentColor;
+  background: color-mix(in srgb, currentColor 13%, transparent);
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.stageTop small {
+  overflow: hidden;
+  color: #65748b;
+  font-size: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stage > strong {
+  display: block;
+  margin-top: 25px;
+  color: #ffffff;
+  font-size: 26px;
+}
+
+.stage h3 {
+  margin: 5px 0 0;
+  color: #9eacc0;
+  font-size: 9px;
+}
+
+.connector {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: -9px;
+  z-index: 2;
+  color: #41516b;
+  font-size: 12px;
+  transform: translateY(-50%);
+}
+
+.tone-blue {
+  color: #60a5fa;
+}
+
+.tone-cyan {
+  color: #22d3ee;
+}
+
+.tone-purple {
+  color: #a78bfa;
+}
+
+.tone-orange {
+  color: #f59e0b;
+}
+
+.tone-green {
+  color: #34d399;
+}
+
+.pipelineFooter {
+  margin-top: 14px;
+  padding-top: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+  color: #65748b;
+  font-size: 8px;
+}
+
+.pipelineFooter span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pipelineFooter strong {
+  color: #dbe5f3;
+}
+
+.taskCount {
+  min-width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.16);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.tasks {
+  margin-top: 16px;
+  display: grid;
+  gap: 7px;
+}
+
+.task {
+  min-width: 0;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(148, 163, 184, 0.075);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.taskCheck {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 7px;
+  cursor: pointer;
+  color: #60a5fa;
+  background: transparent;
+  font-size: 9px;
+}
+
+.taskContent {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.taskContent strong {
+  overflow: hidden;
+  color: #dbe5f3;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskContent span,
+.task small {
+  color: #65748b;
+  font-size: 7px;
+}
+
+.priority-high .taskCheck {
+  color: #fb7185;
+}
+
+.priority-medium .taskCheck {
+  color: #f59e0b;
+}
+
+.priority-low .taskCheck {
+  color: #60a5fa;
+}
+
+.completed {
+  opacity: 0.58;
+}
+
+.completed .taskCheck {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.completed .taskContent strong {
+  text-decoration: line-through;
+}
+
+.viewTasks {
+  width: 100%;
+  min-height: 32px;
+  margin-top: 11px;
+  border: 1px solid rgba(96, 165, 250, 0.13);
+  border-radius: 9px;
+  background: rgba(37, 99, 235, 0.055);
+}
+
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 790px) {
+  .pipeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .connector {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pipeline {
+    grid-template-columns: 1fr;
+  }
+}
