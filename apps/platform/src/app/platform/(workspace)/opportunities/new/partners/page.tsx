@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Input, Select, Textarea } from "@oqood/design-system";
 
 const partners = [
   {
@@ -96,22 +97,22 @@ export default function PartnersPage() {
           </div>
 
           <div className="partnerSearchToolbar">
-            <input
+            <Input
               type="search"
               placeholder="ابحث باسم الشركة أو النشاط..."
             />
 
-            <select defaultValue="all">
+            <Select defaultValue="all">
               <option value="all">جميع المدن</option>
               <option value="riyadh">الرياض</option>
               <option value="dammam">الدمام</option>
               <option value="jubail">الجبيل</option>
-            </select>
+            </Select>
 
-            <select defaultValue="qualified">
+            <Select defaultValue="qualified">
               <option value="qualified">المؤهلون فقط</option>
               <option value="all">جميع الشركات</option>
-            </select>
+            </Select>
 
             <button className="secondaryButton compactButton" type="button">
               إضافة شركة يدويًا
@@ -159,7 +160,7 @@ export default function PartnersPage() {
           <div className="invitationSettings">
             <div className="formField">
               <label htmlFor="message">رسالة الدعوة</label>
-              <textarea
+              <Textarea
                 defaultValue="يسرنا دعوتكم لتقديم عرض فني ومالي للطلب المرفق، وفق الشروط والمواصفات المحددة."
                 id="message"
                 rows={4}

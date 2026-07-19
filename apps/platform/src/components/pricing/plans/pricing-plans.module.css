@@ -1,0 +1,211 @@
+.section {
+  padding: 0 22px;
+  position: relative;
+  z-index: 4;
+  background: #050b18;
+}
+
+.grid {
+  max-width: 1380px;
+  margin: -42px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.card {
+  min-width: 0;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.11);
+  border-radius: 20px;
+  color: #60a5fa;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 26, 47, 0.99),
+      rgba(7, 16, 31, 0.99)
+    );
+  box-shadow:
+    0 24px 58px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.card::after {
+  content: "";
+  width: 140px;
+  height: 140px;
+  position: absolute;
+  top: -90px;
+  inset-inline-end: -70px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.055;
+}
+
+.card header {
+  position: relative;
+  z-index: 2;
+}
+
+.card header > span {
+  color: currentColor;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.card h2 {
+  margin: 8px 0 0;
+  color: #ffffff;
+  font-size: 22px;
+}
+
+.card header p {
+  margin: 5px 0 0;
+  color: #71809a;
+  font-size: 10px;
+}
+
+.price {
+  margin-top: 26px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.price strong {
+  color: #ffffff;
+  font-size: 38px;
+  line-height: 1;
+}
+
+.price span {
+  padding-bottom: 3px;
+  color: #71809a;
+  font-size: 10px;
+}
+
+.description {
+  min-height: 46px;
+  margin: 18px 0 0;
+  color: #8b99ad;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.cta {
+  min-height: 44px;
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+  border-radius: 12px;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, currentColor 34%, #13213b),
+      color-mix(in srgb, currentColor 20%, #091426)
+    );
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.card ul {
+  margin: 24px 0 0;
+  padding: 20px 0 0;
+  display: grid;
+  gap: 11px;
+  border-top: 1px solid rgba(148, 163, 184, 0.08);
+  list-style: none;
+}
+
+.card li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #9aa8bc;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.card li span {
+  color: #34d399;
+  font-weight: 900;
+}
+
+.recommended {
+  transform: translateY(-10px);
+  border-color: rgba(129, 140, 248, 0.5);
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(99, 102, 241, 0.2),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(18, 29, 58, 0.99),
+      rgba(9, 17, 38, 0.99)
+    );
+  box-shadow:
+    0 28px 74px rgba(37, 99, 235, 0.24),
+    0 0 0 1px rgba(99, 102, 241, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.recommendedBadge {
+  position: absolute;
+  top: 0;
+  right: 50%;
+  z-index: 3;
+  padding: 7px 16px;
+  border-radius: 0 0 12px 12px;
+  color: #ffffff;
+  background:
+    linear-gradient(135deg, #2563eb, #7c3aed);
+  font-size: 9px;
+  font-weight: 900;
+  transform: translateX(50%);
+}
+
+.tone-blue {
+  color: #60a5fa;
+}
+
+.tone-purple {
+  color: #a78bfa;
+}
+
+.tone-cyan {
+  color: #22d3ee;
+}
+
+.tone-green {
+  color: #34d399;
+}
+
+@media (max-width: 1120px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .recommended {
+    transform: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .section {
+    padding-inline: 14px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

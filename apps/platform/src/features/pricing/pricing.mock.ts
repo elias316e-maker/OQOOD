@@ -1,0 +1,108 @@
+import type { PricingPageData } from "./pricing.types";
+
+export const pricingPageData: PricingPageData = {
+  hero: {
+    eyebrow: "خطط مرنة تناسب نمو أعمالك",
+    title: "اختر الباقة التي تناسب طموح شركتك",
+    description:
+      "من الشركات الناشئة إلى المؤسسات الكبرى، توفر OQOOD خططًا واضحة ومرنة لإدارة العقود والمنافسات والمشتريات.",
+    yearlySavingLabel: "وفّر حتى 20% عند الدفع السنوي",
+  },
+
+  plans: [
+    {
+      id: "starter",
+      name: "Starter",
+      nameAr: "البداية",
+      audience: "للشركات الصغيرة",
+      description:
+        "لبدء إدارة العقود والمنافسات داخل مساحة عمل واحدة.",
+      monthlyPrice: 99,
+      yearlyPrice: 950,
+      currency: "ر.س",
+      tone: "blue",
+      ctaLabel: "ابدأ التجربة",
+      ctaHref: "/register?plan=starter",
+      features: [
+        "حتى 3 مستخدمين",
+        "حتى 10 منافسات نشطة",
+        "حتى 20 عقدًا",
+        "مساحة تخزين 10GB",
+        "تقارير أساسية",
+        "دعم عبر البريد الإلكتروني",
+      ],
+    },
+    {
+      id: "professional",
+      name: "Professional",
+      nameAr: "الاحترافية",
+      audience: "للشركات المتوسطة",
+      description:
+        "الخطة المتكاملة لإدارة العمليات والفرق والتقارير.",
+      monthlyPrice: 299,
+      yearlyPrice: 2870,
+      currency: "ر.س",
+      recommended: true,
+      tone: "purple",
+      ctaLabel: "ابدأ مجانًا",
+      ctaHref: "/register?plan=professional",
+      features: [
+        "حتى 20 مستخدمًا",
+        "حتى 100 منافسة نشطة",
+        "حتى 250 عقدًا",
+        "مساحة تخزين 100GB",
+        "تقارير وتحليلات متقدمة",
+        "OQOOD AI الأساسي",
+        "سير موافقات متعدد المراحل",
+        "دعم ذو أولوية",
+      ],
+    },
+    {
+      id: "enterprise",
+      name: "Enterprise",
+      nameAr: "المؤسسات",
+      audience: "للشركات الكبيرة",
+      description:
+        "قدرات متقدمة للشركات ذات العمليات المعقدة والفرق الكبيرة.",
+      monthlyPrice: 699,
+      yearlyPrice: 6710,
+      currency: "ر.س",
+      tone: "cyan",
+      ctaLabel: "تواصل مع المبيعات",
+      ctaHref: "/contact-sales?plan=enterprise",
+      features: [
+        "حتى 100 مستخدم",
+        "منافسات وعقود غير محدودة",
+        "مساحة تخزين 500GB",
+        "OQOOD AI المتقدم",
+        "تكاملات ERP وAPI",
+        "إدارة فروع متعددة",
+        "سجل تدقيق شامل",
+        "دعم 24/7",
+      ],
+    },
+    {
+      id: "government",
+      name: "Government",
+      nameAr: "الجهات الحكومية",
+      audience: "للجهات الحكومية والمؤسسات الكبرى",
+      description:
+        "حل مخصص للامتثال والتكاملات ومتطلبات الحوكمة.",
+      customPrice: true,
+      currency: "ر.س",
+      tone: "green",
+      ctaLabel: "اطلب عرضًا مخصصًا",
+      ctaHref: "/contact-sales?plan=government",
+      features: [
+        "عدد مستخدمين غير محدود",
+        "استضافة خاصة أو سحابة مخصصة",
+        "متطلبات أمن وامتثال مخصصة",
+        "تكاملات حكومية",
+        "SLA مخصص",
+        "مدير حساب مخصص",
+        "تدريب وتطبيق شامل",
+        "دعم فني مخصص",
+      ],
+    },
+  ],
+};

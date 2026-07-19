@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Input, Select } from "@oqood/design-system";
 
 const boqItems = [
   {
@@ -108,26 +109,26 @@ export default function BoqPage() {
                     <td>{item.item}</td>
 
                     <td>
-                      <input defaultValue={item.description} />
+                      <Input defaultValue={item.description} />
                     </td>
 
                     <td>
-                      <input defaultValue={item.quantity} type="number" />
+                      <Input defaultValue={item.quantity} type="number" />
                     </td>
 
                     <td>
-                      <select defaultValue={item.unit}>
+                      <Select defaultValue={item.unit}>
                         <option>متر طولي</option>
                         <option>قطعة</option>
                         <option>طن</option>
                         <option>متر مربع</option>
                         <option>متر مكعب</option>
                         <option>دفعة</option>
-                      </select>
+                      </Select>
                     </td>
 
                     <td>
-                      <input defaultValue={item.specification} />
+                      <Input defaultValue={item.specification} />
                     </td>
 
                     <td>
@@ -141,13 +142,13 @@ export default function BoqPage() {
                 <tr className="newBoqRow">
                   <td>3</td>
                   <td>
-                    <input placeholder="أدخل وصف البند" />
+                    <Input placeholder="أدخل وصف البند" />
                   </td>
                   <td>
-                    <input placeholder="0" type="number" />
+                    <Input placeholder="0" type="number" />
                   </td>
                   <td>
-                    <select defaultValue="">
+                    <Select defaultValue="">
                       <option disabled value="">
                         اختر الوحدة
                       </option>
@@ -155,10 +156,10 @@ export default function BoqPage() {
                       <option>متر طولي</option>
                       <option>طن</option>
                       <option>دفعة</option>
-                    </select>
+                    </Select>
                   </td>
                   <td>
-                    <input placeholder="المواصفة أو المرجع الفني" />
+                    <Input placeholder="المواصفة أو المرجع الفني" />
                   </td>
                   <td>
                     <button className="tableActionButton" type="button">

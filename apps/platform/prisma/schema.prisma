@@ -100,15 +100,89 @@ enum OfferStatus {
   LOST
 }
 
+enum PlanStatus {
+  DRAFT
+  ACTIVE
+  RETIRED
+  ARCHIVED
+}
+
+enum BillingInterval {
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  PAUSED
+  CANCELED
+  EXPIRED
+}
+
+enum WorkspaceAccessState {
+  FULL
+  RESTRICTED
+  READ_ONLY
+  BLOCKED
+}
+
+enum SubscriptionSource {
+  SYSTEM_TRIAL
+  CHECKOUT
+  MANUAL
+  MIGRATION
+  PARTNER
+}
+
+enum EntitlementValueType {
+  BOOLEAN
+  INTEGER
+  DECIMAL
+  STRING
+  JSON
+}
+
+enum EnforcementMode {
+  HARD
+  SOFT
+  METERED
+  INFORMATIONAL
+}
+
+enum UsageAggregationType {
+  SUM
+  COUNT
+  MAX
+  LAST
+}
+
+enum UsageResetPeriod {
+  NONE
+  DAILY
+  MONTHLY
+  YEARLY
+  BILLING_PERIOD
+}
+
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  passwordHash  String?
-  phone         String?
-  imageUrl      String?
-  isActive      Boolean   @default(true)
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  emailVerified   Boolean   @default(false)
+  emailVerifiedAt DateTime?
+  image           String?
+  phone           String?
+  isActive        Boolean   @default(true)
+
+  // حقول توافقية مؤقتة وفق ADR-007.
+  // تزال بعد اكتمال Migration والتحقق من البيانات.
+  passwordHash String?
+  imageUrl     String?
+
+  sessions Session[]
+  accounts Account[]
 
   memberships          WorkspaceMember[]
   createdWorkspaces    Workspace[]       @relation("WorkspaceCreator")
@@ -120,6 +194,54 @@ model User {
   updatedAt DateTime @updatedAt
 
   @@index([email])
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@index([expiresAt])
 }
 
 model Workspace {
@@ -138,13 +260,16 @@ model Workspace {
   createdById String
   createdBy   User   @relation("WorkspaceCreator", fields: [createdById], references: [id])
 
-  members       WorkspaceMember[]
-  companies     Company[]
-  partners      BusinessPartner[]
-  projects      Project[]
-  opportunities Opportunity[]
-  roles         Role[]
-  auditLogs     AuditLog[]
+  members        WorkspaceMember[]
+  companies      Company[]
+  partners       BusinessPartner[]
+  projects       Project[]
+  opportunities  Opportunity[]
+  roles          Role[]
+  auditLogs      AuditLog[]
+  billingAccount BillingAccount?
+  subscription   Subscription?
+  usageCounters  UsageCounter[]
 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -461,6 +586,179 @@ model RolePermission {
 
   @@unique([roleId, permissionId])
   @@index([permissionId])
+}
+
+model Plan {
+  id             String     @id @default(cuid())
+  code           String
+  version        Int
+  nameAr         String
+  nameEn         String?
+  description    String?
+  status         PlanStatus @default(DRAFT)
+  isDefaultTrial Boolean    @default(false)
+  trialDays      Int
+  metadata       Json?
+
+  prices        PlanPrice[]
+  entitlements  PlanEntitlement[]
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([code, version])
+  @@index([status])
+  @@index([isDefaultTrial, status])
+}
+
+model PlanPrice {
+  id              String          @id @default(cuid())
+  planId          String
+  billingInterval BillingInterval
+  amount          Decimal         @db.Decimal(18, 2)
+  currency        String
+  isActive        Boolean         @default(true)
+  metadata        Json?
+
+  plan          Plan           @relation(fields: [planId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([planId, billingInterval, currency])
+  @@index([planId, isActive])
+}
+
+model BillingAccount {
+  id                 String  @id @default(cuid())
+  workspaceId        String  @unique
+  legalName          String
+  billingEmail       String?
+  countryCode        String
+  currency           String
+  language           String
+  taxNumber          String?
+  commercialRegister String?
+  metadata           Json?
+
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id                    String               @id @default(cuid())
+  workspaceId           String               @unique
+  billingAccountId      String
+  planId                String
+  planPriceId           String?
+  initializationKey     String               @unique
+  status                SubscriptionStatus
+  accessState           WorkspaceAccessState
+  source                SubscriptionSource
+  trialStartsAt         DateTime?
+  trialEndsAt           DateTime?
+  currentPeriodStartsAt DateTime
+  currentPeriodEndsAt   DateTime
+  canceledAt            DateTime?
+  endedAt               DateTime?
+  metadata              Json?
+
+  workspace      Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  billingAccount BillingAccount @relation(fields: [billingAccountId], references: [id], onDelete: Restrict)
+  plan           Plan           @relation(fields: [planId], references: [id], onDelete: Restrict)
+  planPrice      PlanPrice?     @relation(fields: [planPriceId], references: [id], onDelete: SetNull)
+  usageCounters  UsageCounter[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([billingAccountId])
+  @@index([planId])
+  @@index([status, accessState])
+  @@index([trialEndsAt])
+}
+
+model FeatureDefinition {
+  id           String               @id @default(cuid())
+  key          String               @unique
+  name         String
+  description  String?
+  valueType    EntitlementValueType
+  defaultValue Json?
+  isActive     Boolean              @default(true)
+
+  entitlements PlanEntitlement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model PlanEntitlement {
+  id              String          @id @default(cuid())
+  planId          String
+  featureId       String
+  value           Json
+  enforcementMode EnforcementMode
+  metadata        Json?
+
+  plan    Plan              @relation(fields: [planId], references: [id], onDelete: Cascade)
+  feature FeatureDefinition @relation(fields: [featureId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([planId, featureId])
+  @@index([featureId])
+}
+
+model UsageMeter {
+  id              String               @id @default(cuid())
+  code            String               @unique
+  name            String
+  description     String?
+  aggregationType UsageAggregationType
+  resetPeriod     UsageResetPeriod
+  initialValue    Decimal              @default(0) @db.Decimal(30, 6)
+  isActive        Boolean              @default(true)
+  metadata        Json?
+
+  counters UsageCounter[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model UsageCounter {
+  id             String   @id @default(cuid())
+  workspaceId    String
+  subscriptionId String
+  meterId        String
+  periodKey      String
+  periodStartsAt DateTime
+  periodEndsAt   DateTime
+  value          Decimal  @default(0) @db.Decimal(30, 6)
+  metadata       Json?
+
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  subscription Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  meter        UsageMeter   @relation(fields: [meterId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([subscriptionId, meterId, periodKey])
+  @@index([workspaceId])
+  @@index([meterId])
+  @@index([periodStartsAt, periodEndsAt])
 }
 
 model AuditLog {

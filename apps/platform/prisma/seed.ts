@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
+import { seedBillingCatalog } from "./seed/catalog";
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -17,6 +18,8 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
+  await seedBillingCatalog(prisma);
+
   const user = await prisma.user.upsert({
     where: {
       email: "admin@oqood.sa",

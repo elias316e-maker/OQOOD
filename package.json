@@ -11,6 +11,8 @@
     "build": "npm run build --workspace=@oqood/platform",
     "lint": "npm run lint --workspace=@oqood/platform",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "design-system:typecheck": "npm run typecheck --workspace=@oqood/design-system"
+    "design-system:typecheck": "npm run typecheck --workspace=@oqood/design-system",
+    "test": "npm run test --workspace=@oqood/platform",
+    "test:integration": "npm run test:integration --workspace=@oqood/platform"
   }
 }

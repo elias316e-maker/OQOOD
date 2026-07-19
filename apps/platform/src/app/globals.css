@@ -4150,3 +4150,367 @@ a {
 .platformDarkShell select {
   -webkit-tap-highlight-color: transparent;
 }
+
+/* OQOOD Workspace First Run Experience */
+
+.workspaceOnboardingPage {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(320px, 0.8fr) minmax(0, 1.2fr);
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(91, 33, 182, 0.24), transparent 38%),
+    radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.18), transparent 36%),
+    #070b16;
+}
+
+.workspaceOnboardingVisual {
+  min-height: 100vh;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  border-inline-end: 1px solid rgba(148, 163, 184, 0.14);
+  background:
+    linear-gradient(150deg, rgba(15, 23, 42, 0.86), rgba(17, 24, 39, 0.68));
+}
+
+.workspaceOnboardingBrand {
+  margin-block-end: auto;
+}
+
+.workspaceOnboardingVisualContent {
+  max-width: 560px;
+  margin-block: auto;
+}
+
+.workspaceOnboardingEyebrow {
+  display: inline-flex;
+  margin-block-end: 20px;
+  color: #93c5fd;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.workspaceOnboardingVisualContent h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 4.2rem);
+  line-height: 1.12;
+}
+
+.workspaceOnboardingVisualContent > p {
+  margin-block: 24px 36px;
+  color: #aebbd0;
+  font-size: 1.04rem;
+  line-height: 1.9;
+}
+
+.workspaceOnboardingBenefits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.workspaceOnboardingBenefits > div {
+  min-height: 112px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.56);
+  backdrop-filter: blur(18px);
+}
+
+.workspaceOnboardingBenefits strong {
+  margin-block-end: 7px;
+  color: #f8fafc;
+}
+
+.workspaceOnboardingBenefits span {
+  color: #8997ad;
+  font-size: 0.82rem;
+}
+
+.workspaceOnboardingWorkspace {
+  width: min(900px, 100%);
+  margin-inline: auto;
+  padding: 48px;
+  align-self: center;
+}
+
+.workspaceOnboardingHeader {
+  margin-block-end: 28px;
+}
+
+.workspaceOnboardingHeader > div:first-child > span {
+  color: #818cf8;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.workspaceOnboardingHeader h2 {
+  margin: 8px 0;
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+}
+
+.workspaceOnboardingHeader p,
+.workspaceOnboardingSectionTitle p {
+  margin: 0;
+  color: #94a3b8;
+  line-height: 1.8;
+}
+
+.workspaceOnboardingProgress {
+  height: 5px;
+  margin-block-start: 22px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.14);
+}
+
+.workspaceOnboardingProgress span {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2563eb, #7c3aed);
+  transition: width 220ms ease;
+}
+
+.workspaceOnboardingSteps {
+  margin-block-end: 26px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.workspaceOnboardingStep {
+  padding: 14px;
+  display: flex;
+  gap: 10px;
+  text-align: start;
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.workspaceOnboardingStep > span {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  color: #cbd5e1;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.workspaceOnboardingStep div {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.workspaceOnboardingStep strong {
+  color: #e2e8f0;
+  font-size: 0.83rem;
+}
+
+.workspaceOnboardingStep small {
+  margin-block-start: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.7rem;
+}
+
+.workspaceOnboardingStep.isActive {
+  border-color: rgba(99, 102, 241, 0.56);
+  background:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.16), rgba(124, 58, 237, 0.12));
+}
+
+.workspaceOnboardingStep.isActive > span,
+.workspaceOnboardingStep.isComplete > span {
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+.workspaceOnboardingForm {
+  padding: 30px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.68);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(24px);
+}
+
+.workspaceOnboardingSectionTitle {
+  margin-block-end: 26px;
+}
+
+.workspaceOnboardingSectionTitle h3 {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+}
+
+.workspaceOnboardingFieldGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.workspaceOnboardingFieldGrid label {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  color: #dbe4f0;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.workspaceOnboardingFieldError {
+  margin: 0;
+  color: #fca5a5;
+  font-size: 0.77rem;
+  font-weight: 500;
+}
+
+.workspaceOnboardingReview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.workspaceOnboardingReview article {
+  min-height: 110px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 18px;
+  background: rgba(2, 6, 23, 0.34);
+}
+
+.workspaceOnboardingReview span {
+  margin-block-end: 8px;
+  color: #818cf8;
+  font-size: 0.78rem;
+}
+
+.workspaceOnboardingReview strong {
+  color: #e2e8f0;
+  line-height: 1.7;
+}
+
+.workspaceOnboardingAlert {
+  margin-block-start: 22px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 0.86rem;
+}
+
+.workspaceOnboardingAlert.isError {
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.32);
+  background: rgba(127, 29, 29, 0.2);
+}
+
+.workspaceOnboardingAlert.isSuccess {
+  color: #bbf7d0;
+  border: 1px solid rgba(34, 197, 94, 0.32);
+  background: rgba(20, 83, 45, 0.22);
+}
+
+.workspaceOnboardingFooter {
+  margin-block-start: 30px;
+  padding-block-start: 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-block-start: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.workspaceOnboardingFooter > span {
+  margin-inline: auto;
+  color: #748399;
+  font-size: 0.76rem;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .workspaceOnboardingPage {
+    grid-template-columns: 1fr;
+  }
+
+  .workspaceOnboardingVisual {
+    min-height: auto;
+    padding: 32px;
+  }
+
+  .workspaceOnboardingBrand {
+    margin-block-end: 60px;
+  }
+
+  .workspaceOnboardingVisualContent {
+    max-width: none;
+  }
+
+  .workspaceOnboardingWorkspace {
+    padding-block-start: 24px;
+  }
+}
+
+@media (max-width: 760px) {
+  .workspaceOnboardingVisual,
+  .workspaceOnboardingWorkspace {
+    padding: 24px;
+  }
+
+  .workspaceOnboardingBenefits,
+  .workspaceOnboardingFieldGrid,
+  .workspaceOnboardingReview {
+    grid-template-columns: 1fr;
+  }
+
+  .workspaceOnboardingSteps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .workspaceOnboardingForm {
+    padding: 22px;
+    border-radius: 20px;
+  }
+
+  .workspaceOnboardingFooter {
+    flex-wrap: wrap;
+  }
+
+  .workspaceOnboardingFooter > span {
+    width: 100%;
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .workspaceOnboardingSteps {
+    grid-template-columns: 1fr;
+  }
+
+  .workspaceOnboardingStep small {
+    white-space: normal;
+  }
+
+  .workspaceOnboardingFooter button {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspaceOnboardingProgress span {
+    transition: none;
+  }
+}

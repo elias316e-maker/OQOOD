@@ -1,0 +1,45 @@
+.page {
+  min-height: 100vh;
+  color: #f8fafc;
+  background: #050b18;
+}
+
+.placeholder {
+  max-width: 1380px;
+  min-height: 190px;
+  margin: 22px auto 0;
+  padding: 28px;
+  border: 1px dashed rgba(96, 165, 250, 0.18);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13, 24, 44, 0.72),
+      rgba(7, 15, 29, 0.8)
+    );
+}
+
+.placeholder span {
+  color: #60a5fa;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.placeholder h2 {
+  margin: 12px 0 0;
+  font-size: 20px;
+}
+
+.placeholder p {
+  max-width: 600px;
+  margin: 8px 0 0;
+  color: #71809a;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+@media (max-width: 1400px) {
+  .placeholder {
+    margin-inline: 22px;
+  }
+}
