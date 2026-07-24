@@ -100,6 +100,30 @@ enum OfferStatus {
   LOST
 }
 
+enum ProcurementRequestStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  CHANGES_REQUESTED
+  APPROVED
+  REJECTED
+  CANCELLED
+  ARCHIVED
+}
+
+enum ProcurementPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum ProcurementItemType {
+  MATERIAL
+  SERVICE
+  WORK
+}
+
 enum PlanStatus {
   DRAFT
   ACTIVE
@@ -184,11 +208,14 @@ model User {
   sessions Session[]
   accounts Account[]
 
-  memberships          WorkspaceMember[]
-  createdWorkspaces    Workspace[]       @relation("WorkspaceCreator")
-  createdProjects      Project[]         @relation("ProjectCreator")
-  createdOpportunities Opportunity[]     @relation("OpportunityCreator")
-  auditLogs            AuditLog[]
+  memberships                  WorkspaceMember[]
+  createdWorkspaces            Workspace[]          @relation("WorkspaceCreator")
+  createdProjects              Project[]            @relation("ProjectCreator")
+  createdOpportunities         Opportunity[]        @relation("OpportunityCreator")
+  requestedProcurementRequests ProcurementRequest[] @relation("ProcurementRequestedBy")
+  assignedProcurementRequests  ProcurementRequest[] @relation("ProcurementAssignedTo")
+  createdProcurementRequests   ProcurementRequest[] @relation("ProcurementCreatedBy")
+  auditLogs                    AuditLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -260,16 +287,17 @@ model Workspace {
   createdById String
   createdBy   User   @relation("WorkspaceCreator", fields: [createdById], references: [id])
 
-  members        WorkspaceMember[]
-  companies      Company[]
-  partners       BusinessPartner[]
-  projects       Project[]
-  opportunities  Opportunity[]
-  roles          Role[]
-  auditLogs      AuditLog[]
-  billingAccount BillingAccount?
-  subscription   Subscription?
-  usageCounters  UsageCounter[]
+  members             WorkspaceMember[]
+  companies           Company[]
+  partners            BusinessPartner[]
+  projects            Project[]
+  opportunities       Opportunity[]
+  procurementRequests ProcurementRequest[]
+  roles               Role[]
+  auditLogs           AuditLog[]
+  billingAccount      BillingAccount?
+  subscription        Subscription?
+  usageCounters       UsageCounter[]
 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -400,7 +428,8 @@ model Project {
   createdBy   User      @relation("ProjectCreator", fields: [createdById], references: [id])
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
-  opportunities Opportunity[]
+  opportunities       Opportunity[]
+  procurementRequests ProcurementRequest[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -780,4 +809,64 @@ model AuditLog {
   @@index([workspaceId, createdAt])
   @@index([entityType, entityId])
   @@index([userId])
+}
+
+model ProcurementRequest {
+  id             String                   @id @default(cuid())
+  workspaceId    String
+  projectId      String?
+  number         String
+  title          String
+  description    String?
+  status         ProcurementRequestStatus @default(DRAFT)
+  priority       ProcurementPriority      @default(NORMAL)
+  category       String?
+  requiredByDate DateTime?
+  currency       String                   @default("SAR")
+  estimatedTotal Decimal?                 @db.Decimal(18, 2)
+  requestedById  String
+  assignedToId   String?
+  createdById    String
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project     Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  requestedBy User      @relation("ProcurementRequestedBy", fields: [requestedById], references: [id])
+  assignedTo  User?     @relation("ProcurementAssignedTo", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdBy   User      @relation("ProcurementCreatedBy", fields: [createdById], references: [id])
+
+  items ProcurementRequestItem[]
+
+  @@unique([workspaceId, number])
+  @@index([workspaceId, status])
+  @@index([workspaceId, priority])
+  @@index([createdById])
+  @@index([requiredByDate])
+  @@index([projectId])
+  @@index([requestedById])
+  @@index([assignedToId])
+}
+
+model ProcurementRequestItem {
+  id                   String              @id @default(cuid())
+  procurementRequestId String
+  lineNumber           Int
+  type                 ProcurementItemType
+  description          String
+  quantity             Decimal             @db.Decimal(18, 4)
+  unit                 String
+  specification        String?
+  estimatedUnitPrice   Decimal?            @db.Decimal(18, 4)
+  estimatedTotal       Decimal?            @db.Decimal(18, 2)
+  requiredByDate       DateTime?
+  deliveryLocation     String?
+  notes                String?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  procurementRequest ProcurementRequest @relation(fields: [procurementRequestId], references: [id], onDelete: Cascade)
+
+  @@unique([procurementRequestId, lineNumber])
+  @@index([procurementRequestId])
 }

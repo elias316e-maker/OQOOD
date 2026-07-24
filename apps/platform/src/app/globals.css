@@ -1,3 +1,5 @@
+@import "../styles/foundation-tokens.css";
+
 @import "tailwindcss";
 
 :root {
@@ -4513,4 +4515,717 @@ a {
   .workspaceOnboardingProgress span {
     transition: none;
   }
+}
+
+/* Opportunity system states */
+
+.opportunitySkeletonCard,
+.opportunitySkeletonToolbar,
+.opportunitySkeletonRow {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeletonLine {
+  display: block;
+  width: 100%;
+  height: 0.75rem;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.1;
+}
+
+.skeletonLineShort {
+  width: 35%;
+}
+
+.skeletonLineMedium {
+  width: 55%;
+}
+
+.skeletonLineWide {
+  width: 78%;
+}
+
+.skeletonLineValue {
+  width: 25%;
+  height: 1.75rem;
+}
+
+.opportunitySkeletonCard {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.opportunitySkeletonToolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-end: 1.5rem;
+}
+
+.opportunitySkeletonTable {
+  display: grid;
+  gap: 1rem;
+}
+
+.opportunitySkeletonRow {
+  display: grid;
+  grid-template-columns:
+    minmax(7rem, 0.8fr)
+    minmax(12rem, 2fr)
+    minmax(8rem, 1fr)
+    minmax(6rem, 0.8fr);
+  gap: 1rem;
+  align-items: center;
+  min-height: 3rem;
+  padding-block: 0.75rem;
+  border-block-end: 1px solid
+    var(--border-subtle, rgba(127, 127, 127, 0.18));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeletonLine {
+    animation: opportunitySkeletonPulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes opportunitySkeletonPulse {
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+
+  50% {
+    opacity: 0.18;
+  }
+}
+
+@media (max-width: 48rem) {
+  .opportunitySkeletonToolbar {
+    flex-direction: column;
+  }
+
+  .opportunitySkeletonRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Opportunity confirmation feedback */
+
+.opportunityLifecycleActions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.confirmationPanel {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, 32rem);
+  padding: 1rem;
+  border: 1px solid
+    var(--border-subtle, rgba(127, 127, 127, 0.2));
+  border-radius: 0.875rem;
+  background:
+    var(--surface-raised, var(--surface, #ffffff));
+  box-shadow:
+    0 1rem 2.5rem rgba(0, 0, 0, 0.14);
+}
+
+.confirmationPanel h2 {
+  margin-block:
+    0.25rem 0.5rem;
+  font-size: 1.125rem;
+}
+
+.confirmationPanel p {
+  margin: 0;
+  line-height: 1.75;
+}
+
+.confirmationActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 0.625rem;
+  background: var(--danger, #b42318);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dangerButton:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.dangerButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.dangerButton:focus-visible,
+.confirmationPanel button:focus-visible {
+  outline: 3px solid
+    var(--focus-ring, rgba(37, 99, 235, 0.45));
+  outline-offset: 2px;
+}
+
+@media (max-width: 40rem) {
+  .confirmationActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .confirmationActions > * {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   DEV-0150.2.2 — Enterprise Data Table Foundation
+   ========================================================= */
+
+.oqDataTable {
+  display: grid;
+  min-inline-size: 0;
+}
+
+.oqDataTableViewport {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  border: 1px solid
+    var(
+      --border-subtle,
+      rgb(15 23 42 / 10%)
+    );
+  border-radius:
+    var(--oq-radius-lg);
+  background:
+    var(
+      --surface-raised,
+      #ffffff
+    );
+  outline: none;
+  scrollbar-gutter: stable;
+}
+
+.oqDataTableViewport:focus-visible {
+  outline: 3px solid
+    var(
+      --focus-ring,
+      rgb(37 99 235 / 35%)
+    );
+  outline-offset: 3px;
+}
+
+.oqDataTableElement {
+  inline-size: 100%;
+  min-inline-size: 52rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: start;
+}
+
+.oqDataTableElement th,
+.oqDataTableElement td {
+  padding:
+    var(--oq-space-4)
+    var(--oq-space-5);
+  border-block-end: 1px solid
+    var(
+      --border-subtle,
+      rgb(15 23 42 / 8%)
+    );
+  vertical-align: middle;
+}
+
+.oqDataTableElement th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  background:
+    var(
+      --surface-subtle,
+      #f8fafc
+    );
+  color:
+    var(
+      --text-muted,
+      #475569
+    );
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.oqDataTableElement tbody tr {
+  transition:
+    background-color
+      var(--oq-motion-fast)
+      var(--oq-ease);
+}
+
+.oqDataTableElement tbody tr:nth-child(even) {
+  background:
+    var(
+      --table-row-alternate,
+      rgb(15 23 42 / 1.5%)
+    );
+}
+
+.oqDataTableElement tbody tr:hover {
+  background:
+    var(
+      --table-row-hover,
+      rgb(37 99 235 / 5%)
+    );
+}
+
+.oqDataTableElement tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+.oqDataTableClickableRow {
+  cursor: pointer;
+}
+
+.oqDataTableClickableRow:focus-within {
+  background:
+    var(
+      --table-row-focus,
+      rgb(37 99 235 / 8%)
+    );
+}
+
+.oqDataTableActionsHeader,
+.oqDataTableActionsCell {
+  inline-size: 1%;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.oqDataTableCaption {
+  padding:
+    var(--oq-space-4)
+    var(--oq-space-5);
+  text-align: start;
+  font-weight: 700;
+}
+
+.oqDataTableSkeleton {
+  display: block;
+  inline-size: 100%;
+  block-size: 0.75rem;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.1;
+}
+
+.oqDataTableEmptyState {
+  display: grid;
+  justify-items: center;
+  gap: var(--oq-space-3);
+  padding:
+    var(--oq-space-12)
+    var(--oq-space-6);
+  text-align: center;
+}
+
+.oqDataTableEmptyState strong {
+  font-size: 1.125rem;
+}
+
+.oqDataTableEmptyState p {
+  max-inline-size: 36rem;
+  margin: 0;
+  color:
+    var(
+      --text-muted,
+      #64748b
+    );
+  line-height: 1.75;
+}
+
+.oqDataTableEmptyAction {
+  margin-block-start:
+    var(--oq-space-2);
+}
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+  .oqDataTableElement tbody tr {
+    transition: none;
+  }
+}
+
+@media (max-width: 48rem) {
+  .oqDataTableElement th,
+  .oqDataTableElement td {
+    padding:
+      var(--oq-space-3)
+      var(--oq-space-4);
+  }
+
+  .oqDataTableEmptyState {
+    padding:
+      var(--oq-space-8)
+      var(--oq-space-4);
+  }
+}
+
+/* DEV-0150 — Opportunity table link visibility */
+
+.tablePrimaryLink {
+  color: var(
+    --oq-link-color,
+    #2563eb
+  ) !important;
+  font-weight: 700;
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+.tablePrimaryLink:visited {
+  color: var(
+    --oq-link-visited-color,
+    #4f46e5
+  ) !important;
+}
+
+.tablePrimaryLink:hover {
+  color: var(
+    --oq-link-hover-color,
+    #1d4ed8
+  ) !important;
+  text-decoration: underline;
+}
+
+.tablePrimaryLink:focus-visible {
+  border-radius: 0.25rem;
+  outline: 3px solid
+    rgb(37 99 235 / 35%);
+  outline-offset: 3px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tablePrimaryLink {
+    color: var(
+      --oq-link-color-dark,
+      #60a5fa
+    ) !important;
+  }
+
+  .tablePrimaryLink:visited {
+    color: var(
+      --oq-link-visited-color-dark,
+      #a5b4fc
+    ) !important;
+  }
+
+  .tablePrimaryLink:hover {
+    color: var(
+      --oq-link-hover-color-dark,
+      #93c5fd
+    ) !important;
+  }
+}
+
+/* DEV-0150 — Opportunity summary visibility fix */
+
+.listSummaryCards > article > strong {
+  color: var(--oq-summary-value-color, #0f172a) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-weight: 800;
+}
+
+.listSummaryCards > article > span {
+  color: var(--oq-summary-label-color, #475569);
+}
+
+.listSummaryCards > article > small {
+  color: var(--oq-summary-helper-color, #64748b);
+}
+
+@media (prefers-color-scheme: dark) {
+  .listSummaryCards > article > strong {
+    color: var(--oq-summary-value-color-dark, #f8fafc) !important;
+  }
+
+  .listSummaryCards > article > span,
+  .listSummaryCards > article > small {
+    color: var(--oq-summary-muted-color-dark, #cbd5e1);
+  }
+}
+
+/* DEV-0150 — Opportunity summary visibility fix */
+
+.listSummaryCards > article > strong {
+  color: var(--oq-summary-value-color, #0f172a) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-weight: 800;
+}
+
+.listSummaryCards > article > span {
+  color: var(--oq-summary-label-color, #475569);
+}
+
+.listSummaryCards > article > small {
+  color: var(--oq-summary-helper-color, #64748b);
+}
+
+@media (prefers-color-scheme: dark) {
+  .listSummaryCards > article > strong {
+    color: var(--oq-summary-value-color-dark, #f8fafc) !important;
+  }
+
+  .listSummaryCards > article > span,
+  .listSummaryCards > article > small {
+    color: var(--oq-summary-muted-color-dark, #cbd5e1);
+  }
+}
+
+/* Runtime audit — force Opportunity DataTable visibility */
+
+.opportunityListPanel {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 14rem !important;
+  overflow: visible !important;
+}
+
+.opportunityListPanel .oqDataTable {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 8rem !important;
+  border: 2px dashed #2563eb !important;
+  padding: 0.5rem !important;
+}
+
+.opportunityListPanel .oqDataTableViewport {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 6rem !important;
+}
+
+.opportunityListPanel .oqDataTableElement {
+  display: table !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #0f172a !important;
+}
+
+.opportunityListPanel .oqDataTableElement th,
+.opportunityListPanel .oqDataTableElement td {
+  color: #0f172a !important;
+}
+
+/* =========================================================
+   DEV-0150 — Opportunity List Panel definitive visibility fix
+   ========================================================= */
+
+main.platformContent {
+  display: flex !important;
+  flex-direction: column !important;
+  block-size: auto !important;
+  min-block-size: 100% !important;
+  max-block-size: none !important;
+  overflow: visible !important;
+}
+
+main.platformContent > .opportunityListPanel {
+  display: block !important;
+  position: relative !important;
+  inset: auto !important;
+  inline-size: 100% !important;
+  block-size: auto !important;
+  min-block-size: 12rem !important;
+  max-block-size: none !important;
+  margin-block-start: var(--oq-section-gap, 2rem) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  transform: none !important;
+  clip: auto !important;
+  clip-path: none !important;
+}
+
+main.platformContent
+  > .opportunityListPanel
+  > * {
+  display: revert;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+main.platformContent
+  > .opportunityListPanel
+  .oqDataTable {
+  display: grid !important;
+  inline-size: 100% !important;
+  block-size: auto !important;
+  min-block-size: 8rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+main.platformContent
+  > .opportunityListPanel
+  .oqDataTableViewport {
+  display: block !important;
+  inline-size: 100% !important;
+  block-size: auto !important;
+  min-block-size: 6rem !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow-x: auto !important;
+}
+
+main.platformContent
+  > .opportunityListPanel
+  .oqDataTableElement {
+  display: table !important;
+  inline-size: 100% !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* DEV-0150 — Final Opportunity list visibility baseline */
+
+.platformContent > .opportunityListPanel {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  min-block-size: 12rem;
+  visibility: visible;
+  opacity: 1;
+  overflow: visible;
+  transform: none;
+}
+
+.opportunityListPanel .oqDataTable {
+  display: grid;
+  min-inline-size: 0;
+  visibility: visible;
+  opacity: 1;
+}
+
+.opportunityListPanel .oqDataTableViewport {
+  display: block;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  visibility: visible;
+  opacity: 1;
+}
+
+.opportunityListPanel .oqDataTableElement {
+  display: table;
+  inline-size: 100%;
+  visibility: visible;
+  opacity: 1;
+}
+
+/* DEV-0150.2.4.1 — DataTable sorting */
+
+.oqDataTableSortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oq-space-2);
+  min-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.oqDataTableSortButton:hover,
+.oqDataTableSortButton.isActive {
+  color: var(
+    --oq-link-color,
+    #2563eb
+  );
+}
+
+.oqDataTableSortButton:focus-visible {
+  border-radius:
+    var(--oq-radius-sm);
+  outline: 3px solid
+    rgb(37 99 235 / 35%);
+  outline-offset: 4px;
+}
+
+.oqDataTableSortIcon {
+  display: inline-flex;
+  justify-content: center;
+  min-inline-size: 1rem;
+  opacity: 0.65;
+}
+
+.oqDataTableSortButton.isActive
+  .oqDataTableSortIcon {
+  opacity: 1;
+}
+
+/* DEV-0150.2.4.1 — DataTable sorting */
+
+.oqDataTableSortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--oq-space-2);
+  min-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.oqDataTableSortButton:hover,
+.oqDataTableSortButton.isActive {
+  color: var(
+    --oq-link-color,
+    #2563eb
+  );
+}
+
+.oqDataTableSortButton:focus-visible {
+  border-radius:
+    var(--oq-radius-sm);
+  outline: 3px solid
+    rgb(37 99 235 / 35%);
+  outline-offset: 4px;
+}
+
+.oqDataTableSortIcon {
+  display: inline-flex;
+  justify-content: center;
+  min-inline-size: 1rem;
+  opacity: 0.65;
+}
+
+.oqDataTableSortButton.isActive
+  .oqDataTableSortIcon {
+  opacity: 1;
 }

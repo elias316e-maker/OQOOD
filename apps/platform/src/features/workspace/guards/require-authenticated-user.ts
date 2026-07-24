@@ -1,27 +1,44 @@
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { requireCurrentUser } from "@/lib/session";
 
-import { auth } from "@/lib/auth";
+export class InactiveUserError extends Error {
+  constructor() {
+    super("حساب المستخدم غير نشط.");
+    this.name = "InactiveUserError";
+  }
+}
 
-export type AuthenticatedUser = {
-  id: string;
-  name: string;
-  email: string;
-};
+export async function requireAuthenticatedUser() {
+  const sessionUser = await requireCurrentUser();
 
-export async function requireAuthenticatedUser():
-  Promise<AuthenticatedUser> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
+  const user = await prisma.user.findUnique({
+    where: {
+      id: sessionUser.id,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      emailVerified: true,
+      image: true,
+      phone: true,
+      isActive: true,
+    },
   });
 
-  if (!session?.user?.id) {
-    redirect("/login");
+  if (!user) {
+    /*
+     * قد تكون جلسة Better Auth موجودة بينما تم حذف
+     * مستخدم النطاق من قاعدة البيانات.
+     */
+    throw new Error(
+      "تعذر العثور على حساب المستخدم المرتبط بالجلسة.",
+    );
   }
 
-  return {
-    id: session.user.id,
-    name: session.user.name,
-    email: session.user.email,
-  };
+  if (!user.isActive) {
+    throw new InactiveUserError();
+  }
+
+  return user;
 }

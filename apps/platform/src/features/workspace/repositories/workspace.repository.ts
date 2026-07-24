@@ -61,6 +61,11 @@ export interface WorkspaceRepository {
     roleId: string,
   ): Promise<void>;
 
+  assignAllPermissionsToRole(
+    transaction: WorkspaceTransactionClient,
+    roleId: string,
+  ): Promise<void>;
+
   bootstrapWorkspaceCore(
     transaction: WorkspaceTransactionClient,
     userId: string,

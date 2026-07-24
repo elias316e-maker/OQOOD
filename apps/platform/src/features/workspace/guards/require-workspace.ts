@@ -1,36 +1,45 @@
 import { redirect } from "next/navigation";
 
-import { requireAuthenticatedUser } from "./require-authenticated-user";
 import {
-  resolveUserWorkspace,
-  type ResolvedUserWorkspace,
-} from "./resolve-user-workspace";
+  requireWorkspaceAccess,
+  type WorkspaceAccessResult,
+} from "@/lib/access";
+import {
+  findCurrentWorkspaceForUser,
+  type CurrentWorkspaceContext,
+} from "@/lib/workspace-context";
 
-export type WorkspaceContext = {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
-  membership: ResolvedUserWorkspace;
-  workspace: ResolvedUserWorkspace["workspace"];
-  subscription:
-    ResolvedUserWorkspace["workspace"]["subscription"];
+import {
+  requireAuthenticatedUser,
+} from "./require-authenticated-user";
+
+export type RequiredWorkspaceContext = {
+  user: Awaited<
+    ReturnType<typeof requireAuthenticatedUser>
+  >;
+  membership: CurrentWorkspaceContext;
+  workspace: CurrentWorkspaceContext["workspace"];
+  access: WorkspaceAccessResult;
 };
 
 export async function requireWorkspace():
-  Promise<WorkspaceContext> {
+  Promise<RequiredWorkspaceContext> {
   const user = await requireAuthenticatedUser();
-  const membership = await resolveUserWorkspace(user.id);
+
+  const membership =
+    await findCurrentWorkspaceForUser(user.id);
 
   if (!membership) {
     redirect("/platform/onboarding");
   }
 
+  const { access } =
+    requireWorkspaceAccess(membership);
+
   return {
     user,
     membership,
     workspace: membership.workspace,
-    subscription: membership.workspace.subscription,
+    access,
   };
 }

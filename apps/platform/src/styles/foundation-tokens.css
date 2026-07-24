@@ -1,0 +1,48 @@
+:root {
+  /* Enterprise Layout */
+
+  --oq-space-1: .25rem;
+  --oq-space-2: .5rem;
+  --oq-space-3: .75rem;
+  --oq-space-4: 1rem;
+  --oq-space-5: 1.25rem;
+  --oq-space-6: 1.5rem;
+  --oq-space-8: 2rem;
+  --oq-space-10: 2.5rem;
+  --oq-space-12: 3rem;
+  --oq-space-16: 4rem;
+
+  --oq-page-padding: var(--oq-space-8);
+  --oq-section-gap: var(--oq-space-8);
+  --oq-card-gap: var(--oq-space-6);
+
+  --oq-container-width: 1600px;
+  --oq-content-width: 1440px;
+
+  /* Radius */
+
+  --oq-radius-sm: .5rem;
+  --oq-radius-md: .75rem;
+  --oq-radius-lg: 1rem;
+  --oq-radius-xl: 1.5rem;
+
+  /* Shadow */
+
+  --oq-shadow-sm:
+    0 1px 2px rgb(0 0 0 / 8%);
+
+  --oq-shadow-md:
+    0 8px 20px rgb(0 0 0 / 10%);
+
+  --oq-shadow-lg:
+    0 18px 48px rgb(0 0 0 / 14%);
+
+  /* Motion */
+
+  --oq-motion-fast: 150ms;
+  --oq-motion-normal: 250ms;
+  --oq-motion-slow: 400ms;
+
+  --oq-ease:
+    cubic-bezier(.2,.8,.2,1);
+}

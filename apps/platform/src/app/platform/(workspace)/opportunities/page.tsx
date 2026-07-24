@@ -1,167 +1,331 @@
 import Link from "next/link";
 
-const opportunities = [
-  {
-    number: "RFQ-2026-0015",
-    title: "توريد أنابيب فولاذية لمشروع صناعي",
-    type: "طلب عرض سعر",
-    project: "مشروع توسعة المنشأة",
-    closing: "18 يوليو 2026",
-    offers: 8,
-    value: "1,850,000 ر.س",
-    status: "مفتوح",
-    statusClass: "success",
-  },
-  {
-    number: "RFP-2026-0007",
-    title: "خدمات تشغيل وصيانة المنشأة",
-    type: "طلب تقديم عرض",
-    project: "مشروع التشغيل والصيانة",
-    closing: "14 يوليو 2026",
-    offers: 5,
-    value: "4,200,000 ر.س",
-    status: "تحت التقييم",
-    statusClass: "warning",
-  },
-  {
-    number: "RFQ-2026-0014",
-    title: "تأجير معدات ثقيلة لمدة 6 أشهر",
-    type: "طلب عرض سعر",
-    project: "مشروع البنية التحتية",
-    closing: "غير محدد",
-    offers: 0,
-    value: "650,000 ر.س",
-    status: "مسودة",
-    statusClass: "neutral",
-  },
-  {
-    number: "TND-2026-0003",
-    title: "تنفيذ أعمال تشجير وري متكاملة",
-    type: "منافسة",
-    project: "مشروع تطوير المواقع",
-    closing: "22 يوليو 2026",
-    offers: 12,
-    value: "5,600,000 ر.س",
-    status: "مفتوح",
-    statusClass: "success",
-  },
-];
+import {
+  SortableOpportunityTable,
+} from "@/features/opportunity/components";
 
-export default function OpportunitiesPage() {
+
+import {
+  listWorkspaceOpportunitiesAction,
+} from "@/features/opportunity/actions/list-workspace-opportunities";
+
+import type {
+  OpportunitySummaryResponse,
+} from "@/features/opportunity/dtos";
+
+import {
+  hasPermission,
+  Permissions,
+} from "@/lib/permissions";
+
+import {
+  requireCurrentWorkspace,
+} from "@/lib/workspace-context";
+
+type OpportunityStatus =
+  OpportunitySummaryResponse["status"];
+
+type OpportunityType =
+  OpportunitySummaryResponse["type"];
+
+const typeLabels: Record<
+  OpportunityType,
+  string
+> = {
+  RFQ: "طلب عرض سعر",
+  RFP: "طلب تقديم عرض",
+  TENDER: "منافسة",
+  DIRECT_PURCHASE: "شراء مباشر",
+  SERVICE_REQUEST: "طلب خدمة",
+  SUBCONTRACT: "مقاولة من الباطن",
+};
+
+const statusLabels: Record<
+  OpportunityStatus,
+  string
+> = {
+  DRAFT: "مسودة",
+  PENDING_APPROVAL: "بانتظار الاعتماد",
+  APPROVED: "معتمدة",
+  PUBLISHED: "منشورة",
+  CLARIFICATION: "مرحلة الاستفسارات",
+  SUBMISSION_CLOSED: "أغلق التقديم",
+  TECHNICAL_EVALUATION: "تقييم فني",
+  FINANCIAL_EVALUATION: "تقييم مالي",
+  NEGOTIATION: "تفاوض",
+  AWARD_PENDING: "بانتظار الترسية",
+  AWARDED: "تمت الترسية",
+  CANCELLED: "ملغاة",
+  CLOSED: "مغلقة",
+  ARCHIVED: "مؤرشفة",
+};
+
+const statusClasses: Record<
+  OpportunityStatus,
+  string
+> = {
+  DRAFT: "neutral",
+  PENDING_APPROVAL: "warning",
+  APPROVED: "info",
+  PUBLISHED: "success",
+  CLARIFICATION: "info",
+  SUBMISSION_CLOSED: "neutral",
+  TECHNICAL_EVALUATION: "warning",
+  FINANCIAL_EVALUATION: "warning",
+  NEGOTIATION: "warning",
+  AWARD_PENDING: "warning",
+  AWARDED: "success",
+  CANCELLED: "danger",
+  CLOSED: "neutral",
+  ARCHIVED: "neutral",
+};
+
+function formatDate(
+  value: string | null,
+): string {
+  if (!value) {
+    return "غير محدد";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "غير محدد";
+  }
+
+  return new Intl.DateTimeFormat(
+    "ar-SA",
+    {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    },
+  ).format(date);
+}
+
+function formatBudget(
+  budget: string | null,
+  currency: string,
+): string {
+  if (!budget) {
+    return "غير محدد";
+  }
+
+  const value = Number(budget);
+
+  if (!Number.isFinite(value)) {
+    return `${budget} ${currency}`;
+  }
+
+  try {
+    return new Intl.NumberFormat(
+      "ar-SA",
+      {
+        style: "currency",
+        currency,
+        maximumFractionDigits: 2,
+      },
+    ).format(value);
+  } catch {
+    return `${value.toLocaleString("ar-SA")} ${currency}`;
+  }
+}
+
+function countByStatuses(
+  opportunities: readonly OpportunitySummaryResponse[],
+  statuses: readonly OpportunityStatus[],
+): number {
+  const acceptedStatuses =
+    new Set<OpportunityStatus>(statuses);
+
+  return opportunities.filter(
+    (opportunity) =>
+      acceptedStatuses.has(
+        opportunity.status,
+      ),
+  ).length;
+}
+
+export default async function OpportunitiesPage() {
+  const [
+    result,
+    workspaceContext,
+  ] = await Promise.all([
+    listWorkspaceOpportunitiesAction({
+      page: 1,
+      pageSize: 50,
+    }),
+    requireCurrentWorkspace(),
+  ]);
+
+  const canCreate = hasPermission(
+    workspaceContext,
+    Permissions.opportunities.create,
+  );
+
+  if (!result.success) {
+    return (
+      <main className="platformContent">
+        <section
+          className="dashboardPanel"
+          role="alert"
+        >
+          <div className="emptyState">
+            <h1>تعذر تحميل الفرص</h1>
+            <p>{result.message}</p>
+
+            <Link
+              className="primaryButton compactButton"
+              href="/platform/opportunities"
+            >
+              إعادة المحاولة
+            </Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  const {
+    items: opportunities,
+    total,
+    page,
+    totalPages,
+  } = result.data;
+
+  const openCount = countByStatuses(
+    opportunities,
+    [
+      "APPROVED",
+      "PUBLISHED",
+      "CLARIFICATION",
+    ],
+  );
+
+  const evaluationCount = countByStatuses(
+    opportunities,
+    [
+      "TECHNICAL_EVALUATION",
+      "FINANCIAL_EVALUATION",
+      "NEGOTIATION",
+      "AWARD_PENDING",
+    ],
+  );
+
+  const awardedCount = countByStatuses(
+    opportunities,
+    ["AWARDED"],
+  );
+
   return (
     <main className="platformContent">
+
+
       <section className="listPageHeader">
         <div>
-          <span className="pageEyebrow">إدارة الفرص</span>
+          <span className="pageEyebrow">
+            إدارة الفرص
+          </span>
+
           <h1>الفرص والمنافسات</h1>
+
           <p>
-            أنشئ وتابع طلبات الأسعار وطلبات العروض والمنافسات من مكان واحد.
+            أنشئ وتابع طلبات الأسعار
+            والعروض والمنافسات من مكان واحد.
           </p>
         </div>
 
-        <Link
-          className="primaryButton compactButton"
-          href="/platform/opportunities/new"
-        >
-          + إنشاء فرصة جديدة
-        </Link>
+        {canCreate && (
+          <Link
+            className="primaryButton compactButton"
+            href="/platform/opportunities/new"
+          >
+            + إنشاء فرصة جديدة
+          </Link>
+        )}
       </section>
 
-      <section className="listSummaryCards">
+      <section
+        className="listSummaryCards"
+        aria-label="ملخص الفرص"
+      >
         <article>
           <span>إجمالي الفرص</span>
-          <strong>24</strong>
-          <small>منذ بداية السنة</small>
+          <strong>{total}</strong>
+          <small>
+            داخل مساحة العمل الحالية
+          </small>
         </article>
 
         <article>
           <span>الفرص المفتوحة</span>
-          <strong>12</strong>
-          <small className="positive">+3 هذا الأسبوع</small>
+          <strong>{openCount}</strong>
+          <small className="positive">
+            نشطة حاليًا
+          </small>
         </article>
 
         <article>
           <span>تحت التقييم</span>
-          <strong>7</strong>
+          <strong>
+            {evaluationCount}
+          </strong>
           <small>تحتاج متابعة</small>
         </article>
 
         <article>
           <span>تمت الترسية</span>
-          <strong>5</strong>
-          <small>بقيمة 11.2 مليون ر.س</small>
+          <strong>{awardedCount}</strong>
+          <small>لا توجد قيمة مسجلة</small>
         </article>
       </section>
 
       <section className="dashboardPanel opportunityListPanel">
-        <div className="opportunityToolbar">
-          <div className="filterTabs">
-            <button className="active" type="button">
-              الكل
-            </button>
-            <button type="button">مفتوحة</button>
-            <button type="button">مسودات</button>
-            <button type="button">تقييم</button>
-            <button type="button">مرسّاة</button>
+
+        {opportunities.length === 0 ? (
+          <div
+            className="emptyState"
+            role="status"
+          >
+            <h2>
+              لا توجد فرص حتى الآن
+            </h2>
+
+            <p>
+              لم تُنشأ أي فرصة داخل
+              مساحة العمل الحالية.
+            </p>
+
+            {canCreate && (
+              <Link
+                className="primaryButton compactButton"
+                href="/platform/opportunities/new"
+              >
+                إنشاء فرصة جديدة
+              </Link>
+            )}
           </div>
+        ) : (
+          <>
+            <SortableOpportunityTable
+              opportunities={opportunities}
+            />
 
-          <div className="toolbarActions">
-            <input type="search" placeholder="ابحث برقم أو عنوان الفرصة..." />
-            <button type="button">تصفية</button>
-            <button type="button">تصدير</button>
-          </div>
-        </div>
+            <div
+              className="tablePagination"
+              aria-label="ملخص نتائج الفرص"
+            >
+              <span>
+                الصفحة {page} من{" "}
+                {Math.max(totalPages, 1)}
+              </span>
 
-        <div className="dataTableWrapper">
-          <table className="dataTable">
-            <thead>
-              <tr>
-                <th>رقم الفرصة</th>
-                <th>العنوان</th>
-                <th>النوع</th>
-                <th>المشروع</th>
-                <th>الإغلاق</th>
-                <th>العروض</th>
-                <th>القيمة التقديرية</th>
-                <th>الحالة</th>
-                <th />
-              </tr>
-            </thead>
-
-            <tbody>
-              {opportunities.map((opportunity) => (
-                <tr key={opportunity.number}>
-                  <td>
-                    <Link
-                      className="tablePrimaryLink"
-                      href={`/platform/opportunities/${opportunity.number}`}
-                    >
-                      {opportunity.number}
-                    </Link>
-                  </td>
-                  <td>
-                    <strong>{opportunity.title}</strong>
-                  </td>
-                  <td>{opportunity.type}</td>
-                  <td>{opportunity.project}</td>
-                  <td>{opportunity.closing}</td>
-                  <td>{opportunity.offers}</td>
-                  <td>{opportunity.value}</td>
-                  <td>
-                    <span className={`status ${opportunity.statusClass}`}>
-                      {opportunity.status}
-                    </span>
-                  </td>
-                  <td>
-                    <button className="tableActionButton" type="button">
-                      ⋮
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              <span>
+                إجمالي النتائج: {total}
+              </span>
+            </div>
+          </>
+        )}
       </section>
     </main>
   );

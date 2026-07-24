@@ -1,14 +1,14 @@
 "use server";
 
-import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+import { getCurrentUser } from "@/lib/session";
 
 import {
   TrialPlanNotAvailableError,
   WorkspaceBillingAlreadyInitializedError,
 } from "@/features/billing";
-import { auth } from "@/lib/auth";
 import {
   DefaultWorkspaceBootstrapService,
   WorkspaceAlreadyExistsError,
@@ -60,11 +60,9 @@ export async function bootstrapWorkspaceAction(
   _previousState: BootstrapWorkspaceActionState,
   formData: FormData,
 ): Promise<BootstrapWorkspaceActionState> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const currentUser = await getCurrentUser();
 
-  if (!session?.user?.id) {
+  if (!currentUser) {
     return {
       status: "error",
       message:
@@ -77,7 +75,7 @@ export async function bootstrapWorkspaceAction(
   let workspaceSlug: string;
 
   try {
-    const result = await service.execute(session.user.id, {
+    const result = await service.execute(currentUser.id, {
       workspaceNameAr: readRequiredFormValue(
         formData,
         "workspaceNameAr",
@@ -180,7 +178,7 @@ export async function bootstrapWorkspaceAction(
 
   console.info("Workspace bootstrap completed.", {
     workspaceSlug,
-    userId: session.user.id,
+    userId: currentUser.id,
   });
 
   redirect("/platform");

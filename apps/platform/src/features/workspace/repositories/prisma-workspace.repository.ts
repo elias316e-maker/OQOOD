@@ -130,6 +130,32 @@ export class PrismaWorkspaceRepository
     });
   }
 
+  async assignAllPermissionsToRole(
+    transaction: WorkspaceTransactionClient,
+    roleId: string,
+  ): Promise<void> {
+    const permissions =
+      await transaction.permission.findMany({
+        select: {
+          id: true,
+        },
+      });
+
+    if (permissions.length === 0) {
+      throw new Error(
+        "Permission catalog is empty. Run the platform seed before creating a workspace.",
+      );
+    }
+
+    await transaction.rolePermission.createMany({
+      data: permissions.map((permission) => ({
+        roleId,
+        permissionId: permission.id,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
   async bootstrapWorkspaceCore(
     transaction: WorkspaceTransactionClient,
     userId: string,
@@ -163,6 +189,11 @@ export class PrismaWorkspaceRepository
     await this.assignRoleToMember(
       transaction,
       ownerMembership.id,
+      ownerRole.id,
+    );
+
+    await this.assignAllPermissionsToRole(
+      transaction,
       ownerRole.id,
     );
 
