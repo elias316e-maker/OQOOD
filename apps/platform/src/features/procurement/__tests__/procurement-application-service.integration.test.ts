@@ -16,10 +16,13 @@ import {
   PrismaProcurementRequestRepository,
   type CreateProcurementRequestAuditInput,
   type ProcurementTransactionClient,
+  type UpdateProcurementRequestAuditInput,
 } from "../repositories";
 import {
   DefaultProcurementApplicationService,
   ProcurementConflictError,
+  ProcurementStateTransitionError,
+  ProcurementValidationError,
 } from "../services";
 
 import {
@@ -39,17 +42,34 @@ class ThrowingProcurementAuditRepository
   extends PrismaProcurementRequestRepository
 {
   override async createAuditLog(
-    _transaction: ProcurementTransactionClient,
-    _input: CreateProcurementRequestAuditInput,
+    transaction: ProcurementTransactionClient,
+    input: CreateProcurementRequestAuditInput,
   ): Promise<void> {
+    void transaction;
+    void input;
     throw new Error(
       "Simulated procurement audit failure.",
     );
   }
 }
 
+class ThrowingProcurementUpdateAuditRepository
+  extends PrismaProcurementRequestRepository
+{
+  override async createUpdateAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: UpdateProcurementRequestAuditInput,
+  ): Promise<void> {
+    void transaction;
+    void input;
+    throw new Error(
+      "Simulated procurement update audit failure.",
+    );
+  }
+}
+
 describe(
-  "DefaultProcurementApplicationService.create",
+  "DefaultProcurementApplicationService create and update",
   () => {
     let context: WorkspaceTestContext;
     let billingAccountId: string;
@@ -120,6 +140,11 @@ describe(
         context.roleId,
       ).grantPermission(
         Permissions.procurement.create,
+      );
+      await createPermissionTestContext(
+        context.roleId,
+      ).grantPermission(
+        Permissions.procurement.update,
       );
     });
 
@@ -372,6 +397,268 @@ describe(
           });
 
         expect(persisted).toBeNull();
+      },
+    );
+
+    it(
+      "updates editable fields, replaces items, recalculates totals, and audits the change",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-UPDATE-${context.uniqueId}`,
+          title: "Before update",
+          items: [
+            {
+              lineNumber: 1,
+              type: "MATERIAL",
+              description: "Old item",
+              quantity: "1",
+              unit: "each",
+              estimatedUnitPrice: "25",
+            },
+          ],
+        });
+
+        const updated = await service.update({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+          title: "After update",
+          priority: "URGENT",
+          items: [
+            {
+              lineNumber: 2,
+              type: "SERVICE",
+              description: "Support",
+              quantity: "3",
+              unit: "month",
+              estimatedUnitPrice: "200",
+            },
+            {
+              lineNumber: 1,
+              type: "WORK",
+              description: "Deployment",
+              quantity: "2",
+              unit: "job",
+              estimatedUnitPrice: "450.25",
+            },
+          ],
+        });
+
+        expect(updated).toMatchObject({
+          id: created.id,
+          number: created.number,
+          title: "After update",
+          priority: "URGENT",
+          status: "DRAFT",
+          estimatedTotal: "1500.5",
+        });
+        expect(
+          updated.items.map(
+            (item) => item.lineNumber,
+          ),
+        ).toEqual([1, 2]);
+        expect(
+          updated.items.some(
+            (item) =>
+              item.description === "Old item",
+          ),
+        ).toBe(false);
+
+        const audit =
+          await prisma.auditLog.findFirst({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.updated",
+              entityId: created.id,
+            },
+          });
+
+        expect(audit?.metadata).toMatchObject({
+          changedFields: [
+            "title",
+            "priority",
+            "items",
+          ],
+          itemCount: 2,
+        });
+      },
+    );
+
+    it(
+      "requires at least one mutable field",
+      async () => {
+        await expect(
+          createService().update({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId:
+              "missing-fields",
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementValidationError,
+        );
+      },
+    );
+
+    it(
+      "rejects updates without permission and preserves the request",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-UPD-DENIED-${context.uniqueId}`,
+          title: "Original title",
+        });
+        const permission =
+          createPermissionTestContext(
+            context.roleId,
+          );
+
+        await permission.revokePermission(
+          Permissions.procurement.update,
+        );
+
+        try {
+          await expect(
+            service.update({
+              workspaceId:
+                context.workspaceId,
+              actorUserId: context.userId,
+              procurementRequestId:
+                created.id,
+              title: "Forbidden title",
+            }),
+          ).rejects.toBeInstanceOf(
+            PermissionDeniedError,
+          );
+
+          const persisted =
+            await prisma.procurementRequest.findUniqueOrThrow({
+              where: {
+                id: created.id,
+              },
+            });
+
+          expect(persisted.title).toBe(
+            "Original title",
+          );
+        } finally {
+          await permission.grantPermission(
+            Permissions.procurement.update,
+          );
+        }
+      },
+    );
+
+    it(
+      "rejects updates outside editable states",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-UPD-STATE-${context.uniqueId}`,
+          title: "Submitted request",
+        });
+
+        await prisma.procurementRequest.update({
+          where: {
+            id: created.id,
+          },
+          data: {
+            status: "SUBMITTED",
+          },
+        });
+
+        await expect(
+          service.update({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+            title: "Disallowed update",
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementStateTransitionError,
+        );
+      },
+    );
+
+    it(
+      "rolls back request and item changes when update auditing fails",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-UPD-ROLLBACK-${context.uniqueId}`,
+          title: "Rollback original",
+          items: [
+            {
+              lineNumber: 1,
+              type: "MATERIAL",
+              description: "Original item",
+              quantity: "2",
+              unit: "each",
+              estimatedUnitPrice: "50",
+            },
+          ],
+        });
+
+        await expect(
+          createService(
+            new ThrowingProcurementUpdateAuditRepository(),
+          ).update({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+            title: "Rollback changed",
+            items: [
+              {
+                lineNumber: 1,
+                type: "SERVICE",
+                description: "Replacement item",
+                quantity: "1",
+                unit: "job",
+                estimatedUnitPrice: "999",
+              },
+            ],
+          }),
+        ).rejects.toThrow(
+          "Simulated procurement update audit failure.",
+        );
+
+        const persisted =
+          await prisma.procurementRequest.findUniqueOrThrow({
+            where: {
+              id: created.id,
+            },
+            include: {
+              items: true,
+            },
+          });
+
+        expect(persisted.title).toBe(
+          "Rollback original",
+        );
+        expect(
+          persisted.estimatedTotal?.toString(),
+        ).toBe("100");
+        expect(persisted.items).toHaveLength(1);
+        expect(
+          persisted.items[0]?.description,
+        ).toBe("Original item");
       },
     );
   },

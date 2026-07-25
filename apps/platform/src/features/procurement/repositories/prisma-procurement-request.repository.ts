@@ -14,6 +14,7 @@ import type {
   CreateProcurementRequestAuditInput,
   ProcurementRequestRepository,
   ProcurementTransactionClient,
+  UpdateProcurementRequestAuditInput,
 } from "./procurement-request.repository";
 
 const procurementRequestSelect = {
@@ -322,6 +323,29 @@ export class PrismaProcurementRequestRepository
         metadata: {
           number:
             input.procurementRequestNumber,
+          itemCount: input.itemCount,
+          source:
+            "PROCUREMENT_APPLICATION_SERVICE",
+        },
+      },
+    });
+  }
+
+  async createUpdateAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: UpdateProcurementRequestAuditInput,
+  ): Promise<void> {
+    await transaction.auditLog.create({
+      data: {
+        workspaceId: input.workspaceId,
+        userId: input.actorUserId,
+        action: "procurement.updated",
+        entityType: "ProcurementRequest",
+        entityId: input.procurementRequestId,
+        metadata: {
+          number:
+            input.procurementRequestNumber,
+          changedFields: input.changedFields,
           itemCount: input.itemCount,
           source:
             "PROCUREMENT_APPLICATION_SERVICE",

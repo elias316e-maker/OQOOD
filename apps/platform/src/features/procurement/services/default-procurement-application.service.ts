@@ -36,6 +36,9 @@ import type {
 
 import {
   ProcurementConflictError,
+  ProcurementNotFoundError,
+  ProcurementStateTransitionError,
+  ProcurementValidationError,
 } from "./procurement-errors";
 
 
@@ -268,9 +271,253 @@ export class DefaultProcurementApplicationService
     }
   }
   async update(
-    _request: UpdateProcurementRequestInput,
+    request: UpdateProcurementRequestInput,
   ): Promise<ProcurementRequestResponse> {
-    throw new Error("Not implemented.");
+    const mutableFields = [
+      "projectId",
+      "title",
+      "description",
+      "priority",
+      "category",
+      "requiredByDate",
+      "currency",
+      "requestedById",
+      "assignedToId",
+      "items",
+    ] as const;
+
+    const hasField = (
+      field: (typeof mutableFields)[number],
+    ): boolean =>
+      Object.prototype.hasOwnProperty.call(
+        request,
+        field,
+      );
+
+    const changedFields =
+      mutableFields.filter(hasField);
+
+    if (changedFields.length === 0) {
+      throw new ProcurementValidationError(
+        "At least one procurement request field is required.",
+      );
+    }
+
+    return this.transactionRunner.$transaction(
+      async (transaction) => {
+        const authorized =
+          await this.authorization.authorize(
+            transaction,
+            {
+              workspaceId: request.workspaceId,
+              actorUserId:
+                request.actorUserId,
+              permission:
+                Permissions.procurement.update,
+              requireWriteAccess: true,
+            },
+          );
+
+        const existing =
+          await this.repository.findById(
+            transaction,
+            authorized.workspaceId,
+            request.procurementRequestId,
+          );
+
+        if (!existing) {
+          throw new ProcurementNotFoundError();
+        }
+
+        if (
+          existing.status !== "DRAFT" &&
+          existing.status !==
+            "CHANGES_REQUESTED"
+        ) {
+          throw new ProcurementStateTransitionError(
+            `Procurement request cannot be edited while its status is ${existing.status}.`,
+          );
+        }
+
+        let items =
+          await this.itemRepository.findByRequestId(
+            transaction,
+            existing.id,
+          );
+        let estimatedTotal =
+          existing.estimatedTotal;
+
+        if (hasField("items")) {
+          await this.itemRepository.deleteByRequestId(
+            transaction,
+            existing.id,
+          );
+
+          const itemInputs = (
+            request.items ?? []
+          ).map((item) => {
+            const quantity =
+              new Prisma.Decimal(item.quantity);
+            const estimatedUnitPrice =
+              item.estimatedUnitPrice === null ||
+              item.estimatedUnitPrice ===
+                undefined
+                ? null
+                : new Prisma.Decimal(
+                    item.estimatedUnitPrice,
+                  );
+
+            return {
+              procurementRequestId: existing.id,
+              lineNumber: item.lineNumber,
+              type: item.type,
+              description: item.description,
+              quantity,
+              unit: item.unit,
+              specification:
+                item.specification ?? null,
+              estimatedUnitPrice,
+              estimatedTotal:
+                estimatedUnitPrice === null
+                  ? null
+                  : quantity.mul(
+                      estimatedUnitPrice,
+                    ),
+              requiredByDate:
+                item.requiredByDate
+                  ? new Date(
+                      item.requiredByDate,
+                    )
+                  : null,
+              deliveryLocation:
+                item.deliveryLocation ?? null,
+              notes: item.notes ?? null,
+            };
+          });
+
+          items =
+            await this.itemRepository.createMany(
+              transaction,
+              itemInputs,
+            );
+
+          const itemTotals = itemInputs
+            .map((item) => item.estimatedTotal)
+            .filter(
+              (
+                value,
+              ): value is Prisma.Decimal =>
+                value !== null,
+            );
+
+          estimatedTotal =
+            itemTotals.length === 0
+              ? null
+              : itemTotals.reduce(
+                  (total, value) =>
+                    total.add(value),
+                  new Prisma.Decimal(0),
+                );
+        }
+
+        const updated =
+          await this.repository.update(
+            transaction,
+            authorized.workspaceId,
+            existing.id,
+            {
+              ...(hasField("projectId")
+                ? {
+                    projectId:
+                      request.projectId,
+                  }
+                : {}),
+              ...(hasField("title")
+                ? {
+                    title: request.title,
+                  }
+                : {}),
+              ...(hasField("description")
+                ? {
+                    description:
+                      request.description,
+                  }
+                : {}),
+              ...(hasField("priority")
+                ? {
+                    priority:
+                      request.priority,
+                  }
+                : {}),
+              ...(hasField("category")
+                ? {
+                    category:
+                      request.category,
+                  }
+                : {}),
+              ...(hasField("requiredByDate")
+                ? {
+                    requiredByDate:
+                      request.requiredByDate
+                        ? new Date(
+                            request.requiredByDate,
+                          )
+                        : null,
+                  }
+                : {}),
+              ...(hasField("currency")
+                ? {
+                    currency:
+                      request.currency,
+                  }
+                : {}),
+              ...(hasField("requestedById")
+                ? {
+                    requestedById:
+                      request.requestedById,
+                  }
+                : {}),
+              ...(hasField("assignedToId")
+                ? {
+                    assignedToId:
+                      request.assignedToId,
+                  }
+                : {}),
+              ...(hasField("items")
+                ? {
+                    estimatedTotal,
+                  }
+                : {}),
+            },
+          );
+
+        if (!updated) {
+          throw new ProcurementNotFoundError();
+        }
+
+        await this.repository.createUpdateAuditLog(
+          transaction,
+          {
+            workspaceId:
+              authorized.workspaceId,
+            actorUserId:
+              authorized.actorUserId,
+            procurementRequestId: updated.id,
+            procurementRequestNumber:
+              updated.number,
+            changedFields: [
+              ...changedFields,
+            ],
+            itemCount: items.length,
+          },
+        );
+
+        return mapProcurementRequestResponse(
+          updated,
+          items,
+        );
+      },
+    );
   }
 
   async submit(
