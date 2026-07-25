@@ -163,7 +163,7 @@ export default async function OpportunityDetailsPage({
   );
 
   return (
-    <main className="platformContent">
+    <main className="platformContent opportunityDetailsDense">
       <section className="listPageHeader">
         <div>
           <span className="pageEyebrow">
@@ -238,6 +238,36 @@ export default async function OpportunityDetailsPage({
         </div>
       </section>
 
+      <nav
+        className="opportunityDetailTabs"
+        aria-label="أقسام المنافسة"
+      >
+        <a className="is-active" href="#basic-info">
+          <span>▦</span>
+          المعلومات الأساسية
+        </a>
+        <a href="#dates">
+          <span>◷</span>
+          المواعيد
+        </a>
+        <Link
+          href={`/platform/opportunities/${opportunity.id}/boq`}
+        >
+          <span>▤</span>
+          جدول الكميات
+        </Link>
+        <Link
+          href={`/platform/opportunities/${opportunity.id}/partners`}
+        >
+          <span>♧</span>
+          الموردون المدعوون
+        </Link>
+        <a href="#description">
+          <span>≡</span>
+          النطاق والوصف
+        </a>
+      </nav>
+
       <section className="listSummaryCards">
         <article>
           <span>الحالة</span>
@@ -293,7 +323,7 @@ export default async function OpportunityDetailsPage({
         </article>
       </section>
 
-      <section className="dashboardPanel opportunityVisiblePanel">
+      <section className="opportunityDensePanel">
         <div className="detailGrid">
           <article>
             <span>رقم الفرصة</span>
@@ -330,7 +360,7 @@ export default async function OpportunityDetailsPage({
         </div>
       </section>
 
-      <section className="dashboardPanel opportunityVisiblePanel">
+      <section className="opportunityDensePanel">
         <div className="panelHeader">
           <div>
             <span className="pageEyebrow">

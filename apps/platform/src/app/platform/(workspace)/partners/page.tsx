@@ -24,8 +24,8 @@ export default async function PartnersPage() {
   const result = await listPartnersAction();
 
   return (
-    <main className="platformContent">
-      <header className="listPageHeader">
+    <main className="platformContent partnerDirectoryPage">
+      <header className="partnerDirectoryHeader">
         <div>
           <span className="pageEyebrow">دليل المنشأة</span>
           <h1>شركاء الأعمال والموردون</h1>
@@ -47,7 +47,7 @@ export default async function PartnersPage() {
           {result.message}
         </div>
       ) : result.data.length === 0 ? (
-        <section className="dashboardPanel opportunityListPanel">
+        <section className="partnerDirectoryPanel">
           <div className="emptyState">
             <h2>لا يوجد شركاء أعمال مسجلون</h2>
             <p>
@@ -63,7 +63,7 @@ export default async function PartnersPage() {
           </div>
         </section>
       ) : (
-        <section className="dashboardPanel opportunityListPanel">
+        <section className="partnerDirectoryPanel">
           <div className="opportunitySection__head">
             <div>
               <span>إجمالي الشركاء</span>

@@ -1,5 +1,6 @@
 export * from "./opportunity-create-form";
 export * from "./opportunity-boq-form";
+export * from "./opportunity-card-grid";
 export * from "./opportunity-edit-form";
 export * from "./opportunity-lifecycle-actions";
 export * from "./opportunity-partners-form";

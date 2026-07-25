@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import {
-  SortableOpportunityTable,
+  OpportunityCardGrid,
 } from "@/features/opportunity/components";
 
 
@@ -171,8 +171,8 @@ export default async function OpportunitiesPage() {
           role="alert"
         >
           <div className="emptyState">
-            <h1>تعذر تحميل الفرص</h1>
-            <p>{result.message}</p>
+            <h1 style={{ background: "none", color: "#12223a", fontSize: "clamp(1.55rem, 2.3vw, 2.2rem)", WebkitTextFillColor: "#12223a" }}>تعذر تحميل الفرص</h1>
+            <p style={{ color: "#64748b" }}>{result.message}</p>
 
             <Link
               className="primaryButton compactButton"
@@ -221,15 +221,15 @@ export default async function OpportunitiesPage() {
     <main className="platformContent">
 
 
-      <section className="listPageHeader">
+      <section className="opportunityDirectoryHeader">
         <div>
           <span className="pageEyebrow">
             إدارة الفرص
           </span>
 
-          <h1>الفرص والمنافسات</h1>
+          <h1 style={{ background: "none", color: "#12223a", fontSize: "2rem", WebkitTextFillColor: "#12223a" }}>الفرص والمنافسات</h1>
 
-          <p>
+          <p style={{ color: "#64748b", WebkitTextFillColor: "#64748b" }}>
             أنشئ وتابع طلبات الأسعار
             والعروض والمنافسات من مكان واحد.
           </p>
@@ -307,7 +307,7 @@ export default async function OpportunitiesPage() {
           </div>
         ) : (
           <>
-            <SortableOpportunityTable
+            <OpportunityCardGrid
               opportunities={opportunities}
             />
 
