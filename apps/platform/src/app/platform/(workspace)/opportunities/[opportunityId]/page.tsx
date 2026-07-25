@@ -188,6 +188,7 @@ export default async function OpportunityDetailsPage({
 
           {canUpdate &&
             opportunity.status !== "ARCHIVED" && (
+            <>
             <Link
               className="secondaryButton compactButton"
               href={
@@ -198,6 +199,29 @@ export default async function OpportunityDetailsPage({
             >
               تعديل الفرصة
             </Link>
+
+            <Link
+              className="secondaryButton compactButton"
+              href={
+                `/platform/opportunities/` +
+                opportunity.id +
+                "/boq"
+              }
+            >
+              جدول الكميات
+            </Link>
+
+            <Link
+              className="secondaryButton compactButton"
+              href={
+                `/platform/opportunities/` +
+                opportunity.id +
+                "/partners"
+              }
+            >
+              شركاء الأعمال
+            </Link>
+            </>
           )}
 
           <OpportunityLifecycleActions
