@@ -38,7 +38,7 @@ export default async function NewOpportunityPage() {
   if (!canCreate) {
     return (
       <main className="platformContent">
-        <section className="dashboardPanel">
+        <section className="dashboardPanel opportunityVisiblePanel">
           <div
             className="emptyState"
             role="alert"

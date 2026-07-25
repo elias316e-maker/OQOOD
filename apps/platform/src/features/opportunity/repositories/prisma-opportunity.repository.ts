@@ -44,9 +44,11 @@ function buildOpportunityWhere(
 
   return {
     workspaceId,
-    ...(filters?.status
-      ? { status: filters.status }
-      : {}),
+    status: filters?.status
+      ? filters.status
+      : {
+          not: "ARCHIVED",
+        },
     ...(filters?.type
       ? { type: filters.type }
       : {}),

@@ -124,7 +124,7 @@ export default async function OpportunityDetailsPage({
 
     return (
       <main className="platformContent">
-        <section className="dashboardPanel">
+        <section className="dashboardPanel opportunityVisiblePanel">
           <div
             className="emptyState"
             role="alert"
@@ -269,7 +269,7 @@ export default async function OpportunityDetailsPage({
         </article>
       </section>
 
-      <section className="dashboardPanel">
+      <section className="dashboardPanel opportunityVisiblePanel">
         <div className="detailGrid">
           <article>
             <span>رقم الفرصة</span>
@@ -306,7 +306,7 @@ export default async function OpportunityDetailsPage({
         </div>
       </section>
 
-      <section className="dashboardPanel">
+      <section className="dashboardPanel opportunityVisiblePanel">
         <div className="panelHeader">
           <div>
             <span className="pageEyebrow">

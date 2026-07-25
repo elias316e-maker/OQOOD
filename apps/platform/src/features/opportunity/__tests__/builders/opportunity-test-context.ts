@@ -181,6 +181,12 @@ export async function createOpportunityTestContext(
       role.id,
     );
 
+  await Promise.all(
+    permissions.map(
+      permissionContext.grantPermission,
+    ),
+  );
+
   async function createOpportunity(
     input: CreateTestOpportunityInput = {},
   ): Promise<Opportunity> {

@@ -204,11 +204,9 @@ export function OpportunityCreateForm({
       state.status === "success" &&
       state.opportunityId
     ) {
-      router.push(
+      router.replace(
         `/platform/opportunities/${state.opportunityId}`,
       );
-
-      router.refresh();
     }
   }, [
     router,

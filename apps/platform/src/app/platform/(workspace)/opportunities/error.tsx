@@ -29,7 +29,7 @@ export default function OpportunitiesError({
   return (
     <main className="platformContent">
       <section
-        className="dashboardPanel"
+        className="dashboardPanel opportunityVisiblePanel"
         role="alert"
         aria-live="assertive"
       >

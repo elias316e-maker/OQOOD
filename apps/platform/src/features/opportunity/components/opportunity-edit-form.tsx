@@ -235,11 +235,9 @@ export function OpportunityEditForm({
       state.status === "success" &&
       state.opportunityId
     ) {
-      router.push(
+      router.replace(
         `/platform/opportunities/${state.opportunityId}`,
       );
-
-      router.refresh();
     }
   }, [
     router,
@@ -285,7 +283,7 @@ export function OpportunityEditForm({
           </div>
         </section>
 
-        <section className="dashboardPanel">
+        <section className="dashboardPanel opportunityVisiblePanel">
           {state.status === "error" && (
             <div
               className="formAlert formAlertError"

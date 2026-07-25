@@ -11,6 +11,10 @@ import {
   SidebarNavItem,
 } from "@oqood/design-system";
 
+import {
+  listWorkspaceOpportunitiesAction,
+} from "@/features/opportunity/actions/list-workspace-opportunities";
+
 const navigation = [
   {
     label: "الرئيسية",
@@ -22,7 +26,6 @@ const navigation = [
     label: "المنافسات",
     href: "/platform/opportunities",
     icon: "☆",
-    badge: "12",
   },
   {
     label: "العقود",
@@ -68,7 +71,18 @@ const navigation = [
   },
 ];
 
-export function Sidebar() {
+export async function Sidebar() {
+  const opportunityResult =
+    await listWorkspaceOpportunitiesAction({
+      page: 1,
+      pageSize: 1,
+    });
+
+  const opportunityCount =
+    opportunityResult.success
+      ? String(opportunityResult.data.total)
+      : undefined;
+
   return (
     <OqoodSidebar className="platformApprovedSidebar">
       <SidebarHeader>
@@ -86,9 +100,13 @@ export function Sidebar() {
               <SidebarNavItem
                 active={item.active}
                 badge={
-                  item.badge ? (
+                  (item.href === "/platform/opportunities"
+                    ? opportunityCount
+                    : item.badge) ? (
                     <Badge size="sm" tone="primary">
-                      {item.badge}
+                      {item.href === "/platform/opportunities"
+                        ? opportunityCount
+                        : item.badge}
                     </Badge>
                   ) : undefined
                 }

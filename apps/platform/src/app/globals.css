@@ -4138,6 +4138,10 @@ a {
   display: none !important;
 }
 
+.platformDarkShell .dashboardPanel.opportunityVisiblePanel {
+  display: block !important;
+}
+
 .platformDarkShell .odsAppShell__content {
   overflow-x: hidden;
 }

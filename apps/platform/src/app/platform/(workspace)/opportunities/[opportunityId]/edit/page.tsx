@@ -46,7 +46,7 @@ export default async function OpportunityEditPage({
   if (!canUpdate) {
     return (
       <main className="platformContent">
-        <section className="dashboardPanel">
+        <section className="dashboardPanel opportunityVisiblePanel">
           <div
             className="emptyState"
             role="alert"
@@ -85,7 +85,7 @@ export default async function OpportunityEditPage({
 
     return (
       <main className="platformContent">
-        <section className="dashboardPanel">
+        <section className="dashboardPanel opportunityVisiblePanel">
           <div
             className="emptyState"
             role="alert"
