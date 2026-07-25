@@ -612,9 +612,82 @@ export class DefaultProcurementApplicationService
   }
 
   async startReview(
-    _request: ProcurementRequestCommandInput,
+    request: ProcurementRequestCommandInput,
   ): Promise<ProcurementRequestResponse> {
-    throw new Error("Not implemented.");
+    return this.transactionRunner.$transaction(
+      async (transaction) => {
+        const authorized =
+          await this.authorization.authorize(
+            transaction,
+            {
+              workspaceId: request.workspaceId,
+              actorUserId:
+                request.actorUserId,
+              permission:
+                Permissions.procurement.approve,
+              requireWriteAccess: true,
+            },
+          );
+
+        const existing =
+          await this.repository.findById(
+            transaction,
+            authorized.workspaceId,
+            request.procurementRequestId,
+          );
+
+        if (!existing) {
+          throw new ProcurementNotFoundError();
+        }
+
+        if (existing.status !== "SUBMITTED") {
+          throw new ProcurementStateTransitionError(
+            `Procurement review cannot start from ${existing.status}.`,
+          );
+        }
+
+        const items =
+          await this.itemRepository.findByRequestId(
+            transaction,
+            existing.id,
+          );
+        const reviewStartedAt = new Date();
+        const underReview =
+          await this.repository.update(
+            transaction,
+            authorized.workspaceId,
+            existing.id,
+            {
+              status: "UNDER_REVIEW",
+            },
+          );
+
+        if (!underReview) {
+          throw new ProcurementNotFoundError();
+        }
+
+        await this.repository.createStartReviewAuditLog(
+          transaction,
+          {
+            workspaceId:
+              authorized.workspaceId,
+            actorUserId:
+              authorized.actorUserId,
+            procurementRequestId:
+              underReview.id,
+            procurementRequestNumber:
+              underReview.number,
+            previousStatus: existing.status,
+            reviewStartedAt,
+          },
+        );
+
+        return mapProcurementRequestResponse(
+          underReview,
+          items,
+        );
+      },
+    );
   }
 
   async requestChanges(

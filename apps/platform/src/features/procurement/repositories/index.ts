@@ -2,6 +2,7 @@ export type {
   CreateProcurementRequestAuditInput,
   ProcurementRequestRepository,
   ProcurementTransactionClient,
+  StartProcurementReviewAuditInput,
   SubmitProcurementRequestAuditInput,
   UpdateProcurementRequestAuditInput,
 } from "./procurement-request.repository";

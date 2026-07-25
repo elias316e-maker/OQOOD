@@ -16,6 +16,7 @@ import {
   PrismaProcurementRequestRepository,
   type CreateProcurementRequestAuditInput,
   type ProcurementTransactionClient,
+  type StartProcurementReviewAuditInput,
   type SubmitProcurementRequestAuditInput,
   type UpdateProcurementRequestAuditInput,
 } from "../repositories";
@@ -80,6 +81,21 @@ class ThrowingProcurementSubmitAuditRepository
     void input;
     throw new Error(
       "Simulated procurement submit audit failure.",
+    );
+  }
+}
+
+class ThrowingProcurementStartReviewAuditRepository
+  extends PrismaProcurementRequestRepository
+{
+  override async createStartReviewAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: StartProcurementReviewAuditInput,
+  ): Promise<void> {
+    void transaction;
+    void input;
+    throw new Error(
+      "Simulated procurement review audit failure.",
     );
   }
 }
@@ -161,6 +177,11 @@ describe(
         context.roleId,
       ).grantPermission(
         Permissions.procurement.update,
+      );
+      await createPermissionTestContext(
+        context.roleId,
+      ).grantPermission(
+        Permissions.procurement.approve,
       );
     });
 
@@ -911,6 +932,214 @@ describe(
             where: {
               workspaceId: context.workspaceId,
               action: "procurement.submitted",
+              entityId: created.id,
+            },
+          }),
+        ).resolves.toBe(0);
+      },
+    );
+
+    it(
+      "starts review for a submitted request and audits the transition",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-REVIEW-${context.uniqueId}`,
+          title: "Ready for review",
+          items: [
+            {
+              lineNumber: 1,
+              type: "SERVICE",
+              description: "Review scope",
+              quantity: "1",
+              unit: "job",
+            },
+          ],
+        });
+        await service.submit({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        const underReview =
+          await service.startReview({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          });
+
+        expect(underReview.status).toBe(
+          "UNDER_REVIEW",
+        );
+        expect(underReview.items).toHaveLength(1);
+
+        const audit =
+          await prisma.auditLog.findFirst({
+            where: {
+              workspaceId: context.workspaceId,
+              action:
+                "procurement.review_started",
+              entityId: created.id,
+            },
+          });
+
+        expect(audit?.metadata).toMatchObject({
+          previousStatus: "SUBMITTED",
+        });
+      },
+    );
+
+    it(
+      "requires approve permission to start review",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-REVIEW-DENIED-${context.uniqueId}`,
+          title: "Denied review",
+          items: [
+            {
+              lineNumber: 1,
+              type: "MATERIAL",
+              description: "Review item",
+              quantity: "1",
+              unit: "each",
+            },
+          ],
+        });
+        await service.submit({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+        const permission =
+          createPermissionTestContext(
+            context.roleId,
+          );
+
+        await permission.revokePermission(
+          Permissions.procurement.approve,
+        );
+
+        try {
+          await expect(
+            service.startReview({
+              workspaceId:
+                context.workspaceId,
+              actorUserId: context.userId,
+              procurementRequestId:
+                created.id,
+            }),
+          ).rejects.toBeInstanceOf(
+            PermissionDeniedError,
+          );
+
+          const persisted =
+            await prisma.procurementRequest.findUniqueOrThrow({
+              where: {
+                id: created.id,
+              },
+            });
+
+          expect(persisted.status).toBe(
+            "SUBMITTED",
+          );
+        } finally {
+          await permission.grantPermission(
+            Permissions.procurement.approve,
+          );
+        }
+      },
+    );
+
+    it(
+      "rejects starting review from draft",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-REVIEW-STATE-${context.uniqueId}`,
+          title: "Draft review",
+        });
+
+        await expect(
+          service.startReview({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementStateTransitionError,
+        );
+      },
+    );
+
+    it(
+      "rolls back review start when auditing fails",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-REVIEW-ROLLBACK-${context.uniqueId}`,
+          title: "Review rollback",
+          items: [
+            {
+              lineNumber: 1,
+              type: "WORK",
+              description: "Rollback scope",
+              quantity: "1",
+              unit: "lot",
+            },
+          ],
+        });
+        await service.submit({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        await expect(
+          createService(
+            new ThrowingProcurementStartReviewAuditRepository(),
+          ).startReview({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          }),
+        ).rejects.toThrow(
+          "Simulated procurement review audit failure.",
+        );
+
+        const persisted =
+          await prisma.procurementRequest.findUniqueOrThrow({
+            where: {
+              id: created.id,
+            },
+          });
+
+        expect(persisted.status).toBe(
+          "SUBMITTED",
+        );
+        await expect(
+          prisma.auditLog.count({
+            where: {
+              workspaceId: context.workspaceId,
+              action:
+                "procurement.review_started",
               entityId: created.id,
             },
           }),
