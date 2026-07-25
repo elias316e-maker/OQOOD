@@ -521,9 +521,94 @@ export class DefaultProcurementApplicationService
   }
 
   async submit(
-    _request: ProcurementRequestCommandInput,
+    request: ProcurementRequestCommandInput,
   ): Promise<ProcurementRequestResponse> {
-    throw new Error("Not implemented.");
+    return this.transactionRunner.$transaction(
+      async (transaction) => {
+        const authorized =
+          await this.authorization.authorize(
+            transaction,
+            {
+              workspaceId: request.workspaceId,
+              actorUserId:
+                request.actorUserId,
+              permission:
+                Permissions.procurement.update,
+              requireWriteAccess: true,
+            },
+          );
+
+        const existing =
+          await this.repository.findById(
+            transaction,
+            authorized.workspaceId,
+            request.procurementRequestId,
+          );
+
+        if (!existing) {
+          throw new ProcurementNotFoundError();
+        }
+
+        if (
+          existing.status !== "DRAFT" &&
+          existing.status !==
+            "CHANGES_REQUESTED"
+        ) {
+          throw new ProcurementStateTransitionError(
+            `Procurement request cannot be submitted from ${existing.status}.`,
+          );
+        }
+
+        const items =
+          await this.itemRepository.findByRequestId(
+            transaction,
+            existing.id,
+          );
+
+        if (items.length === 0) {
+          throw new ProcurementValidationError(
+            "Procurement request must contain at least one item before submission.",
+          );
+        }
+
+        const submittedAt = new Date();
+        const submitted =
+          await this.repository.update(
+            transaction,
+            authorized.workspaceId,
+            existing.id,
+            {
+              status: "SUBMITTED",
+            },
+          );
+
+        if (!submitted) {
+          throw new ProcurementNotFoundError();
+        }
+
+        await this.repository.createSubmitAuditLog(
+          transaction,
+          {
+            workspaceId:
+              authorized.workspaceId,
+            actorUserId:
+              authorized.actorUserId,
+            procurementRequestId:
+              submitted.id,
+            procurementRequestNumber:
+              submitted.number,
+            previousStatus: existing.status,
+            itemCount: items.length,
+            submittedAt,
+          },
+        );
+
+        return mapProcurementRequestResponse(
+          submitted,
+          items,
+        );
+      },
+    );
   }
 
   async startReview(

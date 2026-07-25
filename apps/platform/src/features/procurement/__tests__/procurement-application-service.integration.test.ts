@@ -16,6 +16,7 @@ import {
   PrismaProcurementRequestRepository,
   type CreateProcurementRequestAuditInput,
   type ProcurementTransactionClient,
+  type SubmitProcurementRequestAuditInput,
   type UpdateProcurementRequestAuditInput,
 } from "../repositories";
 import {
@@ -64,6 +65,21 @@ class ThrowingProcurementUpdateAuditRepository
     void input;
     throw new Error(
       "Simulated procurement update audit failure.",
+    );
+  }
+}
+
+class ThrowingProcurementSubmitAuditRepository
+  extends PrismaProcurementRequestRepository
+{
+  override async createSubmitAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: SubmitProcurementRequestAuditInput,
+  ): Promise<void> {
+    void transaction;
+    void input;
+    throw new Error(
+      "Simulated procurement submit audit failure.",
     );
   }
 }
@@ -659,6 +675,246 @@ describe(
         expect(
           persisted.items[0]?.description,
         ).toBe("Original item");
+      },
+    );
+
+    it(
+      "submits a draft request and records the transition",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-SUBMIT-${context.uniqueId}`,
+          title: "Ready to submit",
+          items: [
+            {
+              lineNumber: 1,
+              type: "SERVICE",
+              description: "Consulting",
+              quantity: "4",
+              unit: "day",
+              estimatedUnitPrice: "300",
+            },
+          ],
+        });
+
+        const submitted = await service.submit({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        expect(submitted.status).toBe(
+          "SUBMITTED",
+        );
+        expect(submitted.items).toHaveLength(1);
+        expect(submitted.estimatedTotal).toBe(
+          "1200",
+        );
+
+        const audit =
+          await prisma.auditLog.findFirst({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.submitted",
+              entityId: created.id,
+            },
+          });
+
+        expect(audit?.metadata).toMatchObject({
+          previousStatus: "DRAFT",
+          itemCount: 1,
+        });
+      },
+    );
+
+    it(
+      "requires at least one item before submission",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-SUBMIT-EMPTY-${context.uniqueId}`,
+          title: "Empty request",
+        });
+
+        await expect(
+          service.submit({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementValidationError,
+        );
+
+        const persisted =
+          await prisma.procurementRequest.findUniqueOrThrow({
+            where: {
+              id: created.id,
+            },
+          });
+
+        expect(persisted.status).toBe("DRAFT");
+      },
+    );
+
+    it(
+      "rejects submission without update permission",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-SUBMIT-DENIED-${context.uniqueId}`,
+          title: "Denied submission",
+          items: [
+            {
+              lineNumber: 1,
+              type: "MATERIAL",
+              description: "Required item",
+              quantity: "1",
+              unit: "each",
+            },
+          ],
+        });
+        const permission =
+          createPermissionTestContext(
+            context.roleId,
+          );
+
+        await permission.revokePermission(
+          Permissions.procurement.update,
+        );
+
+        try {
+          await expect(
+            service.submit({
+              workspaceId:
+                context.workspaceId,
+              actorUserId: context.userId,
+              procurementRequestId:
+                created.id,
+            }),
+          ).rejects.toBeInstanceOf(
+            PermissionDeniedError,
+          );
+
+          const persisted =
+            await prisma.procurementRequest.findUniqueOrThrow({
+              where: {
+                id: created.id,
+              },
+            });
+
+          expect(persisted.status).toBe(
+            "DRAFT",
+          );
+        } finally {
+          await permission.grantPermission(
+            Permissions.procurement.update,
+          );
+        }
+      },
+    );
+
+    it(
+      "rejects repeated submission",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-SUBMIT-STATE-${context.uniqueId}`,
+          title: "Submit once",
+          items: [
+            {
+              lineNumber: 1,
+              type: "WORK",
+              description: "Scope",
+              quantity: "1",
+              unit: "lot",
+            },
+          ],
+        });
+        const command = {
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        };
+
+        await service.submit(command);
+
+        await expect(
+          service.submit(command),
+        ).rejects.toBeInstanceOf(
+          ProcurementStateTransitionError,
+        );
+      },
+    );
+
+    it(
+      "rolls back submission when transition auditing fails",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-SUBMIT-ROLLBACK-${context.uniqueId}`,
+          title: "Submission rollback",
+          items: [
+            {
+              lineNumber: 1,
+              type: "MATERIAL",
+              description: "Rollback item",
+              quantity: "2",
+              unit: "each",
+              estimatedUnitPrice: "75",
+            },
+          ],
+        });
+
+        await expect(
+          createService(
+            new ThrowingProcurementSubmitAuditRepository(),
+          ).submit({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          }),
+        ).rejects.toThrow(
+          "Simulated procurement submit audit failure.",
+        );
+
+        const persisted =
+          await prisma.procurementRequest.findUniqueOrThrow({
+            where: {
+              id: created.id,
+            },
+          });
+
+        expect(persisted.status).toBe("DRAFT");
+        await expect(
+          prisma.auditLog.count({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.submitted",
+              entityId: created.id,
+            },
+          }),
+        ).resolves.toBe(0);
       },
     );
   },

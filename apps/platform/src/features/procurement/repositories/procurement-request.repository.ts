@@ -28,6 +28,17 @@ export type UpdateProcurementRequestAuditInput = {
   itemCount: number;
 };
 
+export type SubmitProcurementRequestAuditInput = {
+  workspaceId: string;
+  actorUserId: string;
+  procurementRequestId: string;
+  procurementRequestNumber: string;
+  previousStatus:
+    ProcurementRequestRecord["status"];
+  itemCount: number;
+  submittedAt: Date;
+};
+
 export type ProcurementTransactionClient =
   Prisma.TransactionClient;
 
@@ -81,5 +92,10 @@ export interface ProcurementRequestRepository {
   createUpdateAuditLog(
     transaction: ProcurementTransactionClient,
     input: UpdateProcurementRequestAuditInput,
+  ): Promise<void>;
+
+  createSubmitAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: SubmitProcurementRequestAuditInput,
   ): Promise<void>;
 }
