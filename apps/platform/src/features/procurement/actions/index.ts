@@ -2,6 +2,7 @@ export * from "./action-errors";
 export * from "./action-inputs";
 export * from "./action-result";
 export * from "./create-procurement-request";
+export * from "./create-rfq-from-procurement";
 export * from "./get-procurement-request";
 export * from "./helpers";
 export * from "./list-procurement-requests";

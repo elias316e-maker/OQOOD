@@ -6,6 +6,7 @@ import {
 } from "@/features/procurement/actions";
 import {
   ProcurementLifecycleActions,
+  ProcurementRfqAction,
 } from "@/features/procurement/components";
 import type {
   ProcurementItemType,
@@ -69,6 +70,7 @@ const auditLabels: Record<string, string> = {
   "procurement.rejected": "رفض الطلب",
   "procurement.cancelled": "إلغاء الطلب",
   "procurement.archived": "أرشفة الطلب",
+  "procurement.rfq_created": "إنشاء طلب عرض سعر",
 };
 
 function formatDate(value: string | null): string {
@@ -137,6 +139,10 @@ export default async function ProcurementDetailsPage({
     workspaceContext,
     Permissions.procurement.delete,
   );
+  const canCreateOpportunity = hasPermission(
+    workspaceContext,
+    Permissions.opportunities.create,
+  );
   const currentStep = lifecycle.indexOf(request.status);
 
   return (
@@ -174,6 +180,12 @@ export default async function ProcurementDetailsPage({
               itemCount: request.items.length,
             }}
           />
+          {request.status === "APPROVED" &&
+            canCreateOpportunity && (
+              <ProcurementRfqAction
+                procurementRequestId={request.id}
+              />
+            )}
         </div>
       </header>
 

@@ -1,0 +1,31 @@
+.wrapper {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.wrapper button {
+  min-height: 2.3rem;
+  padding-inline: 0.85rem;
+  border: 1px solid #176f58;
+  border-radius: 8px;
+  background: #176f58;
+  color: #fff;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.wrapper button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.wrapper p {
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+  border-radius: 7px;
+  background: #fdecec;
+  color: #9f3f3f;
+  font-size: 0.68rem;
+}
