@@ -15,6 +15,7 @@ import {
   PrismaProcurementRequestItemRepository,
   PrismaProcurementRequestRepository,
   type ApproveProcurementRequestAuditInput,
+  type ArchiveProcurementRequestAuditInput,
   type CancelProcurementRequestAuditInput,
   type CreateProcurementRequestAuditInput,
   type ProcurementTransactionClient,
@@ -164,6 +165,21 @@ class ThrowingProcurementCancelAuditRepository
   }
 }
 
+class ThrowingProcurementArchiveAuditRepository
+  extends PrismaProcurementRequestRepository
+{
+  override async createArchiveAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: ArchiveProcurementRequestAuditInput,
+  ): Promise<void> {
+    void transaction;
+    void input;
+    throw new Error(
+      "Simulated procurement archive audit failure.",
+    );
+  }
+}
+
 describe(
   "DefaultProcurementApplicationService create and update",
   () => {
@@ -246,6 +262,11 @@ describe(
         context.roleId,
       ).grantPermission(
         Permissions.procurement.approve,
+      );
+      await createPermissionTestContext(
+        context.roleId,
+      ).grantPermission(
+        Permissions.procurement.delete,
       );
     });
 
@@ -1951,6 +1972,197 @@ describe(
             where: {
               workspaceId: context.workspaceId,
               action: "procurement.cancelled",
+              entityId: created.id,
+            },
+          }),
+        ).resolves.toBe(0);
+      },
+    );
+
+    it(
+      "archives an approved request and records its previous status",
+      async () => {
+        const created =
+          await createUnderReviewRequest(
+            `PR-ARCHIVE-${context.uniqueId}`,
+            "Approved archive",
+          );
+        const service = createService();
+        await service.approve({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        const archived = await service.archive({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+          reason: "  Retention policy.  ",
+        });
+
+        expect(archived.status).toBe("ARCHIVED");
+        expect(archived.items).toHaveLength(1);
+
+        const audit =
+          await prisma.auditLog.findFirst({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.archived",
+              entityId: created.id,
+            },
+          });
+
+        expect(audit?.metadata).toMatchObject({
+          previousStatus: "APPROVED",
+          reason: "Retention policy.",
+        });
+      },
+    );
+
+    it(
+      "archives a cancelled request",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-ARCHIVE-CANCELLED-${context.uniqueId}`,
+          title: "Cancelled archive",
+        });
+        await service.cancel({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        const archived = await service.archive({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        expect(archived.status).toBe("ARCHIVED");
+      },
+    );
+
+    it(
+      "requires delete permission for archiving",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-ARCHIVE-DENIED-${context.uniqueId}`,
+          title: "Denied archive",
+        });
+        await service.cancel({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+        const permission =
+          createPermissionTestContext(
+            context.roleId,
+          );
+        await permission.revokePermission(
+          Permissions.procurement.delete,
+        );
+
+        try {
+          await expect(
+            service.archive({
+              workspaceId:
+                context.workspaceId,
+              actorUserId: context.userId,
+              procurementRequestId:
+                created.id,
+            }),
+          ).rejects.toBeInstanceOf(
+            PermissionDeniedError,
+          );
+        } finally {
+          await permission.grantPermission(
+            Permissions.procurement.delete,
+          );
+        }
+      },
+    );
+
+    it(
+      "rejects archiving an active request",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-ARCHIVE-STATE-${context.uniqueId}`,
+          title: "Active archive",
+        });
+
+        await expect(
+          service.archive({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementStateTransitionError,
+        );
+      },
+    );
+
+    it(
+      "rolls back archiving when auditing fails",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-ARCHIVE-ROLLBACK-${context.uniqueId}`,
+          title: "Archive rollback",
+        });
+        await service.cancel({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        await expect(
+          createService(
+            new ThrowingProcurementArchiveAuditRepository(),
+          ).archive({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          }),
+        ).rejects.toThrow(
+          "Simulated procurement archive audit failure.",
+        );
+
+        const persisted =
+          await prisma.procurementRequest.findUniqueOrThrow({
+            where: {
+              id: created.id,
+            },
+          });
+
+        expect(persisted.status).toBe(
+          "CANCELLED",
+        );
+        await expect(
+          prisma.auditLog.count({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.archived",
               entityId: created.id,
             },
           }),

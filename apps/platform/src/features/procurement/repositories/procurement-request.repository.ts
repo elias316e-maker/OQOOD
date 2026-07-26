@@ -93,6 +93,17 @@ export type CancelProcurementRequestAuditInput = {
   cancelledAt: Date;
 };
 
+export type ArchiveProcurementRequestAuditInput = {
+  workspaceId: string;
+  actorUserId: string;
+  procurementRequestId: string;
+  procurementRequestNumber: string;
+  previousStatus:
+    ProcurementRequestRecord["status"];
+  reason: string | null;
+  archivedAt: Date;
+};
+
 export type ProcurementTransactionClient =
   Prisma.TransactionClient;
 
@@ -176,5 +187,10 @@ export interface ProcurementRequestRepository {
   createCancelAuditLog(
     transaction: ProcurementTransactionClient,
     input: CancelProcurementRequestAuditInput,
+  ): Promise<void>;
+
+  createArchiveAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: ArchiveProcurementRequestAuditInput,
   ): Promise<void>;
 }

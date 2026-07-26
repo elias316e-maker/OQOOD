@@ -12,6 +12,7 @@ import type {
 
 import type {
   ApproveProcurementRequestAuditInput,
+  ArchiveProcurementRequestAuditInput,
   CancelProcurementRequestAuditInput,
   CreateProcurementRequestAuditInput,
   ProcurementRequestRepository,
@@ -509,6 +510,32 @@ export class PrismaProcurementRequestRepository
           reason: input.reason,
           cancelledAt:
             input.cancelledAt.toISOString(),
+          source:
+            "PROCUREMENT_APPLICATION_SERVICE",
+        },
+      },
+    });
+  }
+
+  async createArchiveAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: ArchiveProcurementRequestAuditInput,
+  ): Promise<void> {
+    await transaction.auditLog.create({
+      data: {
+        workspaceId: input.workspaceId,
+        userId: input.actorUserId,
+        action: "procurement.archived",
+        entityType: "ProcurementRequest",
+        entityId: input.procurementRequestId,
+        metadata: {
+          number:
+            input.procurementRequestNumber,
+          previousStatus:
+            input.previousStatus,
+          reason: input.reason,
+          archivedAt:
+            input.archivedAt.toISOString(),
           source:
             "PROCUREMENT_APPLICATION_SERVICE",
         },

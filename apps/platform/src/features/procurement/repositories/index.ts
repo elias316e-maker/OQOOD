@@ -1,5 +1,6 @@
 export type {
   ApproveProcurementRequestAuditInput,
+  ArchiveProcurementRequestAuditInput,
   CancelProcurementRequestAuditInput,
   CreateProcurementRequestAuditInput,
   ProcurementRequestRepository,
