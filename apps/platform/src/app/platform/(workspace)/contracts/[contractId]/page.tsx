@@ -31,6 +31,10 @@ const activityLabels: Record<string, string> = {
   "contract.approve": "اعتماد العقد",
   "contract.send_for_signature": "إرسال العقد للتوقيع",
   "contract.activate": "توثيق التوقيع وتفعيل العقد",
+  "contract.suspend": "إيقاف العقد مؤقتاً",
+  "contract.resume": "استئناف العقد",
+  "contract.complete": "إكمال العقد",
+  "contract.terminate": "إنهاء العقد",
 };
 
 export default async function ContractDetailsPage({ params }: Props) {
@@ -77,6 +81,14 @@ export default async function ContractDetailsPage({ params }: Props) {
       style: "currency",
       currency: contract.currency,
     }).format(Number(value));
+  const daysUntilEnd = contract.endDate
+    ? Math.ceil(
+        // The server request time is intentionally used for the expiry warning.
+        // eslint-disable-next-line react-hooks/purity
+        (contract.endDate.getTime() - Date.now()) /
+          (1000 * 60 * 60 * 24),
+      )
+    : null;
 
   return (
     <main className={styles.page}>
@@ -103,6 +115,18 @@ export default async function ContractDetailsPage({ params }: Props) {
         />
       </section>
 
+      {daysUntilEnd !== null && daysUntilEnd <= 30 && (
+        <div
+          className={styles.expiryAlert}
+          data-tone={daysUntilEnd < 0 ? "danger" : "warning"}
+          role="alert"
+        >
+          {daysUntilEnd < 0
+            ? `تجاوز العقد تاريخ انتهائه منذ ${Math.abs(daysUntilEnd)} يوم.`
+            : `متبقي ${daysUntilEnd} يوم على تاريخ انتهاء العقد.`}
+        </div>
+      )}
+
       <section className={styles.panel}>
         <div className={styles.summary}>
           <article><span>الحالة</span><strong>{statusLabels[contract.status]}</strong></article>
@@ -113,6 +137,10 @@ export default async function ContractDetailsPage({ params }: Props) {
           <article><span>الضريبة</span><strong>{money(contract.taxAmount)}</strong></article>
           <article><span>مدة التسليم</span><strong>{contract.deliveryDays ? `${contract.deliveryDays} يوم` : "غير محددة"}</strong></article>
           <article><span>شروط الدفع</span><strong>{contract.paymentTerms ?? "غير محددة"}</strong></article>
+          <article><span>تاريخ البدء</span><strong>{contract.startDate ? new Intl.DateTimeFormat("ar-SA").format(contract.startDate) : "غير محدد"}</strong></article>
+          <article><span>تاريخ الانتهاء</span><strong>{contract.endDate ? new Intl.DateTimeFormat("ar-SA").format(contract.endDate) : "غير محدد"}</strong></article>
+          {contract.suspensionReason && <article><span>سبب آخر إيقاف</span><strong>{contract.suspensionReason}</strong></article>}
+          {contract.terminationReason && <article><span>سبب الإنهاء</span><strong>{contract.terminationReason}</strong></article>}
         </div>
       </section>
 

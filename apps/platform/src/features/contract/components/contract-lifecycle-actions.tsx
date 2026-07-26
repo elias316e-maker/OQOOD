@@ -17,6 +17,10 @@ const labels: Record<ContractLifecycleCommand, string> = {
   APPROVE: "اعتماد العقد",
   SEND_FOR_SIGNATURE: "إرسال للتوقيع",
   ACTIVATE: "توثيق التوقيع وتفعيل العقد",
+  SUSPEND: "إيقاف العقد",
+  RESUME: "استئناف العقد",
+  COMPLETE: "إكمال العقد",
+  TERMINATE: "إنهاء العقد",
 };
 
 export function ContractLifecycleActions({
@@ -40,19 +44,21 @@ export function ContractLifecycleActions({
     tone: "success" | "error";
     message: string;
   } | null>(null);
+  const [reason, setReason] = useState("");
 
-  const command =
-    status === "DRAFT" && canUpdate
-      ? "SUBMIT_FOR_APPROVAL"
-      : status === "PENDING_APPROVAL" && canApprove
-        ? "APPROVE"
-        : status === "APPROVED" && canSign
-          ? "SEND_FOR_SIGNATURE"
-          : status === "SENT_FOR_SIGNATURE" && canSign
-            ? "ACTIVATE"
-            : null;
+  const commands: ContractLifecycleCommand[] = [];
+  if (status === "DRAFT" && canUpdate) commands.push("SUBMIT_FOR_APPROVAL");
+  if (status === "PENDING_APPROVAL" && canApprove) commands.push("APPROVE");
+  if (status === "APPROVED" && canSign) commands.push("SEND_FOR_SIGNATURE");
+  if (status === "SENT_FOR_SIGNATURE" && canSign) commands.push("ACTIVATE");
+  if (status === "ACTIVE" && canUpdate) {
+    commands.push("SUSPEND", "COMPLETE", "TERMINATE");
+  }
+  if (status === "SUSPENDED" && canUpdate) {
+    commands.push("RESUME", "TERMINATE");
+  }
 
-  if (!command) return null;
+  if (commands.length === 0) return null;
 
   function execute() {
     if (!selected) return;
@@ -60,6 +66,7 @@ export function ContractLifecycleActions({
       const result = await manageContractLifecycleAction(
         contractId,
         selected,
+        reason,
       );
       setFeedback({
         tone: result.success ? "success" : "error",
@@ -67,6 +74,7 @@ export function ContractLifecycleActions({
       });
       if (result.success) {
         setSelected(null);
+        setReason("");
         router.refresh();
       }
     });
@@ -74,24 +82,51 @@ export function ContractLifecycleActions({
 
   return (
     <div className={styles.wrapper}>
-      <button
-        className={styles.primary}
-        disabled={pending}
-        onClick={() => {
-          setFeedback(null);
-          setSelected(command);
-        }}
-        type="button"
-      >
-        {labels[command]}
-      </button>
+      <div className={styles.actions}>
+        {commands.map((command) => (
+          <button
+            className={styles.primary}
+            data-command={command}
+            disabled={pending}
+            key={command}
+            onClick={() => {
+              setFeedback(null);
+              setReason("");
+              setSelected(command);
+            }}
+            type="button"
+          >
+            {labels[command]}
+          </button>
+        ))}
+      </div>
 
       {selected && (
         <div className={styles.confirmation}>
           <strong>{labels[selected]}</strong>
           <p>سيتم نقل العقد إلى المرحلة التالية وتسجيل الإجراء في سجل النشاط.</p>
+          {["SUSPEND", "TERMINATE"].includes(selected) && (
+            <label>
+              سبب الإجراء
+              <textarea
+                disabled={pending}
+                onChange={(event) => setReason(event.target.value)}
+                placeholder="اكتب سبباً واضحاً"
+                rows={3}
+                value={reason}
+              />
+            </label>
+          )}
           <div>
-            <button disabled={pending} onClick={execute} type="button">
+            <button
+              disabled={
+                pending ||
+                (["SUSPEND", "TERMINATE"].includes(selected) &&
+                  !reason.trim())
+              }
+              onClick={execute}
+              type="button"
+            >
               {pending ? "جارٍ التنفيذ..." : "تأكيد"}
             </button>
             <button

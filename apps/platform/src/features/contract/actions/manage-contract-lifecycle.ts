@@ -16,7 +16,11 @@ export type ContractLifecycleCommand =
   | "SUBMIT_FOR_APPROVAL"
   | "APPROVE"
   | "SEND_FOR_SIGNATURE"
-  | "ACTIVATE";
+  | "ACTIVATE"
+  | "SUSPEND"
+  | "RESUME"
+  | "COMPLETE"
+  | "TERMINATE";
 
 type Result =
   | { success: true; data: { status: ContractStatus }; message: string }
@@ -25,45 +29,77 @@ type Result =
 const transitions: Record<
   ContractLifecycleCommand,
   {
-    from: ContractStatus;
+    from: ContractStatus[];
     to: ContractStatus;
     permission: PermissionCode;
     message: string;
+    reasonRequired?: boolean;
   }
 > = {
   SUBMIT_FOR_APPROVAL: {
-    from: "DRAFT",
+    from: ["DRAFT"],
     to: "PENDING_APPROVAL",
     permission: Permissions.contracts.update,
     message: "تم إرسال مسودة العقد للاعتماد.",
   },
   APPROVE: {
-    from: "PENDING_APPROVAL",
+    from: ["PENDING_APPROVAL"],
     to: "APPROVED",
     permission: Permissions.contracts.approve,
     message: "تم اعتماد العقد.",
   },
   SEND_FOR_SIGNATURE: {
-    from: "APPROVED",
+    from: ["APPROVED"],
     to: "SENT_FOR_SIGNATURE",
     permission: Permissions.contracts.sign,
     message: "تم إرسال العقد للتوقيع.",
   },
   ACTIVATE: {
-    from: "SENT_FOR_SIGNATURE",
+    from: ["SENT_FOR_SIGNATURE"],
     to: "ACTIVE",
     permission: Permissions.contracts.sign,
     message: "تم توثيق التوقيع وتفعيل العقد.",
+  },
+  SUSPEND: {
+    from: ["ACTIVE"],
+    to: "SUSPENDED",
+    permission: Permissions.contracts.update,
+    message: "تم إيقاف العقد مؤقتاً.",
+    reasonRequired: true,
+  },
+  RESUME: {
+    from: ["SUSPENDED"],
+    to: "ACTIVE",
+    permission: Permissions.contracts.update,
+    message: "تم استئناف العقد.",
+  },
+  COMPLETE: {
+    from: ["ACTIVE"],
+    to: "COMPLETED",
+    permission: Permissions.contracts.update,
+    message: "تم إكمال العقد.",
+  },
+  TERMINATE: {
+    from: ["ACTIVE", "SUSPENDED"],
+    to: "TERMINATED",
+    permission: Permissions.contracts.update,
+    message: "تم إنهاء العقد.",
+    reasonRequired: true,
   },
 };
 
 export async function manageContractLifecycleAction(
   contractId: string,
   command: ContractLifecycleCommand,
+  reason?: string,
 ): Promise<Result> {
   try {
     const transition = transitions[command];
     if (!transition) throw new Error("إجراء العقد غير صالح.");
+    const normalizedReason = reason?.trim();
+    if (transition.reasonRequired && !normalizedReason) {
+      throw new Error("يجب إدخال سبب واضح لتنفيذ هذا الإجراء.");
+    }
 
     const context = await resolveOpportunityActionContext();
     const authorization = new PrismaOpportunityAuthorizationGateway();
@@ -80,7 +116,7 @@ export async function manageContractLifecycleAction(
         select: { id: true, number: true, status: true },
       });
       if (!contract) throw new Error("لم يتم العثور على العقد.");
-      if (contract.status !== transition.from) {
+      if (!transition.from.includes(contract.status)) {
         throw new Error("لا يمكن تنفيذ الإجراء في حالة العقد الحالية.");
       }
 
@@ -88,11 +124,24 @@ export async function manageContractLifecycleAction(
         where: {
           id: contract.id,
           workspaceId: context.workspaceId,
-          status: transition.from,
+          status: { in: transition.from },
         },
         data: {
           status: transition.to,
           ...(command === "ACTIVATE" ? { startDate: new Date() } : {}),
+          ...(command === "SUSPEND"
+            ? {
+                suspendedAt: new Date(),
+                suspensionReason: normalizedReason,
+              }
+            : {}),
+          ...(command === "COMPLETE" ? { completedAt: new Date() } : {}),
+          ...(command === "TERMINATE"
+            ? {
+                terminatedAt: new Date(),
+                terminationReason: normalizedReason,
+              }
+            : {}),
         },
       });
       if (updated.count !== 1) {
@@ -108,9 +157,10 @@ export async function manageContractLifecycleAction(
           entityId: contract.id,
           metadata: {
             contractNumber: contract.number,
-            previousStatus: transition.from,
+            previousStatus: contract.status,
             targetStatus: transition.to,
             command,
+            reason: normalizedReason,
           },
         },
       });

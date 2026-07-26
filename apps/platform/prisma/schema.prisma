@@ -582,6 +582,11 @@ model Contract {
   deliveryDays      Int?
   startDate         DateTime?
   endDate           DateTime?
+  suspendedAt       DateTime?
+  suspensionReason  String?
+  completedAt       DateTime?
+  terminatedAt      DateTime?
+  terminationReason String?
   createdById       String
 
   workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
