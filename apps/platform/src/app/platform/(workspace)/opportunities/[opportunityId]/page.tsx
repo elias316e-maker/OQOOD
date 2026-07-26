@@ -221,6 +221,12 @@ export default async function OpportunityDetailsPage({
             >
               شركاء الأعمال
             </Link>
+            <Link
+              className="secondaryButton compactButton"
+              href={`/platform/opportunities/${opportunity.id}/offers`}
+            >
+              عروض الموردين
+            </Link>
             </>
           )}
 

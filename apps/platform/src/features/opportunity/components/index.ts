@@ -4,4 +4,5 @@ export * from "./opportunity-card-grid";
 export * from "./opportunity-edit-form";
 export * from "./opportunity-lifecycle-actions";
 export * from "./opportunity-partners-form";
+export * from "./opportunity-offers-form";
 export * from "./sortable-opportunity-table";
