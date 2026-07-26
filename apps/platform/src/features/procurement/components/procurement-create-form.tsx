@@ -13,10 +13,16 @@ import { useFormStatus } from "react-dom";
 import {
   createProcurementRequestAction,
 } from "../actions/create-procurement-request";
+import {
+  updateProcurementRequestAction,
+} from "../actions/update-procurement-request";
 
 import type {
   ProcurementActionFieldErrors,
 } from "../actions/action-result";
+import type {
+  ProcurementRequestResponse,
+} from "../dtos";
 
 import styles from "./procurement-create-form.module.css";
 
@@ -24,6 +30,7 @@ type ItemType = "MATERIAL" | "SERVICE" | "WORK";
 
 type EditableItem = {
   key: number;
+  id?: string;
   type: ItemType;
   description: string;
   quantity: string;
@@ -31,6 +38,8 @@ type EditableItem = {
   estimatedUnitPrice: string;
   requiredByDate: string;
   deliveryLocation: string;
+  specification?: string | null;
+  notes?: string | null;
 };
 
 type FormState = {
@@ -43,6 +52,7 @@ type FormState = {
 type ProcurementCreateFormProps = {
   draftNumber: string;
   defaultCurrency: string;
+  initialRequest?: ProcurementRequestResponse;
 };
 
 const initialState: FormState = { status: "idle" };
@@ -65,11 +75,12 @@ function text(formData: FormData, field: string): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-async function createRequest(
+async function saveRequest(
   _previousState: FormState,
   formData: FormData,
 ): Promise<FormState> {
   let items: Array<{
+    id?: string;
     lineNumber: number;
     type: ItemType;
     description: string;
@@ -78,6 +89,8 @@ async function createRequest(
     estimatedUnitPrice: string | null;
     requiredByDate: string | null;
     deliveryLocation: string | null;
+    specification?: string | null;
+    notes?: string | null;
   }>;
 
   try {
@@ -89,7 +102,8 @@ async function createRequest(
     };
   }
 
-  const result = await createProcurementRequestAction({
+  const requestId = text(formData, "requestId");
+  const payload = {
     number: text(formData, "number"),
     title: text(formData, "title"),
     description: text(formData, "description") || null,
@@ -103,7 +117,19 @@ async function createRequest(
       text(formData, "requiredByDate") || null,
     currency: text(formData, "currency"),
     items,
-  });
+  };
+  const result = requestId
+    ? await updateProcurementRequestAction({
+        procurementRequestId: requestId,
+        title: payload.title,
+        description: payload.description,
+        priority: payload.priority,
+        category: payload.category,
+        requiredByDate: payload.requiredByDate,
+        currency: payload.currency,
+        items: payload.items,
+      })
+    : await createProcurementRequestAction(payload);
 
   return result.success
     ? {
@@ -148,14 +174,34 @@ function FieldError({
 export function ProcurementCreateForm({
   draftNumber,
   defaultCurrency,
+  initialRequest,
 }: ProcurementCreateFormProps) {
   const router = useRouter();
-  const [nextKey, setNextKey] = useState(2);
-  const [items, setItems] = useState<EditableItem[]>([
-    newItem(1),
-  ]);
+  const [nextKey, setNextKey] = useState(
+    (initialRequest?.items.length ?? 1) + 1,
+  );
+  const [items, setItems] = useState<EditableItem[]>(
+    initialRequest?.items.length
+      ? initialRequest.items.map((item, index) => ({
+          key: index + 1,
+          id: item.id,
+          type: item.type,
+          description: item.description,
+          quantity: item.quantity,
+          unit: item.unit,
+          estimatedUnitPrice:
+            item.estimatedUnitPrice ?? "",
+          requiredByDate:
+            item.requiredByDate?.slice(0, 10) ?? "",
+          deliveryLocation:
+            item.deliveryLocation ?? "",
+          specification: item.specification,
+          notes: item.notes,
+        }))
+      : [newItem(1)],
+  );
   const [state, formAction] = useActionState(
-    createRequest,
+    saveRequest,
     initialState,
   );
 
@@ -176,6 +222,7 @@ export function ProcurementCreateForm({
     () =>
       JSON.stringify(
         items.map((item, index) => ({
+          id: item.id,
           lineNumber: index + 1,
           type: item.type,
           description: item.description,
@@ -186,6 +233,8 @@ export function ProcurementCreateForm({
           requiredByDate: item.requiredByDate || null,
           deliveryLocation:
             item.deliveryLocation || null,
+          specification: item.specification ?? null,
+          notes: item.notes ?? null,
         })),
       ),
     [items],
@@ -193,10 +242,14 @@ export function ProcurementCreateForm({
 
   useEffect(() => {
     if (state.status === "success") {
-      router.replace("/platform/procurement");
+      router.replace(
+        state.requestId
+          ? `/platform/procurement/${state.requestId}`
+          : "/platform/procurement",
+      );
       router.refresh();
     }
-  }, [router, state.status]);
+  }, [router, state.requestId, state.status]);
 
   function updateItem(
     key: number,
@@ -265,6 +318,11 @@ export function ProcurementCreateForm({
       </header>
 
       <input name="number" type="hidden" value={draftNumber} />
+      <input
+        name="requestId"
+        type="hidden"
+        value={initialRequest?.id ?? ""}
+      />
       <input name="items" type="hidden" value={serializedItems} />
 
       <section className={styles.section}>
@@ -295,6 +353,7 @@ export function ProcurementCreateForm({
               aria-invalid={Boolean(state.fieldErrors?.title)}
               id="procurement-title"
               name="title"
+              defaultValue={initialRequest?.title}
               placeholder="مثال: توريد مواد كهربائية للمشروع"
               required
             />
@@ -306,7 +365,7 @@ export function ProcurementCreateForm({
               التصنيف
             </label>
             <select
-              defaultValue="materials"
+              defaultValue={initialRequest?.category ?? "materials"}
               id="procurement-category"
               name="category"
             >
@@ -322,7 +381,7 @@ export function ProcurementCreateForm({
               الأولوية
             </label>
             <select
-              defaultValue="NORMAL"
+              defaultValue={initialRequest?.priority ?? "NORMAL"}
               id="procurement-priority"
               name="priority"
             >
@@ -340,6 +399,9 @@ export function ProcurementCreateForm({
             <input
               id="procurement-required-date"
               name="requiredByDate"
+              defaultValue={
+                initialRequest?.requiredByDate?.slice(0, 10)
+              }
               type="date"
             />
           </div>
@@ -366,6 +428,7 @@ export function ProcurementCreateForm({
             <textarea
               id="procurement-description"
               name="description"
+              defaultValue={initialRequest?.description ?? ""}
               placeholder="اشرح سبب الاحتياج والنطاق المطلوب..."
               rows={3}
             />

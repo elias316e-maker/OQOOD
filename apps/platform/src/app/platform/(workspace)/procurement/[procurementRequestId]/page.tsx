@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import {
   getProcurementRequestAction,
+  listProcurementAuditAction,
 } from "@/features/procurement/actions";
 import {
   ProcurementLifecycleActions,
@@ -58,6 +59,18 @@ const lifecycle: ProcurementRequestStatus[] = [
   "APPROVED",
 ];
 
+const auditLabels: Record<string, string> = {
+  "procurement.created": "إنشاء الطلب",
+  "procurement.updated": "تحديث الطلب والبنود",
+  "procurement.submitted": "إرسال الطلب للمراجعة",
+  "procurement.review_started": "بدء مراجعة الطلب",
+  "procurement.changes_requested": "طلب تعديلات",
+  "procurement.approved": "اعتماد الطلب",
+  "procurement.rejected": "رفض الطلب",
+  "procurement.cancelled": "إلغاء الطلب",
+  "procurement.archived": "أرشفة الطلب",
+};
+
 function formatDate(value: string | null): string {
   if (!value) return "غير محدد";
   const date = new Date(value);
@@ -91,9 +104,10 @@ export default async function ProcurementDetailsPage({
   params,
 }: Props) {
   const { procurementRequestId } = await params;
-  const [result, workspaceContext] = await Promise.all([
+  const [result, workspaceContext, auditResult] = await Promise.all([
     getProcurementRequestAction({ procurementRequestId }),
     requireCurrentWorkspace(),
+    listProcurementAuditAction(procurementRequestId),
   ]);
 
   if (!result.success) {
@@ -141,6 +155,15 @@ export default async function ProcurementDetailsPage({
           <Link href="/platform/procurement">
             العودة للقائمة
           </Link>
+          {canUpdate &&
+            (request.status === "DRAFT" ||
+              request.status === "CHANGES_REQUESTED") && (
+              <Link
+                href={`/platform/procurement/${request.id}/edit`}
+              >
+                تعديل الطلب والبنود
+              </Link>
+            )}
           <ProcurementLifecycleActions
             canApprove={canApprove}
             canArchive={canArchive}
@@ -164,6 +187,7 @@ export default async function ProcurementDetailsPage({
         <a href="#lifecycle">مسار الطلب</a>
         <a href="#items">بنود الطلب</a>
         <a href="#description">الوصف والنطاق</a>
+        <a href="#audit">سجل الإجراءات</a>
       </nav>
 
       <section className={styles.summary} id="overview">
@@ -323,6 +347,39 @@ export default async function ProcurementDetailsPage({
           {request.description ??
             "لم تتم إضافة وصف تفصيلي لهذا الطلب."}
         </p>
+      </section>
+
+      <section className={styles.panel} id="audit">
+        <div className={styles.panelHeader}>
+          <div>
+            <span className={styles.eyebrow}>سجل التدقيق</span>
+            <h2>الإجراءات المنفذة على الطلب</h2>
+          </div>
+        </div>
+        {!auditResult.success ? (
+          <p className={styles.empty}>{auditResult.message}</p>
+        ) : auditResult.data.length === 0 ? (
+          <p className={styles.empty}>
+            لا توجد إجراءات مسجلة لهذا الطلب بعد.
+          </p>
+        ) : (
+          <ol className={styles.auditList}>
+            {auditResult.data.map((entry) => (
+              <li key={entry.id}>
+                <span className={styles.auditMarker} />
+                <div>
+                  <strong>
+                    {auditLabels[entry.action] ?? entry.action}
+                  </strong>
+                  <small>
+                    {entry.actorName} · {formatDate(entry.createdAt)}
+                  </small>
+                  {entry.reason && <p>{entry.reason}</p>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
       </section>
     </main>
   );

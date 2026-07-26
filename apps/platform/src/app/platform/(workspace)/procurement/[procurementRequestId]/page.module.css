@@ -62,7 +62,7 @@
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   overflow: hidden;
   border-radius: 12px;
 }
@@ -232,6 +232,57 @@
 }
 
 .empty { text-align: center; }
+
+.auditList {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  list-style: none;
+}
+
+.auditList li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1rem 1fr;
+  gap: 0.65rem;
+  padding-block: 0.65rem;
+  border-block-end: 1px solid #edf1f5;
+}
+
+.auditList li:last-child { border-block-end: 0; }
+
+.auditMarker {
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-block-start: 0.2rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #23719f;
+  box-shadow: 0 0 0 2px #cae0ee;
+}
+
+.auditList strong,
+.auditList small {
+  display: block;
+}
+
+.auditList strong {
+  color: #244665;
+  font-size: 0.76rem;
+}
+
+.auditList small {
+  margin-block-start: 0.15rem;
+  color: #7c899b;
+  font-size: 0.65rem;
+}
+
+.auditList p {
+  margin: 0.35rem 0 0;
+  color: #5a687b;
+  font-size: 0.7rem;
+}
 
 .error {
   display: grid;
