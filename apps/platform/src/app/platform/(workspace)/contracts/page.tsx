@@ -49,6 +49,7 @@ export default async function ContractsPage() {
     <main className={styles.page}>
       <header className={styles.header}>
         <div><span>إدارة دورة التعاقد والتنفيذ</span><h1>العقود</h1><p>متابعة العقود والمراحل والتسليمات والموقف المالي.</p></div>
+        <Link className={styles.editLink} href="/platform/contracts/alerts">مركز التنبيهات</Link>
       </header>
 
       <section className={styles.kpis}>
