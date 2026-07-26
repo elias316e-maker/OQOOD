@@ -5,6 +5,7 @@ import {
   ContractAmendments,
   ContractExecution,
   ContractLifecycleActions,
+  PartnerEvaluation,
 } from "@/features/contract";
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
 import { resolveOpportunityActionContext } from "@/features/opportunity/actions";
@@ -52,6 +53,7 @@ const activityLabels: Record<string, string> = {
   "contract.milestone_reject": "إعادة تسليم للمراجعة",
   "contract.milestone_claim": "تسجيل مطالبة مالية",
   "contract.milestone_pay": "تسجيل سداد مطالبة",
+  "contract.partner_evaluated": "تقييم أداء المورد",
 };
 
 export default async function ContractDetailsPage({ params }: Props) {
@@ -76,6 +78,10 @@ export default async function ContractDetailsPage({ params }: Props) {
         items: { orderBy: { lineNumber: "asc" } },
         amendments: { orderBy: { number: "desc" } },
         milestones: { orderBy: { number: "asc" } },
+        partnerEvaluations: {
+          include: { createdBy: { select: { name: true } } },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
     const activity = contract
@@ -248,6 +254,27 @@ export default async function ContractDetailsPage({ params }: Props) {
               status: milestone.status,
               paymentStatus: milestone.paymentStatus,
               rejectionReason: milestone.rejectionReason,
+            }))}
+          />
+        </section>
+      )}
+
+      {["ACTIVE", "COMPLETED"].includes(contract.status) && (
+        <section className={styles.panel}>
+          <h2 className={styles.sectionTitle}>تقييم أداء المورد</h2>
+          <PartnerEvaluation
+            canEvaluate={hasPermission(workspaceContext, Permissions.vendors.evaluate)}
+            contractId={contract.id}
+            evaluations={contract.partnerEvaluations.map((evaluation) => ({
+              id: evaluation.id,
+              overallScore: evaluation.overallScore.toString(),
+              timelinessScore: evaluation.timelinessScore,
+              qualityScore: evaluation.qualityScore,
+              responsivenessScore: evaluation.responsivenessScore,
+              financialScore: evaluation.financialScore,
+              notes: evaluation.notes,
+              createdAt: evaluation.createdAt.toISOString(),
+              createdBy: evaluation.createdBy.name,
             }))}
           />
         </section>
