@@ -50,8 +50,11 @@
 }
 
 .createButton {
+  display: inline-flex;
   min-height: 2.55rem;
   flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
   padding: 0.65rem 1rem;
   border: 0;
   border-radius: 10px;
@@ -60,7 +63,7 @@
   font: inherit;
   font-size: 0.8rem;
   font-weight: 800;
-  opacity: 0.72;
+  text-decoration: none;
 }
 
 .summary {
@@ -361,4 +364,3 @@
   .filterActions { display: grid; grid-template-columns: 1fr 1fr; }
   .pagination { align-items: stretch; flex-direction: column; }
 }
-

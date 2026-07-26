@@ -1,0 +1,298 @@
+.page {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 1rem;
+  color: #172b46;
+}
+
+.header,
+.section,
+.totals {
+  border: 1px solid #dbe4ef;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgb(15 23 42 / 5%);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+}
+
+.eyebrow {
+  color: #2c6ca2;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.header h1,
+.section h2 {
+  margin: 0.2rem 0 0;
+  color: #153b67;
+}
+
+.header h1 {
+  font-size: clamp(1.35rem, 2vw, 1.85rem);
+}
+
+.header p,
+.sectionHeader p {
+  margin: 0.25rem 0 0;
+  color: #697990;
+  font-size: 0.78rem;
+}
+
+.headerActions,
+.sectionActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.primaryButton,
+.secondaryButton,
+.dangerButton {
+  display: inline-flex;
+  min-height: 2.35rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.85rem;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primaryButton {
+  border: 1px solid #1c5b90;
+  background: #1c5b90;
+  color: #fff;
+}
+
+.primaryButton:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.secondaryButton {
+  border: 1px solid #cbd6e3;
+  background: #fff;
+  color: #425b76;
+}
+
+.dangerButton {
+  min-height: 2rem;
+  border: 1px solid #efcaca;
+  background: #fff6f6;
+  color: #a23d3d;
+}
+
+.section {
+  overflow: hidden;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-block-end: 1px solid #e5ebf2;
+  background: #f8fafc;
+}
+
+.section h2 {
+  font-size: 0.95rem;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.fieldWide {
+  grid-column: span 2;
+}
+
+.fieldFull {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  color: #586a82;
+  font-size: 0.69rem;
+  font-weight: 800;
+}
+
+.field input,
+.field select,
+.field textarea,
+.itemTable input,
+.itemTable select {
+  width: 100%;
+  min-height: 2.35rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #cbd6e3;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: #1f334e;
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.field textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+.itemTable input:focus,
+.itemTable select:focus {
+  border-color: #3477ad;
+  box-shadow: 0 0 0 3px rgb(52 119 173 / 11%);
+}
+
+.fieldError {
+  color: #a83b3b;
+  font-size: 0.66rem;
+}
+
+.alert {
+  margin: 0.8rem 1rem 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #edc2c2;
+  border-radius: 9px;
+  background: #fff4f4;
+  color: #8f3030;
+  font-size: 0.75rem;
+}
+
+.tableViewport {
+  overflow-x: auto;
+}
+
+.itemTable {
+  width: 100%;
+  min-width: 1120px;
+  border-collapse: collapse;
+}
+
+.itemTable th {
+  padding: 0.55rem 0.6rem;
+  border-block-end: 1px solid #dfe7f0;
+  background: #f4f7fa;
+  color: #607087;
+  font-size: 0.65rem;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.itemTable td {
+  padding: 0.55rem 0.45rem;
+  border-block-end: 1px solid #edf1f5;
+  vertical-align: top;
+}
+
+.lineNumber {
+  color: #2b628f;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.descriptionCell {
+  min-width: 17rem;
+}
+
+.numberCell {
+  width: 7.5rem;
+}
+
+.totalCell {
+  min-width: 8rem;
+  color: #145b82;
+  font-size: 0.74rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.tableHint {
+  padding: 0.7rem 1rem;
+  color: #74849a;
+  font-size: 0.68rem;
+}
+
+.totals {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+}
+
+.totals span,
+.totals small {
+  display: block;
+  color: #738298;
+  font-size: 0.69rem;
+}
+
+.totals strong {
+  display: block;
+  color: #174f80;
+  font-size: 1.35rem;
+}
+
+.attachmentPlaceholder {
+  padding: 1rem;
+  color: #697990;
+  font-size: 0.74rem;
+}
+
+@media (max-width: 1050px) {
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .page {
+    padding: 0.75rem;
+  }
+
+  .header,
+  .sectionHeader,
+  .totals {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .headerActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fields {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldWide,
+  .fieldFull {
+    grid-column: auto;
+  }
+}

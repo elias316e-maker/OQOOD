@@ -253,14 +253,12 @@ export default async function ProcurementPage({
         </div>
 
         {canCreate && (
-          <button
+          <Link
             className={styles.createButton}
-            disabled
-            title="ستتاح في الخطوة التالية"
-            type="button"
+            href="/platform/procurement/new"
           >
             ＋ طلب مشتريات جديد
-          </button>
+          </Link>
         )}
       </header>
 
@@ -487,4 +485,3 @@ export default async function ProcurementPage({
     </main>
   );
 }
-

@@ -12,7 +12,10 @@ type WithoutContext<T> = Omit<
 >;
 
 export type CreateProcurementRequestActionInput =
-  WithoutContext<CreateProcurementRequestInput>;
+  Omit<
+    CreateProcurementRequestInput,
+    "workspaceId" | "actorUserId" | "requestedById"
+  >;
 
 export type UpdateProcurementRequestActionInput =
   WithoutContext<UpdateProcurementRequestInput>;
@@ -25,4 +28,3 @@ export type GetProcurementRequestActionInput =
 
 export type ListProcurementRequestsActionInput =
   WithoutContext<ListProcurementRequestsInput>;
-

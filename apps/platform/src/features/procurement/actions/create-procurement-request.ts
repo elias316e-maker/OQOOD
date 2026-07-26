@@ -38,6 +38,7 @@ export async function createProcurementRequestAction(
       {
         ...input,
         ...context,
+        requestedById: context.actorUserId,
       },
     );
 
@@ -56,4 +57,3 @@ export async function createProcurementRequestAction(
     return mapProcurementActionError(error);
   }
 }
-
