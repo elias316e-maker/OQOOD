@@ -35,6 +35,7 @@ const activityLabels: Record<string, string> = {
   "contract.resume": "استئناف العقد",
   "contract.complete": "إكمال العقد",
   "contract.terminate": "إنهاء العقد",
+  "contract.draft_updated": "تحديث بيانات مسودة العقد",
 };
 
 export default async function ContractDetailsPage({ params }: Props) {
@@ -106,13 +107,19 @@ export default async function ContractDetailsPage({ params }: Props) {
           <strong>إجراءات دورة العقد</strong>
           <span>الحالة الحالية: {statusLabels[contract.status]}</span>
         </div>
-        <ContractLifecycleActions
-          canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
-          canSign={hasPermission(workspaceContext, Permissions.contracts.sign)}
-          canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
-          contractId={contract.id}
-          status={contract.status}
-        />
+        <div className={styles.actionGroup}>
+          {contract.status === "DRAFT" &&
+            hasPermission(workspaceContext, Permissions.contracts.update) && (
+              <Link className={styles.editLink} href={`/platform/contracts/${contract.id}/edit`}>تحرير المسودة</Link>
+            )}
+          <ContractLifecycleActions
+            canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
+            canSign={hasPermission(workspaceContext, Permissions.contracts.sign)}
+            canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
+            contractId={contract.id}
+            status={contract.status}
+          />
+        </div>
       </section>
 
       {daysUntilEnd !== null && daysUntilEnd <= 30 && (
