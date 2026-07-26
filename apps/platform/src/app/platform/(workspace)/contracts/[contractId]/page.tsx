@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import {
   ContractAmendments,
+  ContractExecution,
   ContractLifecycleActions,
 } from "@/features/contract";
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
@@ -43,6 +44,14 @@ const activityLabels: Record<string, string> = {
   "contract.amendment_submit": "إرسال ملحق للاعتماد",
   "contract.amendment_approve": "اعتماد ملحق وتطبيقه",
   "contract.amendment_reject": "رفض ملحق",
+  "contract.milestone_created": "إضافة مرحلة تنفيذ",
+  "contract.milestone_start": "بدء مرحلة تنفيذ",
+  "contract.milestone_progress": "تحديث نسبة الإنجاز",
+  "contract.milestone_submit": "تقديم تسليم",
+  "contract.milestone_accept": "قبول تسليم",
+  "contract.milestone_reject": "إعادة تسليم للمراجعة",
+  "contract.milestone_claim": "تسجيل مطالبة مالية",
+  "contract.milestone_pay": "تسجيل سداد مطالبة",
 };
 
 export default async function ContractDetailsPage({ params }: Props) {
@@ -66,6 +75,7 @@ export default async function ContractDetailsPage({ params }: Props) {
         opportunity: { select: { id: true, number: true, title: true } },
         items: { orderBy: { lineNumber: "asc" } },
         amendments: { orderBy: { number: "desc" } },
+        milestones: { orderBy: { number: "asc" } },
       },
     });
     const activity = contract
@@ -215,6 +225,30 @@ export default async function ContractDetailsPage({ params }: Props) {
             canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
             contractId={contract.id}
             currency={contract.currency}
+          />
+        </section>
+      )}
+
+      {contract.status === "ACTIVE" && (
+        <section className={styles.panel}>
+          <h2 className={styles.sectionTitle}>تنفيذ العقد والتسليمات</h2>
+          <ContractExecution
+            canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
+            canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
+            contractId={contract.id}
+            currency={contract.currency}
+            milestones={contract.milestones.map((milestone) => ({
+              id: milestone.id,
+              number: milestone.number,
+              title: milestone.title,
+              description: milestone.description,
+              dueDate: milestone.dueDate?.toISOString() ?? null,
+              amount: milestone.amount.toString(),
+              progress: milestone.progress,
+              status: milestone.status,
+              paymentStatus: milestone.paymentStatus,
+              rejectionReason: milestone.rejectionReason,
+            }))}
           />
         </section>
       )}

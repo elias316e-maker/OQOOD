@@ -121,6 +121,20 @@ enum ContractAmendmentStatus {
   CANCELLED
 }
 
+enum ContractMilestoneStatus {
+  PLANNED
+  IN_PROGRESS
+  SUBMITTED
+  ACCEPTED
+  REJECTED
+}
+
+enum MilestonePaymentStatus {
+  NOT_CLAIMED
+  CLAIMED
+  PAID
+}
+
 enum ProcurementRequestStatus {
   DRAFT
   SUBMITTED
@@ -236,6 +250,7 @@ model User {
   createdContracts             Contract[]           @relation("ContractCreator")
   createdContractAmendments    ContractAmendment[]  @relation("ContractAmendmentCreator")
   approvedContractAmendments   ContractAmendment[]  @relation("ContractAmendmentApprover")
+  createdContractMilestones    ContractMilestone[]  @relation("ContractMilestoneCreator")
   requestedProcurementRequests ProcurementRequest[] @relation("ProcurementRequestedBy")
   assignedProcurementRequests  ProcurementRequest[] @relation("ProcurementAssignedTo")
   createdProcurementRequests   ProcurementRequest[] @relation("ProcurementCreatedBy")
@@ -607,6 +622,7 @@ model Contract {
   createdBy       User            @relation("ContractCreator", fields: [createdById], references: [id])
   items           ContractItem[]
   amendments      ContractAmendment[]
+  milestones      ContractMilestone[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -615,6 +631,36 @@ model Contract {
   @@index([workspaceId, status])
   @@index([opportunityId])
   @@index([businessPartnerId])
+}
+
+model ContractMilestone {
+  id            String                 @id @default(cuid())
+  contractId    String
+  number        Int
+  title         String
+  description   String?
+  dueDate       DateTime?
+  amount        Decimal                @default(0) @db.Decimal(18, 2)
+  progress      Int                    @default(0)
+  status        ContractMilestoneStatus @default(PLANNED)
+  paymentStatus MilestonePaymentStatus @default(NOT_CLAIMED)
+  createdById   String
+  startedAt     DateTime?
+  submittedAt   DateTime?
+  acceptedAt    DateTime?
+  claimedAt     DateTime?
+  paidAt        DateTime?
+  rejectionReason String?
+
+  contract  Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  createdBy User     @relation("ContractMilestoneCreator", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([contractId, number])
+  @@index([contractId, status])
+  @@index([contractId, paymentStatus])
 }
 
 model ContractAmendment {
