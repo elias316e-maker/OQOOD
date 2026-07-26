@@ -13,6 +13,7 @@ import {
   saveOpportunityOfferAction,
   type OpportunityOfferData,
 } from "../actions/manage-opportunity-offers";
+import { createContractFromAwardAction } from "../actions/create-contract-from-award";
 
 import styles from "./opportunity-offers-form.module.css";
 
@@ -20,10 +21,12 @@ export function OpportunityOffersForm({
   data,
   canEvaluate,
   canAward,
+  canCreateContract,
 }: {
   data: OpportunityOfferData;
   canEvaluate: boolean;
   canAward: boolean;
+  canCreateContract: boolean;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -119,6 +122,22 @@ export function OpportunityOffersForm({
     });
   }
 
+  function createContract() {
+    setFeedback(null);
+    startTransition(async () => {
+      const result = await createContractFromAwardAction(
+        data.opportunity.id,
+      );
+      setFeedback({
+        tone: result.success ? "success" : "error",
+        message: result.message,
+      });
+      if (result.success) {
+        router.push(`/platform/contracts/${result.data.contractId}`);
+      }
+    });
+  }
+
   return (
     <main className={styles.page}>
       <header className={styles.header}>
@@ -137,6 +156,19 @@ export function OpportunityOffersForm({
         <article><span>الموردون المدعوون</span><strong>{data.partners.length}</strong></article>
         <article><span>بنود المنافسة</span><strong>{data.items.length}</strong></article>
       </section>
+
+      {canCreateContract &&
+        data.opportunity.status === "AWARDED" && (
+          <section className={styles.contractCallout}>
+            <div>
+              <strong>تمت ترسية المنافسة</strong>
+              <p>حوّل العرض الفائز إلى مسودة عقد قابلة للمراجعة.</p>
+            </div>
+            <button disabled={pending} onClick={createContract} type="button">
+              {pending ? "جارٍ إنشاء العقد..." : "إنشاء مسودة العقد"}
+            </button>
+          </section>
+        )}
 
       <section className={styles.panel}>
         <div className={styles.panelHeader}>

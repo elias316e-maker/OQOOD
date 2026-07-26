@@ -48,6 +48,10 @@ export default async function OpportunityOffersPage({
         context,
         Permissions.opportunities.award,
       )}
+      canCreateContract={hasPermission(
+        context,
+        Permissions.contracts.create,
+      )}
       data={result.data}
     />
   );

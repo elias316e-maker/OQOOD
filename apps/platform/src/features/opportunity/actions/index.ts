@@ -1,6 +1,7 @@
 export * from "./list-workspace-opportunities";
 export * from "./manage-opportunity-setup";
 export * from "./manage-opportunity-offers";
+export * from "./create-contract-from-award";
 export * from "./get-opportunity";
 export * from "./archive-opportunity";
 export * from "./publish-opportunity";

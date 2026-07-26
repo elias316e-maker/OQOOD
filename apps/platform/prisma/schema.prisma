@@ -100,6 +100,19 @@ enum OfferStatus {
   LOST
 }
 
+enum ContractStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  SENT_FOR_SIGNATURE
+  ACTIVE
+  SUSPENDED
+  COMPLETED
+  TERMINATED
+  CANCELLED
+  ARCHIVED
+}
+
 enum ProcurementRequestStatus {
   DRAFT
   SUBMITTED
@@ -212,6 +225,7 @@ model User {
   createdWorkspaces            Workspace[]          @relation("WorkspaceCreator")
   createdProjects              Project[]            @relation("ProjectCreator")
   createdOpportunities         Opportunity[]        @relation("OpportunityCreator")
+  createdContracts             Contract[]           @relation("ContractCreator")
   requestedProcurementRequests ProcurementRequest[] @relation("ProcurementRequestedBy")
   assignedProcurementRequests  ProcurementRequest[] @relation("ProcurementAssignedTo")
   createdProcurementRequests   ProcurementRequest[] @relation("ProcurementCreatedBy")
@@ -292,6 +306,7 @@ model Workspace {
   partners            BusinessPartner[]
   projects            Project[]
   opportunities       Opportunity[]
+  contracts           Contract[]
   procurementRequests ProcurementRequest[]
   roles               Role[]
   auditLogs           AuditLog[]
@@ -391,6 +406,7 @@ model BusinessPartner {
   roles       BusinessPartnerRole[]
   invitations OpportunityInvitation[]
   offers      Offer[]
+  contracts   Contract[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -430,6 +446,7 @@ model Project {
 
   opportunities       Opportunity[]
   procurementRequests ProcurementRequest[]
+  contracts           Contract[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -463,6 +480,7 @@ model Opportunity {
   items       OpportunityItem[]
   invitations OpportunityInvitation[]
   offers      Offer[]
+  contracts   Contract[]
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -535,6 +553,7 @@ model Offer {
   opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   businessPartner BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Cascade)
   items           OfferItem[]
+  contract        Contract?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -542,6 +561,64 @@ model Offer {
   @@unique([opportunityId, businessPartnerId])
   @@index([opportunityId, status])
   @@index([businessPartnerId])
+}
+
+model Contract {
+  id                String         @id @default(cuid())
+  workspaceId       String
+  projectId         String?
+  opportunityId     String
+  sourceOfferId     String         @unique
+  businessPartnerId String
+  number            String
+  title             String
+  description       String?
+  status            ContractStatus @default(DRAFT)
+  currency          String         @default("SAR")
+  subtotal          Decimal        @db.Decimal(18, 2)
+  taxAmount         Decimal        @db.Decimal(18, 2)
+  totalAmount       Decimal        @db.Decimal(18, 2)
+  paymentTerms      String?
+  deliveryDays      Int?
+  startDate         DateTime?
+  endDate           DateTime?
+  createdById       String
+
+  workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project         Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Restrict)
+  sourceOffer     Offer           @relation(fields: [sourceOfferId], references: [id], onDelete: Restrict)
+  businessPartner BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Restrict)
+  createdBy       User            @relation("ContractCreator", fields: [createdById], references: [id])
+  items           ContractItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, number])
+  @@index([workspaceId, status])
+  @@index([opportunityId])
+  @@index([businessPartnerId])
+}
+
+model ContractItem {
+  id          String  @id @default(cuid())
+  contractId  String
+  lineNumber  Int
+  description String
+  quantity    Decimal @db.Decimal(18, 4)
+  unit        String
+  unitPrice   Decimal @db.Decimal(18, 4)
+  totalPrice  Decimal @db.Decimal(18, 2)
+  notes       String?
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([contractId, lineNumber])
+  @@index([contractId])
 }
 
 model OfferItem {
