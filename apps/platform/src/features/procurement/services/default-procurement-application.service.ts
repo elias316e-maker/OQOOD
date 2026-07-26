@@ -781,9 +781,85 @@ export class DefaultProcurementApplicationService
   }
 
   async approve(
-    _request: ProcurementRequestCommandInput,
+    request: ProcurementRequestCommandInput,
   ): Promise<ProcurementRequestResponse> {
-    throw new Error("Not implemented.");
+    return this.transactionRunner.$transaction(
+      async (transaction) => {
+        const authorized =
+          await this.authorization.authorize(
+            transaction,
+            {
+              workspaceId: request.workspaceId,
+              actorUserId:
+                request.actorUserId,
+              permission:
+                Permissions.procurement.approve,
+              requireWriteAccess: true,
+            },
+          );
+
+        const existing =
+          await this.repository.findById(
+            transaction,
+            authorized.workspaceId,
+            request.procurementRequestId,
+          );
+
+        if (!existing) {
+          throw new ProcurementNotFoundError();
+        }
+
+        if (
+          existing.status !== "UNDER_REVIEW"
+        ) {
+          throw new ProcurementStateTransitionError(
+            `Procurement request cannot be approved from ${existing.status}.`,
+          );
+        }
+
+        const items =
+          await this.itemRepository.findByRequestId(
+            transaction,
+            existing.id,
+          );
+        const approvedAt = new Date();
+        const approved =
+          await this.repository.update(
+            transaction,
+            authorized.workspaceId,
+            existing.id,
+            {
+              status: "APPROVED",
+            },
+          );
+
+        if (!approved) {
+          throw new ProcurementNotFoundError();
+        }
+
+        await this.repository.createApproveAuditLog(
+          transaction,
+          {
+            workspaceId:
+              authorized.workspaceId,
+            actorUserId:
+              authorized.actorUserId,
+            procurementRequestId: approved.id,
+            procurementRequestNumber:
+              approved.number,
+            previousStatus: existing.status,
+            reason:
+              request.reason?.trim() || null,
+            approvedAt,
+          },
+        );
+
+        return mapProcurementRequestResponse(
+          approved,
+          items,
+        );
+      },
+    );
   }
 
   async reject(

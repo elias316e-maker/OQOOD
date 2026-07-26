@@ -11,6 +11,7 @@ import type {
 } from "../dtos";
 
 import type {
+  ApproveProcurementRequestAuditInput,
   CreateProcurementRequestAuditInput,
   ProcurementRequestRepository,
   ProcurementTransactionClient,
@@ -428,6 +429,32 @@ export class PrismaProcurementRequestRepository
           reason: input.reason,
           changesRequestedAt:
             input.changesRequestedAt.toISOString(),
+          source:
+            "PROCUREMENT_APPLICATION_SERVICE",
+        },
+      },
+    });
+  }
+
+  async createApproveAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: ApproveProcurementRequestAuditInput,
+  ): Promise<void> {
+    await transaction.auditLog.create({
+      data: {
+        workspaceId: input.workspaceId,
+        userId: input.actorUserId,
+        action: "procurement.approved",
+        entityType: "ProcurementRequest",
+        entityId: input.procurementRequestId,
+        metadata: {
+          number:
+            input.procurementRequestNumber,
+          previousStatus:
+            input.previousStatus,
+          reason: input.reason,
+          approvedAt:
+            input.approvedAt.toISOString(),
           source:
             "PROCUREMENT_APPLICATION_SERVICE",
         },
