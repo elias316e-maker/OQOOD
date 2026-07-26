@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ContractLifecycleActions } from "@/features/contract";
+import {
+  ContractAmendments,
+  ContractLifecycleActions,
+} from "@/features/contract";
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
 import { resolveOpportunityActionContext } from "@/features/opportunity/actions";
 import { hasPermission, Permissions } from "@/lib/permissions";
@@ -36,6 +39,10 @@ const activityLabels: Record<string, string> = {
   "contract.complete": "إكمال العقد",
   "contract.terminate": "إنهاء العقد",
   "contract.draft_updated": "تحديث بيانات مسودة العقد",
+  "contract.amendment_created": "إنشاء مسودة ملحق",
+  "contract.amendment_submit": "إرسال ملحق للاعتماد",
+  "contract.amendment_approve": "اعتماد ملحق وتطبيقه",
+  "contract.amendment_reject": "رفض ملحق",
 };
 
 export default async function ContractDetailsPage({ params }: Props) {
@@ -58,6 +65,7 @@ export default async function ContractDetailsPage({ params }: Props) {
         businessPartner: { select: { nameAr: true, commercialRegister: true } },
         opportunity: { select: { id: true, number: true, title: true } },
         items: { orderBy: { lineNumber: "asc" } },
+        amendments: { orderBy: { number: "desc" } },
       },
     });
     const activity = contract
@@ -187,6 +195,29 @@ export default async function ContractDetailsPage({ params }: Props) {
           ))}
         </div>
       </section>
+
+      {["ACTIVE", "SUSPENDED"].includes(contract.status) && (
+        <section className={styles.panel}>
+          <h2 className={styles.sectionTitle}>ملاحق وتعديلات العقد</h2>
+          <ContractAmendments
+            amendments={contract.amendments.map((amendment) => ({
+              id: amendment.id,
+              number: amendment.number,
+              title: amendment.title,
+              reason: amendment.reason,
+              status: amendment.status,
+              valueChange: amendment.valueChange.toString(),
+              resultingTotal: amendment.resultingTotal.toString(),
+              newEndDate: amendment.newEndDate?.toISOString() ?? null,
+              createdAt: amendment.createdAt.toISOString(),
+            }))}
+            canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
+            canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
+            contractId={contract.id}
+            currency={contract.currency}
+          />
+        </section>
+      )}
     </main>
   );
 }

@@ -113,6 +113,14 @@ enum ContractStatus {
   ARCHIVED
 }
 
+enum ContractAmendmentStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
 enum ProcurementRequestStatus {
   DRAFT
   SUBMITTED
@@ -226,6 +234,8 @@ model User {
   createdProjects              Project[]            @relation("ProjectCreator")
   createdOpportunities         Opportunity[]        @relation("OpportunityCreator")
   createdContracts             Contract[]           @relation("ContractCreator")
+  createdContractAmendments    ContractAmendment[]  @relation("ContractAmendmentCreator")
+  approvedContractAmendments   ContractAmendment[]  @relation("ContractAmendmentApprover")
   requestedProcurementRequests ProcurementRequest[] @relation("ProcurementRequestedBy")
   assignedProcurementRequests  ProcurementRequest[] @relation("ProcurementAssignedTo")
   createdProcurementRequests   ProcurementRequest[] @relation("ProcurementCreatedBy")
@@ -596,6 +606,7 @@ model Contract {
   businessPartner BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Restrict)
   createdBy       User            @relation("ContractCreator", fields: [createdById], references: [id])
   items           ContractItem[]
+  amendments      ContractAmendment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -604,6 +615,36 @@ model Contract {
   @@index([workspaceId, status])
   @@index([opportunityId])
   @@index([businessPartnerId])
+}
+
+model ContractAmendment {
+  id              String                  @id @default(cuid())
+  contractId      String
+  number          Int
+  title           String
+  reason          String
+  status          ContractAmendmentStatus @default(DRAFT)
+  valueChange     Decimal                 @default(0) @db.Decimal(18, 2)
+  previousTotal   Decimal                 @db.Decimal(18, 2)
+  resultingTotal  Decimal                 @db.Decimal(18, 2)
+  previousEndDate DateTime?
+  newEndDate      DateTime?
+  contractSnapshot Json
+  createdById     String
+  approvedById    String?
+  submittedAt     DateTime?
+  approvedAt      DateTime?
+  rejectionReason String?
+
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  createdBy  User     @relation("ContractAmendmentCreator", fields: [createdById], references: [id])
+  approvedBy User?    @relation("ContractAmendmentApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([contractId, number])
+  @@index([contractId, status])
 }
 
 model ContractItem {
