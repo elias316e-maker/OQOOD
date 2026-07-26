@@ -87,7 +87,7 @@ export default async function PartnersPage() {
                 {result.data.map((partner) => (
                   <tr key={partner.id}>
                     <td>
-                      <strong>{partner.nameAr}</strong>
+                      <strong><Link href={`/platform/partners/${partner.id}`}>{partner.nameAr}</Link></strong>
                       <small>
                         {partner.commercialRegister ||
                           partner.nameEn ||
