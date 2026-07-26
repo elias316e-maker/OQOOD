@@ -71,6 +71,17 @@ export type ApproveProcurementRequestAuditInput = {
   approvedAt: Date;
 };
 
+export type RejectProcurementRequestAuditInput = {
+  workspaceId: string;
+  actorUserId: string;
+  procurementRequestId: string;
+  procurementRequestNumber: string;
+  previousStatus:
+    ProcurementRequestRecord["status"];
+  reason: string;
+  rejectedAt: Date;
+};
+
 export type ProcurementTransactionClient =
   Prisma.TransactionClient;
 
@@ -144,5 +155,10 @@ export interface ProcurementRequestRepository {
   createApproveAuditLog(
     transaction: ProcurementTransactionClient,
     input: ApproveProcurementRequestAuditInput,
+  ): Promise<void>;
+
+  createRejectAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: RejectProcurementRequestAuditInput,
   ): Promise<void>;
 }

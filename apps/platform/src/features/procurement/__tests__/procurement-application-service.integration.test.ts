@@ -17,6 +17,7 @@ import {
   type ApproveProcurementRequestAuditInput,
   type CreateProcurementRequestAuditInput,
   type ProcurementTransactionClient,
+  type RejectProcurementRequestAuditInput,
   type RequestProcurementChangesAuditInput,
   type StartProcurementReviewAuditInput,
   type SubmitProcurementRequestAuditInput,
@@ -128,6 +129,21 @@ class ThrowingProcurementApproveAuditRepository
     void input;
     throw new Error(
       "Simulated procurement approval audit failure.",
+    );
+  }
+}
+
+class ThrowingProcurementRejectAuditRepository
+  extends PrismaProcurementRequestRepository
+{
+  override async createRejectAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: RejectProcurementRequestAuditInput,
+  ): Promise<void> {
+    void transaction;
+    void input;
+    throw new Error(
+      "Simulated procurement rejection audit failure.",
     );
   }
 }
@@ -1539,6 +1555,182 @@ describe(
             where: {
               workspaceId: context.workspaceId,
               action: "procurement.approved",
+              entityId: created.id,
+            },
+          }),
+        ).resolves.toBe(0);
+      },
+    );
+
+    it(
+      "rejects a request under review and records the reason",
+      async () => {
+        const created =
+          await createUnderReviewRequest(
+            `PR-REJECT-${context.uniqueId}`,
+            "Ready for rejection",
+          );
+
+        const rejected =
+          await createService().reject({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+            reason:
+              "  Budget justification is incomplete.  ",
+          });
+
+        expect(rejected.status).toBe(
+          "REJECTED",
+        );
+        expect(rejected.items).toHaveLength(1);
+
+        const audit =
+          await prisma.auditLog.findFirst({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.rejected",
+              entityId: created.id,
+            },
+          });
+
+        expect(audit?.metadata).toMatchObject({
+          previousStatus: "UNDER_REVIEW",
+          reason:
+            "Budget justification is incomplete.",
+        });
+      },
+    );
+
+    it(
+      "requires a non-empty rejection reason",
+      async () => {
+        await expect(
+          createService().reject({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId:
+              "missing-rejection-reason",
+            reason: " ",
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementValidationError,
+        );
+      },
+    );
+
+    it(
+      "requires approve permission for rejection",
+      async () => {
+        const created =
+          await createUnderReviewRequest(
+            `PR-REJECT-DENIED-${context.uniqueId}`,
+            "Denied rejection",
+          );
+        const permission =
+          createPermissionTestContext(
+            context.roleId,
+          );
+
+        await permission.revokePermission(
+          Permissions.procurement.approve,
+        );
+
+        try {
+          await expect(
+            createService().reject({
+              workspaceId:
+                context.workspaceId,
+              actorUserId: context.userId,
+              procurementRequestId:
+                created.id,
+              reason: "Not authorized",
+            }),
+          ).rejects.toBeInstanceOf(
+            PermissionDeniedError,
+          );
+
+          const persisted =
+            await prisma.procurementRequest.findUniqueOrThrow({
+              where: {
+                id: created.id,
+              },
+            });
+
+          expect(persisted.status).toBe(
+            "UNDER_REVIEW",
+          );
+        } finally {
+          await permission.grantPermission(
+            Permissions.procurement.approve,
+          );
+        }
+      },
+    );
+
+    it(
+      "rejects rejection outside review",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-REJECT-STATE-${context.uniqueId}`,
+          title: "Draft rejection",
+        });
+
+        await expect(
+          service.reject({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+            reason: "Invalid state",
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementStateTransitionError,
+        );
+      },
+    );
+
+    it(
+      "rolls back rejection when auditing fails",
+      async () => {
+        const created =
+          await createUnderReviewRequest(
+            `PR-REJECT-ROLLBACK-${context.uniqueId}`,
+            "Rejection rollback",
+          );
+
+        await expect(
+          createService(
+            new ThrowingProcurementRejectAuditRepository(),
+          ).reject({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+            reason: "Rollback rejection",
+          }),
+        ).rejects.toThrow(
+          "Simulated procurement rejection audit failure.",
+        );
+
+        const persisted =
+          await prisma.procurementRequest.findUniqueOrThrow({
+            where: {
+              id: created.id,
+            },
+          });
+
+        expect(persisted.status).toBe(
+          "UNDER_REVIEW",
+        );
+        await expect(
+          prisma.auditLog.count({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.rejected",
               entityId: created.id,
             },
           }),

@@ -863,9 +863,92 @@ export class DefaultProcurementApplicationService
   }
 
   async reject(
-    _request: ProcurementRequestCommandInput,
+    request: ProcurementRequestCommandInput,
   ): Promise<ProcurementRequestResponse> {
-    throw new Error("Not implemented.");
+    const reason = request.reason?.trim();
+
+    if (!reason) {
+      throw new ProcurementValidationError(
+        "A reason is required when rejecting a procurement request.",
+      );
+    }
+
+    return this.transactionRunner.$transaction(
+      async (transaction) => {
+        const authorized =
+          await this.authorization.authorize(
+            transaction,
+            {
+              workspaceId: request.workspaceId,
+              actorUserId:
+                request.actorUserId,
+              permission:
+                Permissions.procurement.approve,
+              requireWriteAccess: true,
+            },
+          );
+
+        const existing =
+          await this.repository.findById(
+            transaction,
+            authorized.workspaceId,
+            request.procurementRequestId,
+          );
+
+        if (!existing) {
+          throw new ProcurementNotFoundError();
+        }
+
+        if (
+          existing.status !== "UNDER_REVIEW"
+        ) {
+          throw new ProcurementStateTransitionError(
+            `Procurement request cannot be rejected from ${existing.status}.`,
+          );
+        }
+
+        const items =
+          await this.itemRepository.findByRequestId(
+            transaction,
+            existing.id,
+          );
+        const rejectedAt = new Date();
+        const rejected =
+          await this.repository.update(
+            transaction,
+            authorized.workspaceId,
+            existing.id,
+            {
+              status: "REJECTED",
+            },
+          );
+
+        if (!rejected) {
+          throw new ProcurementNotFoundError();
+        }
+
+        await this.repository.createRejectAuditLog(
+          transaction,
+          {
+            workspaceId:
+              authorized.workspaceId,
+            actorUserId:
+              authorized.actorUserId,
+            procurementRequestId: rejected.id,
+            procurementRequestNumber:
+              rejected.number,
+            previousStatus: existing.status,
+            reason,
+            rejectedAt,
+          },
+        );
+
+        return mapProcurementRequestResponse(
+          rejected,
+          items,
+        );
+      },
+    );
   }
 
   async cancel(

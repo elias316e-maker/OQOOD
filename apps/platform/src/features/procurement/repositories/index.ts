@@ -3,6 +3,7 @@ export type {
   CreateProcurementRequestAuditInput,
   ProcurementRequestRepository,
   ProcurementTransactionClient,
+  RejectProcurementRequestAuditInput,
   RequestProcurementChangesAuditInput,
   StartProcurementReviewAuditInput,
   SubmitProcurementRequestAuditInput,
