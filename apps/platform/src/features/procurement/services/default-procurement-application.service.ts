@@ -952,9 +952,96 @@ export class DefaultProcurementApplicationService
   }
 
   async cancel(
-    _request: ProcurementRequestCommandInput,
+    request: ProcurementRequestCommandInput,
   ): Promise<ProcurementRequestResponse> {
-    throw new Error("Not implemented.");
+    return this.transactionRunner.$transaction(
+      async (transaction) => {
+        const authorized =
+          await this.authorization.authorize(
+            transaction,
+            {
+              workspaceId: request.workspaceId,
+              actorUserId:
+                request.actorUserId,
+              permission:
+                Permissions.procurement.update,
+              requireWriteAccess: true,
+            },
+          );
+
+        const existing =
+          await this.repository.findById(
+            transaction,
+            authorized.workspaceId,
+            request.procurementRequestId,
+          );
+
+        if (!existing) {
+          throw new ProcurementNotFoundError();
+        }
+
+        const cancellableStatuses = [
+          "DRAFT",
+          "SUBMITTED",
+          "UNDER_REVIEW",
+          "CHANGES_REQUESTED",
+        ] as const;
+
+        if (
+          !cancellableStatuses.includes(
+            existing.status as
+              (typeof cancellableStatuses)[number],
+          )
+        ) {
+          throw new ProcurementStateTransitionError(
+            `Procurement request cannot be cancelled from ${existing.status}.`,
+          );
+        }
+
+        const items =
+          await this.itemRepository.findByRequestId(
+            transaction,
+            existing.id,
+          );
+        const cancelledAt = new Date();
+        const cancelled =
+          await this.repository.update(
+            transaction,
+            authorized.workspaceId,
+            existing.id,
+            {
+              status: "CANCELLED",
+            },
+          );
+
+        if (!cancelled) {
+          throw new ProcurementNotFoundError();
+        }
+
+        await this.repository.createCancelAuditLog(
+          transaction,
+          {
+            workspaceId:
+              authorized.workspaceId,
+            actorUserId:
+              authorized.actorUserId,
+            procurementRequestId:
+              cancelled.id,
+            procurementRequestNumber:
+              cancelled.number,
+            previousStatus: existing.status,
+            reason:
+              request.reason?.trim() || null,
+            cancelledAt,
+          },
+        );
+
+        return mapProcurementRequestResponse(
+          cancelled,
+          items,
+        );
+      },
+    );
   }
 
   async archive(

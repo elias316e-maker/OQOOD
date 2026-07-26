@@ -12,6 +12,7 @@ import type {
 
 import type {
   ApproveProcurementRequestAuditInput,
+  CancelProcurementRequestAuditInput,
   CreateProcurementRequestAuditInput,
   ProcurementRequestRepository,
   ProcurementTransactionClient,
@@ -482,6 +483,32 @@ export class PrismaProcurementRequestRepository
           reason: input.reason,
           rejectedAt:
             input.rejectedAt.toISOString(),
+          source:
+            "PROCUREMENT_APPLICATION_SERVICE",
+        },
+      },
+    });
+  }
+
+  async createCancelAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: CancelProcurementRequestAuditInput,
+  ): Promise<void> {
+    await transaction.auditLog.create({
+      data: {
+        workspaceId: input.workspaceId,
+        userId: input.actorUserId,
+        action: "procurement.cancelled",
+        entityType: "ProcurementRequest",
+        entityId: input.procurementRequestId,
+        metadata: {
+          number:
+            input.procurementRequestNumber,
+          previousStatus:
+            input.previousStatus,
+          reason: input.reason,
+          cancelledAt:
+            input.cancelledAt.toISOString(),
           source:
             "PROCUREMENT_APPLICATION_SERVICE",
         },

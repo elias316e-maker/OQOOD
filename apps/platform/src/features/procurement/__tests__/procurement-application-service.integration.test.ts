@@ -15,6 +15,7 @@ import {
   PrismaProcurementRequestItemRepository,
   PrismaProcurementRequestRepository,
   type ApproveProcurementRequestAuditInput,
+  type CancelProcurementRequestAuditInput,
   type CreateProcurementRequestAuditInput,
   type ProcurementTransactionClient,
   type RejectProcurementRequestAuditInput,
@@ -144,6 +145,21 @@ class ThrowingProcurementRejectAuditRepository
     void input;
     throw new Error(
       "Simulated procurement rejection audit failure.",
+    );
+  }
+}
+
+class ThrowingProcurementCancelAuditRepository
+  extends PrismaProcurementRequestRepository
+{
+  override async createCancelAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: CancelProcurementRequestAuditInput,
+  ): Promise<void> {
+    void transaction;
+    void input;
+    throw new Error(
+      "Simulated procurement cancellation audit failure.",
     );
   }
 }
@@ -1731,6 +1747,210 @@ describe(
             where: {
               workspaceId: context.workspaceId,
               action: "procurement.rejected",
+              entityId: created.id,
+            },
+          }),
+        ).resolves.toBe(0);
+      },
+    );
+
+    it(
+      "cancels a submitted request and records the reason",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-CANCEL-${context.uniqueId}`,
+          title: "Cancellation request",
+          items: [
+            {
+              lineNumber: 1,
+              type: "MATERIAL",
+              description: "Cancelled item",
+              quantity: "1",
+              unit: "each",
+            },
+          ],
+        });
+        await service.submit({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        const cancelled = await service.cancel({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+          reason: "  Business need changed.  ",
+        });
+
+        expect(cancelled.status).toBe(
+          "CANCELLED",
+        );
+        expect(cancelled.items).toHaveLength(1);
+
+        const audit =
+          await prisma.auditLog.findFirst({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.cancelled",
+              entityId: created.id,
+            },
+          });
+
+        expect(audit?.metadata).toMatchObject({
+          previousStatus: "SUBMITTED",
+          reason: "Business need changed.",
+        });
+      },
+    );
+
+    it(
+      "allows draft cancellation without a reason",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-CANCEL-DRAFT-${context.uniqueId}`,
+          title: "Draft cancellation",
+        });
+
+        const cancelled = await service.cancel({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        expect(cancelled.status).toBe(
+          "CANCELLED",
+        );
+      },
+    );
+
+    it(
+      "requires update permission for cancellation",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-CANCEL-DENIED-${context.uniqueId}`,
+          title: "Denied cancellation",
+        });
+        const permission =
+          createPermissionTestContext(
+            context.roleId,
+          );
+
+        await permission.revokePermission(
+          Permissions.procurement.update,
+        );
+
+        try {
+          await expect(
+            service.cancel({
+              workspaceId:
+                context.workspaceId,
+              actorUserId: context.userId,
+              procurementRequestId:
+                created.id,
+            }),
+          ).rejects.toBeInstanceOf(
+            PermissionDeniedError,
+          );
+
+          const persisted =
+            await prisma.procurementRequest.findUniqueOrThrow({
+              where: {
+                id: created.id,
+              },
+            });
+
+          expect(persisted.status).toBe(
+            "DRAFT",
+          );
+        } finally {
+          await permission.grantPermission(
+            Permissions.procurement.update,
+          );
+        }
+      },
+    );
+
+    it(
+      "rejects cancellation after a final decision",
+      async () => {
+        const created =
+          await createUnderReviewRequest(
+            `PR-CANCEL-STATE-${context.uniqueId}`,
+            "Approved cancellation",
+          );
+        const service = createService();
+        await service.approve({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        await expect(
+          service.cancel({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementStateTransitionError,
+        );
+      },
+    );
+
+    it(
+      "rolls back cancellation when auditing fails",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-CANCEL-ROLLBACK-${context.uniqueId}`,
+          title: "Cancellation rollback",
+        });
+
+        await expect(
+          createService(
+            new ThrowingProcurementCancelAuditRepository(),
+          ).cancel({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId: created.id,
+          }),
+        ).rejects.toThrow(
+          "Simulated procurement cancellation audit failure.",
+        );
+
+        const persisted =
+          await prisma.procurementRequest.findUniqueOrThrow({
+            where: {
+              id: created.id,
+            },
+          });
+
+        expect(persisted.status).toBe("DRAFT");
+        await expect(
+          prisma.auditLog.count({
+            where: {
+              workspaceId: context.workspaceId,
+              action: "procurement.cancelled",
               entityId: created.id,
             },
           }),
