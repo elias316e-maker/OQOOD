@@ -28,6 +28,11 @@ const navigation = [
     icon: "☆",
   },
   {
+    label: "المشتريات",
+    href: "/platform/procurement",
+    icon: "◈",
+  },
+  {
     label: "العقود",
     href: "/platform/contracts",
     icon: "▣",

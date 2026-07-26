@@ -73,36 +73,36 @@ async function executeLifecycleAction(
   }
 }
 
-export function submitProcurementRequestAction(
+export async function submitProcurementRequestAction(
   input: ProcurementRequestCommandActionInput,
 ): Promise<
   ProcurementActionResult<ProcurementRequestResponse>
 > {
-  return executeLifecycleAction(
+  return await executeLifecycleAction(
     "submit",
     input,
     "تم إرسال طلب المشتريات للمراجعة.",
   );
 }
 
-export function startProcurementReviewAction(
+export async function startProcurementReviewAction(
   input: ProcurementRequestCommandActionInput,
 ): Promise<
   ProcurementActionResult<ProcurementRequestResponse>
 > {
-  return executeLifecycleAction(
+  return await executeLifecycleAction(
     "startReview",
     input,
     "بدأت مراجعة طلب المشتريات.",
   );
 }
 
-export function requestProcurementChangesAction(
+export async function requestProcurementChangesAction(
   input: ProcurementRequestCommandActionInput,
 ): Promise<
   ProcurementActionResult<ProcurementRequestResponse>
 > {
-  return executeLifecycleAction(
+  return await executeLifecycleAction(
     "requestChanges",
     input,
     "تمت إعادة الطلب لإجراء التعديلات.",
@@ -110,24 +110,24 @@ export function requestProcurementChangesAction(
   );
 }
 
-export function approveProcurementRequestAction(
+export async function approveProcurementRequestAction(
   input: ProcurementRequestCommandActionInput,
 ): Promise<
   ProcurementActionResult<ProcurementRequestResponse>
 > {
-  return executeLifecycleAction(
+  return await executeLifecycleAction(
     "approve",
     input,
     "تم اعتماد طلب المشتريات.",
   );
 }
 
-export function rejectProcurementRequestAction(
+export async function rejectProcurementRequestAction(
   input: ProcurementRequestCommandActionInput,
 ): Promise<
   ProcurementActionResult<ProcurementRequestResponse>
 > {
-  return executeLifecycleAction(
+  return await executeLifecycleAction(
     "reject",
     input,
     "تم رفض طلب المشتريات.",
@@ -135,27 +135,26 @@ export function rejectProcurementRequestAction(
   );
 }
 
-export function cancelProcurementRequestAction(
+export async function cancelProcurementRequestAction(
   input: ProcurementRequestCommandActionInput,
 ): Promise<
   ProcurementActionResult<ProcurementRequestResponse>
 > {
-  return executeLifecycleAction(
+  return await executeLifecycleAction(
     "cancel",
     input,
     "تم إلغاء طلب المشتريات.",
   );
 }
 
-export function archiveProcurementRequestAction(
+export async function archiveProcurementRequestAction(
   input: ProcurementRequestCommandActionInput,
 ): Promise<
   ProcurementActionResult<ProcurementRequestResponse>
 > {
-  return executeLifecycleAction(
+  return await executeLifecycleAction(
     "archive",
     input,
     "تمت أرشفة طلب المشتريات.",
   );
 }
-
