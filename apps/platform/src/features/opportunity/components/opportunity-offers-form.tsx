@@ -9,6 +9,7 @@ import {
 import { useRouter } from "next/navigation";
 
 import {
+  evaluateOpportunityOfferAction,
   saveOpportunityOfferAction,
   type OpportunityOfferData,
 } from "../actions/manage-opportunity-offers";
@@ -18,9 +19,11 @@ import styles from "./opportunity-offers-form.module.css";
 export function OpportunityOffersForm({
   data,
   canEvaluate,
+  canAward,
 }: {
   data: OpportunityOfferData;
   canEvaluate: boolean;
+  canAward: boolean;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -93,6 +96,29 @@ export function OpportunityOffersForm({
     });
   }
 
+  function evaluate(
+    offerId: string,
+    decision:
+      | "TECHNICALLY_ACCEPT"
+      | "TECHNICALLY_REJECT"
+      | "FINANCIALLY_EVALUATE"
+      | "AWARD",
+  ) {
+    setFeedback(null);
+    startTransition(async () => {
+      const result =
+        await evaluateOpportunityOfferAction(
+          offerId,
+          decision,
+        );
+      setFeedback({
+        tone: result.success ? "success" : "error",
+        message: result.message ?? "تم تحديث التقييم.",
+      });
+      if (result.success) router.refresh();
+    });
+  }
+
   return (
     <main className={styles.page}>
       <header className={styles.header}>
@@ -121,7 +147,7 @@ export function OpportunityOffersForm({
         ) : (
           <div className={styles.tableViewport}>
             <table className={styles.table}>
-              <thead><tr><th>المورد</th><th>المرجع</th><th>الحالة</th><th>قبل الضريبة</th><th>الضريبة</th><th>الإجمالي</th><th>التسليم</th><th>الصلاحية</th></tr></thead>
+              <thead><tr><th>المورد</th><th>المرجع</th><th>الحالة</th><th>قبل الضريبة</th><th>الضريبة</th><th>الإجمالي</th><th>التسليم</th><th>الصلاحية</th><th>التقييم والترسية</th></tr></thead>
               <tbody>
                 {data.offers.map((offer) => (
                   <tr key={offer.id}>
@@ -133,6 +159,27 @@ export function OpportunityOffersForm({
                     <td className={styles.total}>{money(offer.totalAmount)}</td>
                     <td>{offer.deliveryDays ? `${offer.deliveryDays} يوم` : "—"}</td>
                     <td>{offer.validityDays ? `${offer.validityDays} يوم` : "—"}</td>
+                    <td>
+                      <div className={styles.evaluationActions}>
+                        {canEvaluate &&
+                          ["SUBMITTED", "UNDER_REVIEW"].includes(
+                            offer.status,
+                          ) && (
+                            <>
+                              <button disabled={pending} onClick={() => evaluate(offer.id, "TECHNICALLY_ACCEPT")} type="button">قبول فني</button>
+                              <button data-tone="danger" disabled={pending} onClick={() => evaluate(offer.id, "TECHNICALLY_REJECT")} type="button">رفض فني</button>
+                            </>
+                          )}
+                        {canEvaluate &&
+                          offer.status === "TECHNICALLY_ACCEPTED" && (
+                            <button disabled={pending} onClick={() => evaluate(offer.id, "FINANCIALLY_EVALUATE")} type="button">اعتماد مالي</button>
+                          )}
+                        {canAward &&
+                          offer.status === "FINANCIALLY_EVALUATED" && (
+                            <button data-tone="award" disabled={pending} onClick={() => evaluate(offer.id, "AWARD")} type="button">ترسية</button>
+                          )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

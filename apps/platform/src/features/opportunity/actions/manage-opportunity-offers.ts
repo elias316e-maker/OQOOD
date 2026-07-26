@@ -71,6 +71,12 @@ type SaveOfferInput = {
   }>;
 };
 
+type OfferEvaluationDecision =
+  | "TECHNICALLY_ACCEPT"
+  | "TECHNICALLY_REJECT"
+  | "FINANCIALLY_EVALUATE"
+  | "AWARD";
+
 function message(error: unknown): string {
   return error instanceof Error && error.message.trim()
     ? error.message
@@ -372,6 +378,168 @@ export async function saveOpportunityOfferAction(
       success: true,
       data: result,
       message: "تم تسجيل عرض المورد بنجاح.",
+    };
+  } catch (error) {
+    return { success: false, message: message(error) };
+  }
+}
+
+export async function evaluateOpportunityOfferAction(
+  offerId: string,
+  decision: OfferEvaluationDecision,
+): Promise<Result<{ status: string }>> {
+  try {
+    const context = await resolveOpportunityActionContext();
+    const authorization =
+      new PrismaOpportunityAuthorizationGateway();
+
+    const result = await prisma.$transaction(
+      async (transaction) => {
+        await authorization.authorize(transaction, {
+          workspaceId: context.workspaceId,
+          actorUserId: context.actorUserId,
+          permission:
+            decision === "AWARD"
+              ? Permissions.opportunities.award
+              : Permissions.opportunities.evaluate,
+          requireWriteAccess: true,
+        });
+
+        const offer = await transaction.offer.findFirst({
+          where: {
+            id: offerId,
+            opportunity: {
+              workspaceId: context.workspaceId,
+            },
+          },
+          include: {
+            opportunity: {
+              select: {
+                id: true,
+                number: true,
+                status: true,
+              },
+            },
+          },
+        });
+
+        if (!offer) {
+          throw new Error("لم يتم العثور على عرض المورد.");
+        }
+
+        const targetStatus =
+          decision === "TECHNICALLY_ACCEPT"
+            ? "TECHNICALLY_ACCEPTED"
+            : decision === "TECHNICALLY_REJECT"
+              ? "TECHNICALLY_REJECTED"
+              : decision === "FINANCIALLY_EVALUATE"
+                ? "FINANCIALLY_EVALUATED"
+                : "WINNER";
+
+        if (
+          decision === "FINANCIALLY_EVALUATE" &&
+          offer.status !== "TECHNICALLY_ACCEPTED"
+        ) {
+          throw new Error(
+            "يجب قبول العرض فنياً قبل تقييمه مالياً.",
+          );
+        }
+        if (
+          decision === "AWARD" &&
+          offer.status !== "FINANCIALLY_EVALUATED"
+        ) {
+          throw new Error(
+            "يجب إكمال التقييم المالي قبل ترسية العرض.",
+          );
+        }
+        if (
+          ["ARCHIVED", "CANCELLED", "AWARDED"].includes(
+            offer.opportunity.status,
+          )
+        ) {
+          throw new Error(
+            "لا يمكن تعديل التقييم في الحالة الحالية للمنافسة.",
+          );
+        }
+
+        if (decision === "AWARD") {
+          await transaction.offer.updateMany({
+            where: {
+              opportunityId: offer.opportunity.id,
+              id: { not: offer.id },
+            },
+            data: { status: "LOST" },
+          });
+        }
+
+        await transaction.offer.update({
+          where: { id: offer.id },
+          data: { status: targetStatus },
+        });
+
+        const opportunityStatus =
+          decision === "AWARD"
+            ? "AWARDED"
+            : decision === "FINANCIALLY_EVALUATE"
+              ? "FINANCIAL_EVALUATION"
+              : "TECHNICAL_EVALUATION";
+
+        await transaction.opportunity.update({
+          where: { id: offer.opportunity.id },
+          data: {
+            status: opportunityStatus,
+            ...(decision === "AWARD"
+              ? { closedAt: new Date() }
+              : {}),
+          },
+        });
+
+        await transaction.auditLog.create({
+          data: {
+            workspaceId: context.workspaceId,
+            userId: context.actorUserId,
+            action:
+              decision === "AWARD"
+                ? "opportunity.awarded"
+                : "offer.evaluated",
+            entityType:
+              decision === "AWARD" ? "Opportunity" : "Offer",
+            entityId:
+              decision === "AWARD"
+                ? offer.opportunity.id
+                : offer.id,
+            metadata: {
+              opportunityId: offer.opportunity.id,
+              opportunityNumber: offer.opportunity.number,
+              offerId: offer.id,
+              previousOfferStatus: offer.status,
+              targetOfferStatus: targetStatus,
+              decision,
+            },
+          },
+        });
+
+        return {
+          opportunityId: offer.opportunity.id,
+          status: targetStatus,
+        };
+      },
+    );
+
+    revalidatePath(
+      `/platform/opportunities/${result.opportunityId}`,
+    );
+    revalidatePath(
+      `/platform/opportunities/${result.opportunityId}/offers`,
+    );
+
+    return {
+      success: true,
+      data: { status: result.status },
+      message:
+        decision === "AWARD"
+          ? "تمت ترسية المنافسة على العرض المختار."
+          : "تم تحديث تقييم العرض بنجاح.",
     };
   } catch (error) {
     return { success: false, message: message(error) };
