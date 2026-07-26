@@ -14,6 +14,7 @@ import type {
   CreateProcurementRequestAuditInput,
   ProcurementRequestRepository,
   ProcurementTransactionClient,
+  RequestProcurementChangesAuditInput,
   StartProcurementReviewAuditInput,
   SubmitProcurementRequestAuditInput,
   UpdateProcurementRequestAuditInput,
@@ -400,6 +401,33 @@ export class PrismaProcurementRequestRepository
             input.previousStatus,
           reviewStartedAt:
             input.reviewStartedAt.toISOString(),
+          source:
+            "PROCUREMENT_APPLICATION_SERVICE",
+        },
+      },
+    });
+  }
+
+  async createRequestChangesAuditLog(
+    transaction: ProcurementTransactionClient,
+    input: RequestProcurementChangesAuditInput,
+  ): Promise<void> {
+    await transaction.auditLog.create({
+      data: {
+        workspaceId: input.workspaceId,
+        userId: input.actorUserId,
+        action:
+          "procurement.changes_requested",
+        entityType: "ProcurementRequest",
+        entityId: input.procurementRequestId,
+        metadata: {
+          number:
+            input.procurementRequestNumber,
+          previousStatus:
+            input.previousStatus,
+          reason: input.reason,
+          changesRequestedAt:
+            input.changesRequestedAt.toISOString(),
           source:
             "PROCUREMENT_APPLICATION_SERVICE",
         },

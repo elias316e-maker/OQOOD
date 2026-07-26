@@ -691,9 +691,93 @@ export class DefaultProcurementApplicationService
   }
 
   async requestChanges(
-    _request: ProcurementRequestCommandInput,
+    request: ProcurementRequestCommandInput,
   ): Promise<ProcurementRequestResponse> {
-    throw new Error("Not implemented.");
+    const reason = request.reason?.trim();
+
+    if (!reason) {
+      throw new ProcurementValidationError(
+        "A reason is required when requesting procurement changes.",
+      );
+    }
+
+    return this.transactionRunner.$transaction(
+      async (transaction) => {
+        const authorized =
+          await this.authorization.authorize(
+            transaction,
+            {
+              workspaceId: request.workspaceId,
+              actorUserId:
+                request.actorUserId,
+              permission:
+                Permissions.procurement.approve,
+              requireWriteAccess: true,
+            },
+          );
+
+        const existing =
+          await this.repository.findById(
+            transaction,
+            authorized.workspaceId,
+            request.procurementRequestId,
+          );
+
+        if (!existing) {
+          throw new ProcurementNotFoundError();
+        }
+
+        if (
+          existing.status !== "UNDER_REVIEW"
+        ) {
+          throw new ProcurementStateTransitionError(
+            `Procurement changes cannot be requested from ${existing.status}.`,
+          );
+        }
+
+        const items =
+          await this.itemRepository.findByRequestId(
+            transaction,
+            existing.id,
+          );
+        const changesRequestedAt = new Date();
+        const changesRequested =
+          await this.repository.update(
+            transaction,
+            authorized.workspaceId,
+            existing.id,
+            {
+              status: "CHANGES_REQUESTED",
+            },
+          );
+
+        if (!changesRequested) {
+          throw new ProcurementNotFoundError();
+        }
+
+        await this.repository.createRequestChangesAuditLog(
+          transaction,
+          {
+            workspaceId:
+              authorized.workspaceId,
+            actorUserId:
+              authorized.actorUserId,
+            procurementRequestId:
+              changesRequested.id,
+            procurementRequestNumber:
+              changesRequested.number,
+            previousStatus: existing.status,
+            reason,
+            changesRequestedAt,
+          },
+        );
+
+        return mapProcurementRequestResponse(
+          changesRequested,
+          items,
+        );
+      },
+    );
   }
 
   async approve(
