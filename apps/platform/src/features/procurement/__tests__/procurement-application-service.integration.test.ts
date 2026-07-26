@@ -28,6 +28,7 @@ import {
 import {
   DefaultProcurementApplicationService,
   ProcurementConflictError,
+  ProcurementNotFoundError,
   ProcurementStateTransitionError,
   ProcurementValidationError,
 } from "../services";
@@ -267,6 +268,11 @@ describe(
         context.roleId,
       ).grantPermission(
         Permissions.procurement.delete,
+      );
+      await createPermissionTestContext(
+        context.roleId,
+      ).grantPermission(
+        Permissions.procurement.read,
       );
     });
 
@@ -2167,6 +2173,183 @@ describe(
             },
           }),
         ).resolves.toBe(0);
+      },
+    );
+
+    it(
+      "loads a request by id with its ordered items",
+      async () => {
+        const service = createService();
+        const created = await service.create({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          requestedById: context.userId,
+          number:
+            `PR-READ-${context.uniqueId}`,
+          title: "Read details",
+          items: [
+            {
+              lineNumber: 2,
+              type: "SERVICE",
+              description: "Second item",
+              quantity: "1",
+              unit: "job",
+            },
+            {
+              lineNumber: 1,
+              type: "MATERIAL",
+              description: "First item",
+              quantity: "2",
+              unit: "each",
+            },
+          ],
+        });
+
+        const result = await service.getById({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          procurementRequestId: created.id,
+        });
+
+        expect(result.id).toBe(created.id);
+        expect(
+          result.items.map(
+            (item) => item.lineNumber,
+          ),
+        ).toEqual([1, 2]);
+      },
+    );
+
+    it(
+      "does not expose requests outside the workspace scope",
+      async () => {
+        await expect(
+          createService().getById({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            procurementRequestId:
+              `foreign-${context.uniqueId}`,
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementNotFoundError,
+        );
+      },
+    );
+
+    it(
+      "requires read permission for details and lists",
+      async () => {
+        const permission =
+          createPermissionTestContext(
+            context.roleId,
+          );
+        await permission.revokePermission(
+          Permissions.procurement.read,
+        );
+
+        try {
+          await expect(
+            createService().list({
+              workspaceId:
+                context.workspaceId,
+              actorUserId: context.userId,
+            }),
+          ).rejects.toBeInstanceOf(
+            PermissionDeniedError,
+          );
+        } finally {
+          await permission.grantPermission(
+            Permissions.procurement.read,
+          );
+        }
+      },
+    );
+
+    it(
+      "filters, searches, and paginates request summaries",
+      async () => {
+        const service = createService();
+        const category =
+          `read-${context.uniqueId}`;
+
+        for (const [index, priority] of [
+          [1, "HIGH"],
+          [2, "HIGH"],
+          [3, "NORMAL"],
+        ] as const) {
+          await service.create({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            requestedById: context.userId,
+            number:
+              `PR-LIST-${index}-${context.uniqueId}`,
+            title:
+              `List marker ${index} ${context.uniqueId}`,
+            category,
+            priority,
+          });
+        }
+
+        const firstPage = await service.list({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          category,
+          priority: "HIGH",
+          page: 1,
+          pageSize: 1,
+        });
+
+        expect(firstPage).toMatchObject({
+          total: 2,
+          page: 1,
+          pageSize: 1,
+          totalPages: 2,
+        });
+        expect(firstPage.items).toHaveLength(1);
+        expect(
+          "description" in firstPage.items[0]!,
+        ).toBe(false);
+        expect(
+          "items" in firstPage.items[0]!,
+        ).toBe(false);
+
+        const searched = await service.list({
+          workspaceId: context.workspaceId,
+          actorUserId: context.userId,
+          search:
+            `List marker 3 ${context.uniqueId}`,
+        });
+
+        expect(searched.total).toBe(1);
+        expect(searched.items[0]?.priority).toBe(
+          "NORMAL",
+        );
+      },
+    );
+
+    it(
+      "validates list date ranges",
+      async () => {
+        await expect(
+          createService().list({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            requiredByFrom: "not-a-date",
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementValidationError,
+        );
+
+        await expect(
+          createService().list({
+            workspaceId: context.workspaceId,
+            actorUserId: context.userId,
+            requiredByFrom: "2026-08-02",
+            requiredByTo: "2026-08-01",
+          }),
+        ).rejects.toBeInstanceOf(
+          ProcurementValidationError,
+        );
       },
     );
   },

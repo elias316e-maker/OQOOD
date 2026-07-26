@@ -27,6 +27,7 @@ import type {
 
 import {
   mapProcurementRequestResponse,
+  mapProcurementRequestSummaryResponse,
 } from "../mappers";
 
 
@@ -1137,14 +1138,213 @@ export class DefaultProcurementApplicationService
   }
 
   async getById(
-    _request: GetProcurementRequestInput,
+    request: GetProcurementRequestInput,
   ): Promise<ProcurementRequestResponse> {
-    throw new Error("Not implemented.");
+    return this.transactionRunner.$transaction(
+      async (transaction) => {
+        const authorized =
+          await this.authorization.authorize(
+            transaction,
+            {
+              workspaceId: request.workspaceId,
+              actorUserId:
+                request.actorUserId,
+              permission:
+                Permissions.procurement.read,
+              requireWriteAccess: false,
+            },
+          );
+
+        const procurementRequest =
+          await this.repository.findById(
+            transaction,
+            authorized.workspaceId,
+            request.procurementRequestId,
+          );
+
+        if (!procurementRequest) {
+          throw new ProcurementNotFoundError();
+        }
+
+        const items =
+          await this.itemRepository.findByRequestId(
+            transaction,
+            procurementRequest.id,
+          );
+
+        return mapProcurementRequestResponse(
+          procurementRequest,
+          items,
+        );
+      },
+    );
   }
 
   async list(
-    _request: ListProcurementRequestsInput,
+    request: ListProcurementRequestsInput,
   ): Promise<ProcurementRequestListResponse> {
-    throw new Error("Not implemented.");
+    const page =
+      Number.isFinite(request.page) &&
+      (request.page ?? 0) > 0
+        ? Math.floor(request.page!)
+        : 1;
+    const pageSize =
+      Number.isFinite(request.pageSize) &&
+      (request.pageSize ?? 0) > 0
+        ? Math.min(
+            Math.floor(request.pageSize!),
+            100,
+          )
+        : 20;
+
+    const parseDate = (
+      value: string | undefined,
+      field: string,
+    ): Date | undefined => {
+      if (!value) {
+        return undefined;
+      }
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        throw new ProcurementValidationError(
+          `${field} must be a valid date.`,
+        );
+      }
+
+      return date;
+    };
+
+    const requiredByFrom = parseDate(
+      request.requiredByFrom,
+      "requiredByFrom",
+    );
+    const requiredByTo = parseDate(
+      request.requiredByTo,
+      "requiredByTo",
+    );
+
+    if (
+      requiredByFrom &&
+      requiredByTo &&
+      requiredByTo < requiredByFrom
+    ) {
+      throw new ProcurementValidationError(
+        "requiredByTo must be on or after requiredByFrom.",
+      );
+    }
+
+    const result =
+      await this.transactionRunner.$transaction(
+        async (transaction) => {
+          const authorized =
+            await this.authorization.authorize(
+              transaction,
+              {
+                workspaceId:
+                  request.workspaceId,
+                actorUserId:
+                  request.actorUserId,
+                permission:
+                  Permissions.procurement.read,
+                requireWriteAccess: false,
+              },
+            );
+
+          const filters = {
+            ...(request.status
+              ? {
+                  status: request.status,
+                }
+              : {}),
+            ...(request.priority
+              ? {
+                  priority: request.priority,
+                }
+              : {}),
+            ...(request.projectId !== undefined
+              ? {
+                  projectId:
+                    request.projectId,
+                }
+              : {}),
+            ...(request.requestedById
+              ? {
+                  requestedById:
+                    request.requestedById,
+                }
+              : {}),
+            ...(request.assignedToId !== undefined
+              ? {
+                  assignedToId:
+                    request.assignedToId,
+                }
+              : {}),
+            ...(request.category?.trim()
+              ? {
+                  category:
+                    request.category.trim(),
+                }
+              : {}),
+            ...(request.search?.trim()
+              ? {
+                  search:
+                    request.search.trim(),
+                }
+              : {}),
+            ...(requiredByFrom
+              ? {
+                  requiredByFrom,
+                }
+              : {}),
+            ...(requiredByTo
+              ? {
+                  requiredByTo,
+                }
+              : {}),
+          };
+
+          const [records, total] =
+            await Promise.all([
+              this.repository.listByWorkspace(
+                transaction,
+                {
+                  workspaceId:
+                    authorized.workspaceId,
+                  filters,
+                  limit: pageSize,
+                  offset:
+                    (page - 1) * pageSize,
+                },
+              ),
+              this.repository.countByWorkspace(
+                transaction,
+                authorized.workspaceId,
+                filters,
+              ),
+            ]);
+
+          return {
+            records,
+            total,
+          };
+        },
+      );
+
+    return {
+      items: result.records.map(
+        mapProcurementRequestSummaryResponse,
+      ),
+      total: result.total,
+      page,
+      pageSize,
+      totalPages:
+        result.total === 0
+          ? 0
+          : Math.ceil(
+              result.total / pageSize,
+            ),
+    };
   }
 }

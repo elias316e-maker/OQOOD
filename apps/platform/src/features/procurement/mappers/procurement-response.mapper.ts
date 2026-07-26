@@ -3,6 +3,7 @@ import type {
   ProcurementRequestItemResponse,
   ProcurementRequestRecord,
   ProcurementRequestResponse,
+  ProcurementRequestSummaryResponse,
 } from "../dtos";
 
 export function mapProcurementRequestItemResponse(
@@ -65,4 +66,22 @@ export function mapProcurementRequestResponse(
       mapProcurementRequestItemResponse,
     ),
   };
+}
+
+export function mapProcurementRequestSummaryResponse(
+  request: ProcurementRequestRecord,
+): ProcurementRequestSummaryResponse {
+  const {
+    description: _description,
+    items: _items,
+    ...summary
+  } = mapProcurementRequestResponse(
+    request,
+    [],
+  );
+
+  void _description;
+  void _items;
+
+  return summary;
 }
