@@ -397,7 +397,12 @@ export default async function ProcurementPage({
                   <tr key={item.id}>
                     <td>
                       <div className={styles.requestIdentity}>
-                        <strong>{item.number}</strong>
+                        <Link
+                          className={styles.detailLink}
+                          href={`/platform/procurement/${item.id}`}
+                        >
+                          {item.number}
+                        </Link>
                         <small>
                           {item.projectId
                             ? "مرتبط بمشروع"
@@ -406,7 +411,12 @@ export default async function ProcurementPage({
                       </div>
                     </td>
                     <td className={styles.titleCell}>
-                      <strong>{item.title}</strong>
+                      <Link
+                        className={styles.detailLink}
+                        href={`/platform/procurement/${item.id}`}
+                      >
+                        {item.title}
+                      </Link>
                       <small>
                         {item.assignedToId
                           ? "تم تعيين مسؤول"

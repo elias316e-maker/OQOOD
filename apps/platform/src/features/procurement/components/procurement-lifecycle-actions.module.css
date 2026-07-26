@@ -1,0 +1,105 @@
+.wrapper {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.actions,
+.confirmation > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.action,
+.confirm,
+.dismiss {
+  min-height: 2.25rem;
+  padding-inline: 0.8rem;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.action {
+  border: 1px solid #2d6da4;
+  background: #fff;
+  color: #245d8d;
+}
+
+.action[data-command="approve"],
+.confirm {
+  border: 1px solid #176f58;
+  background: #176f58;
+  color: #fff;
+}
+
+.action[data-command="reject"],
+.action[data-command="cancel"] {
+  border-color: #b95858;
+  color: #9c3e3e;
+}
+
+.confirmation {
+  min-width: min(100%, 23rem);
+  padding: 0.75rem;
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.confirmation strong,
+.confirmation p {
+  display: block;
+  margin: 0 0 0.35rem;
+}
+
+.confirmation p,
+.confirmation label {
+  color: #64748b;
+  font-size: 0.72rem;
+}
+
+.confirmation label {
+  display: grid;
+  gap: 0.3rem;
+  margin-block: 0.55rem;
+  font-weight: 800;
+}
+
+.confirmation textarea {
+  width: 100%;
+  padding: 0.55rem;
+  border: 1px solid #cad5e2;
+  border-radius: 8px;
+  resize: vertical;
+  font: inherit;
+}
+
+.dismiss {
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #475569;
+}
+
+.action:disabled,
+.confirm:disabled,
+.dismiss:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.feedback {
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  background: #e8f6f1;
+  color: #17684f;
+  font-size: 0.72rem;
+}
+
+.feedback[data-tone="error"] {
+  background: #fdecec;
+  color: #9f3f3f;
+}
