@@ -163,7 +163,7 @@ export default async function OpportunityDetailsPage({
   );
 
   return (
-    <main className="platformContent opportunityDetailsDense">
+    <main className="platformContent opportunityDetailsDense opportunityDetailRefresh">
       <section className="listPageHeader">
         <div>
           <span className="pageEyebrow">
@@ -274,6 +274,18 @@ export default async function OpportunityDetailsPage({
         </a>
       </nav>
 
+      <section className="opportunityDetailIdentity" id="basic-info">
+        <div className="opportunityDetailIdentity__mark">ع</div>
+        <div>
+          <span>المنافسة رقم {opportunity.number}</span>
+          <h2>{opportunity.title}</h2>
+          <p>{opportunity.category ?? "غير مصنفة"} · {visibilityLabels[opportunity.visibility]}</p>
+        </div>
+        <span className={`opportunityDetailStatus opportunityDetailStatus--${opportunity.status.toLowerCase()}`}>
+          {statusLabels[opportunity.status]}
+        </span>
+      </section>
+
       <section className="listSummaryCards">
         <article>
           <span>الحالة</span>
@@ -329,7 +341,7 @@ export default async function OpportunityDetailsPage({
         </article>
       </section>
 
-      <section className="opportunityDensePanel">
+      <section className="opportunityDensePanel" id="dates">
         <div className="detailGrid">
           <article>
             <span>رقم الفرصة</span>
@@ -366,7 +378,7 @@ export default async function OpportunityDetailsPage({
         </div>
       </section>
 
-      <section className="opportunityDensePanel">
+      <section className="opportunityDensePanel" id="description">
         <div className="panelHeader">
           <div>
             <span className="pageEyebrow">

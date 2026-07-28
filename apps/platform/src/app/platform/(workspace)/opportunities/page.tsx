@@ -171,8 +171,8 @@ export default async function OpportunitiesPage() {
           role="alert"
         >
           <div className="emptyState">
-            <h1 style={{ background: "none", color: "#12223a", fontSize: "clamp(1.55rem, 2.3vw, 2.2rem)", WebkitTextFillColor: "#12223a" }}>تعذر تحميل الفرص</h1>
-            <p style={{ color: "#64748b" }}>{result.message}</p>
+            <h1>تعذر تحميل الفرص</h1>
+            <p>{result.message}</p>
 
             <Link
               className="primaryButton compactButton"
@@ -218,7 +218,7 @@ export default async function OpportunitiesPage() {
   );
 
   return (
-    <main className="platformContent">
+    <main className="platformContent opportunityDirectoryRefresh">
 
 
       <section className="opportunityDirectoryHeader">
@@ -227,7 +227,16 @@ export default async function OpportunitiesPage() {
             إدارة الفرص
           </span>
 
-          <h1 style={{ background: "none", color: "#12223a", fontSize: "2rem", WebkitTextFillColor: "#12223a" }}>الفرص والمنافسات</h1>
+          <h1
+            style={{
+              background: "none",
+              color: "#12223a",
+              fontSize: "clamp(1.55rem, 2.3vw, 2.2rem)",
+              WebkitTextFillColor: "#12223a",
+            }}
+          >
+            الفرص والمنافسات
+          </h1>
 
           <p style={{ color: "#64748b", WebkitTextFillColor: "#64748b" }}>
             أنشئ وتابع طلبات الأسعار
@@ -280,7 +289,7 @@ export default async function OpportunitiesPage() {
         </article>
       </section>
 
-      <section className="dashboardPanel opportunityListPanel">
+      <section className="dashboardPanel opportunityListPanel opportunityCardsPanel">
 
         {opportunities.length === 0 ? (
           <div

@@ -22,9 +22,16 @@ const verificationLabels: Record<string, string> = {
 
 export default async function PartnersPage() {
   const result = await listPartnersAction();
+  const partners = result.success ? result.data : [];
+  const verifiedCount = partners.filter(
+    (partner) => partner.verificationStatus === "VERIFIED",
+  ).length;
+  const invitedCount = partners.filter(
+    (partner) => partner.invitationCount > 0,
+  ).length;
 
   return (
-    <main className="platformContent partnerDirectoryPage">
+    <main className="platformContent partnerDirectoryPage partnerDirectoryRefresh">
       <header className="partnerDirectoryHeader">
         <div>
           <span className="pageEyebrow">دليل المنشأة</span>
@@ -41,6 +48,14 @@ export default async function PartnersPage() {
           + إضافة شريك أعمال
         </Link>
       </header>
+
+      {result.success && (
+        <section className="partnerDirectorySummary" aria-label="ملخص الموردين">
+          <article><span>إجمالي الشركاء</span><strong>{partners.length}</strong><small>في مساحة العمل</small></article>
+          <article><span>موردون موثقون</span><strong>{verifiedCount}</strong><small>{partners.length ? Math.round(verifiedCount / partners.length * 100) : 0}% من الدليل</small></article>
+          <article><span>شاركوا في منافسات</span><strong>{invitedCount}</strong><small>لديهم دعوة واحدة أو أكثر</small></article>
+        </section>
+      )}
 
       {!result.success ? (
         <div className="opportunityFormAlert opportunityFormAlert--error">
@@ -67,7 +82,8 @@ export default async function PartnersPage() {
           <div className="opportunitySection__head">
             <div>
               <span>إجمالي الشركاء</span>
-              <h2>{result.data.length} شريك أعمال</h2>
+            <h2>{result.data.length} شريك أعمال</h2>
+            <small>اضغط على اسم الشركة لفتح بطاقة الأداء</small>
             </div>
           </div>
           <div className="oqDataTable">
@@ -87,7 +103,7 @@ export default async function PartnersPage() {
                 {result.data.map((partner) => (
                   <tr key={partner.id}>
                     <td>
-                      <strong><Link href={`/platform/partners/${partner.id}`}>{partner.nameAr}</Link></strong>
+                      <strong className="partnerIdentityName"><span aria-hidden="true">{partner.nameAr.slice(0, 1)}</span><Link href={`/platform/partners/${partner.id}`}>{partner.nameAr}</Link></strong>
                       <small>
                         {partner.commercialRegister ||
                           partner.nameEn ||
@@ -125,4 +141,3 @@ export default async function PartnersPage() {
     </main>
   );
 }
-
