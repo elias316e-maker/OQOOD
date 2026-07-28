@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import {
   ProcurementCreateForm,
-} from "@/features/procurement";
+} from "@/features/procurement/components";
 
 import {
   hasPermission,
@@ -12,6 +12,7 @@ import {
 import {
   requireCurrentWorkspace,
 } from "@/lib/workspace-context";
+import { prisma } from "@/lib/prisma";
 
 function createDraftNumber(): string {
   const date = new Date();
@@ -58,6 +59,11 @@ export default async function NewProcurementRequestPage() {
       </main>
     );
   }
+  const projects = await prisma.project.findMany({
+    where: { workspaceId: workspaceContext.workspace.id, status: { in: ["PLANNED", "ACTIVE"] } },
+    select: { id: true, code: true, nameAr: true },
+    orderBy: { nameAr: "asc" },
+  });
 
   return (
     <ProcurementCreateForm
@@ -65,6 +71,7 @@ export default async function NewProcurementRequestPage() {
         workspaceContext.workspace.defaultCurrency
       }
       draftNumber={createDraftNumber()}
+      projects={projects.map((project) => ({ id: project.id, label: `${project.code} — ${project.nameAr}` }))}
     />
   );
 }

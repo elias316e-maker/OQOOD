@@ -52,6 +52,7 @@ type FormState = {
 type ProcurementCreateFormProps = {
   draftNumber: string;
   defaultCurrency: string;
+  projects?: Array<{ id: string; label: string }>;
   initialRequest?: ProcurementRequestResponse;
 };
 
@@ -113,6 +114,7 @@ async function saveRequest(
       | "HIGH"
       | "URGENT",
     category: text(formData, "category") || null,
+    projectId: text(formData, "projectId") || null,
     requiredByDate:
       text(formData, "requiredByDate") || null,
     currency: text(formData, "currency"),
@@ -125,6 +127,7 @@ async function saveRequest(
         description: payload.description,
         priority: payload.priority,
         category: payload.category,
+        projectId: payload.projectId,
         requiredByDate: payload.requiredByDate,
         currency: payload.currency,
         items: payload.items,
@@ -174,6 +177,7 @@ function FieldError({
 export function ProcurementCreateForm({
   draftNumber,
   defaultCurrency,
+  projects = [],
   initialRequest,
 }: ProcurementCreateFormProps) {
   const router = useRouter();
@@ -373,6 +377,14 @@ export function ProcurementCreateForm({
               <option value="services">خدمات</option>
               <option value="equipment">معدات</option>
               <option value="works">أعمال ومقاولات</option>
+            </select>
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="procurement-project">المشروع</label>
+            <select defaultValue={initialRequest?.projectId ?? ""} id="procurement-project" name="projectId">
+              <option value="">طلب عام — دون مشروع</option>
+              {projects.map((project) => <option key={project.id} value={project.id}>{project.label}</option>)}
             </select>
           </div>
 
