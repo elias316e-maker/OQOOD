@@ -73,7 +73,7 @@ export default async function ContractDetailsPage({ params }: Props) {
     const contract = await transaction.contract.findFirst({
       where: { id: contractId, workspaceId: context.workspaceId },
       include: {
-        businessPartner: { select: { nameAr: true, commercialRegister: true } },
+        businessPartner: { select: { id: true, nameAr: true, commercialRegister: true } },
         opportunity: { select: { id: true, number: true, title: true } },
         items: { orderBy: { lineNumber: "asc" } },
         amendments: { orderBy: { number: "desc" } },
@@ -114,6 +114,21 @@ export default async function ContractDetailsPage({ params }: Props) {
           (1000 * 60 * 60 * 24),
       )
     : null;
+  // Request time is required for current overdue milestone indicators.
+  // eslint-disable-next-line react-hooks/purity
+  const now = new Date();
+  const overallProgress = contract.milestones.length
+    ? Math.round(contract.milestones.reduce((sum, milestone) => sum + milestone.progress, 0) / contract.milestones.length)
+    : 0;
+  const claimedAmount = contract.milestones
+    .filter((milestone) => milestone.paymentStatus === "CLAIMED")
+    .reduce((sum, milestone) => sum + Number(milestone.amount), 0);
+  const paidAmount = contract.milestones
+    .filter((milestone) => milestone.paymentStatus === "PAID")
+    .reduce((sum, milestone) => sum + Number(milestone.amount), 0);
+  const overdueCount = contract.milestones.filter(
+    (milestone) => milestone.dueDate && milestone.dueDate < now && milestone.status !== "ACCEPTED",
+  ).length;
 
   return (
     <main className={styles.page}>
@@ -125,6 +140,14 @@ export default async function ContractDetailsPage({ params }: Props) {
         </div>
         <Link className={styles.back} href="/platform/contracts">العودة إلى العقود</Link>
       </header>
+
+      <nav className={styles.detailNav} aria-label="أقسام العقد">
+        <a href="#overview">نظرة عامة</a>
+        <a href="#items">بنود العقد</a>
+        <a href="#execution">التنفيذ والمطالبات</a>
+        <a href="#amendments">الملاحق</a>
+        <a href="#activity">سجل النشاط</a>
+      </nav>
 
       <section className={styles.actionBar}>
         <div>
@@ -158,10 +181,17 @@ export default async function ContractDetailsPage({ params }: Props) {
         </div>
       )}
 
+      <section className={styles.executionKpis} id="overview">
+        <article><span>نسبة الإنجاز</span><strong>{overallProgress}%</strong><i><b style={{ width: `${overallProgress}%` }} /></i></article>
+        <article data-tone={overdueCount ? "danger" : "normal"}><span>مراحل متأخرة</span><strong>{overdueCount}</strong><small>من أصل {contract.milestones.length} مرحلة</small></article>
+        <article><span>مطالبات قيد السداد</span><strong>{money(claimedAmount)}</strong><small>بانتظار الإجراء المالي</small></article>
+        <article><span>المبالغ المسددة</span><strong>{money(paidAmount)}</strong><small>{Number(contract.totalAmount) ? Math.round(paidAmount / Number(contract.totalAmount) * 100) : 0}% من قيمة العقد</small></article>
+      </section>
+
       <section className={styles.panel}>
         <div className={styles.summary}>
           <article><span>الحالة</span><strong>{statusLabels[contract.status]}</strong></article>
-          <article><span>المورد</span><strong>{contract.businessPartner.nameAr}</strong></article>
+          <article><span>المورد</span><strong><Link href={`/platform/partners/${contract.businessPartner.id}`}>{contract.businessPartner.nameAr}</Link></strong></article>
           <article><span>القيمة الإجمالية</span><strong>{money(contract.totalAmount)}</strong></article>
           <article><span>المنافسة المصدر</span><strong><Link href={`/platform/opportunities/${contract.opportunity.id}`}>{contract.opportunity.number}</Link></strong></article>
           <article><span>قبل الضريبة</span><strong>{money(contract.subtotal)}</strong></article>
@@ -175,7 +205,7 @@ export default async function ContractDetailsPage({ params }: Props) {
         </div>
       </section>
 
-      <section className={styles.panel}>
+      <section className={styles.panel} id="items">
         <h2 className={styles.sectionTitle}>بنود العقد</h2>
         <table className={styles.table}>
           <thead><tr><th>#</th><th>الوصف</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead>
@@ -191,7 +221,7 @@ export default async function ContractDetailsPage({ params }: Props) {
         </table>
       </section>
 
-      <section className={styles.panel}>
+      <section className={styles.panel} id="activity">
         <h2 className={styles.sectionTitle}>سجل نشاط العقد</h2>
         <div className={styles.timeline}>
           {activity.map((entry) => (
@@ -213,7 +243,7 @@ export default async function ContractDetailsPage({ params }: Props) {
       </section>
 
       {["ACTIVE", "SUSPENDED"].includes(contract.status) && (
-        <section className={styles.panel}>
+        <section className={styles.panel} id="amendments">
           <h2 className={styles.sectionTitle}>ملاحق وتعديلات العقد</h2>
           <ContractAmendments
             amendments={contract.amendments.map((amendment) => ({
@@ -236,7 +266,7 @@ export default async function ContractDetailsPage({ params }: Props) {
       )}
 
       {contract.status === "ACTIVE" && (
-        <section className={styles.panel}>
+        <section className={styles.panel} id="execution">
           <h2 className={styles.sectionTitle}>تنفيذ العقد والتسليمات</h2>
           <ContractExecution
             canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}

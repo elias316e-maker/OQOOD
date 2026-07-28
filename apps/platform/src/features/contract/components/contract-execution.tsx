@@ -10,6 +10,9 @@ type Milestone = {
   amount:string;progress:number;status:string;paymentStatus:string;rejectionReason:string|null;
 };
 
+const statusLabels: Record<string,string>={PLANNED:"مخططة",IN_PROGRESS:"قيد التنفيذ",SUBMITTED:"مقدمة للمراجعة",ACCEPTED:"مقبولة",REJECTED:"مرفوضة"};
+const paymentLabels: Record<string,string>={NOT_CLAIMED:"لم تُطالب",CLAIMED:"مطالبة مسجلة",PAID:"مسددة"};
+
 export function ContractExecution({contractId,currency,milestones,canUpdate,canApprove}:{
   contractId:string;currency:string;milestones:Milestone[];canUpdate:boolean;canApprove:boolean;
 }) {
@@ -34,9 +37,9 @@ export function ContractExecution({contractId,currency,milestones,canUpdate,canA
     </form>}
     {feedback&&<p className={styles.feedback} data-tone={feedback.tone}>{feedback.message}</p>}
     <div className={styles.cards}>{milestones.map(m=><article key={m.id}>
-      <header><div><span>المرحلة {m.number}</span><strong>{m.title}</strong></div><b>{m.status}</b></header>
+      <header><div><span>المرحلة {m.number}</span><strong>{m.title}</strong></div><b data-status={m.status}>{statusLabels[m.status]??m.status}</b></header>
       <p>{m.description??"—"}</p><div className={styles.progress}><i style={{width:`${m.progress}%`}}/><span>{m.progress}%</span></div>
-      <dl><div><dt>القيمة</dt><dd>{money(m.amount)}</dd></div><div><dt>الاستحقاق</dt><dd>{m.dueDate?new Intl.DateTimeFormat("ar-SA").format(new Date(m.dueDate)):"غير محدد"}</dd></div><div><dt>الدفع</dt><dd>{m.paymentStatus}</dd></div></dl>
+      <dl><div><dt>القيمة</dt><dd>{money(m.amount)}</dd></div><div><dt>الاستحقاق</dt><dd>{m.dueDate?new Intl.DateTimeFormat("ar-SA").format(new Date(m.dueDate)):"غير محدد"}</dd></div><div><dt>الدفع</dt><dd>{paymentLabels[m.paymentStatus]??m.paymentStatus}</dd></div></dl>
       <footer>
         {canUpdate&&m.status==="PLANNED"&&<button onClick={()=>run(m.id,"START")}>بدء</button>}
         {canUpdate&&m.status==="IN_PROGRESS"&&<><input max="100" min="0" onChange={e=>setProgress({...progress,[m.id]:e.target.value})} placeholder="نسبة %" type="number"/><button onClick={()=>run(m.id,"PROGRESS")}>تحديث</button>{m.progress===100&&<button onClick={()=>run(m.id,"SUBMIT")}>تقديم التسليم</button>}</>}

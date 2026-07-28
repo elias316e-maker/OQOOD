@@ -48,6 +48,9 @@ export default async function ContractAlertsPage() {
       });
     return rows.map((row, index) => ({ ...row, id: `${contract.id}-${index}`, contractId: contract.id }));
   });
+  const dangerCount = alerts.filter((alert) => alert.tone === "danger").length;
+  const warningCount = alerts.length - dangerCount;
+  const affectedContracts = new Set(alerts.map((alert) => alert.contractId)).size;
 
   return (
     <main className={styles.page}>
@@ -55,6 +58,11 @@ export default async function ContractAlertsPage() {
         <div><span>المتابعة الاستباقية</span><h1>مركز تنبيهات العقود</h1><p>المواعيد والمهام التي تتطلب تدخلاً.</p></div>
         <Link className={styles.back} href="/platform/contracts">العودة إلى العقود</Link>
       </header>
+      <section className={styles.alertSummary}>
+        <article data-tone={dangerCount ? "danger" : "normal"}><span>عاجلة</span><strong>{dangerCount}</strong><small>تحتاج تدخلاً مباشرًا</small></article>
+        <article><span>تحذيرات</span><strong>{warningCount}</strong><small>تحتاج متابعة</small></article>
+        <article><span>عقود متأثرة</span><strong>{affectedContracts}</strong><small>من أصل {contracts.length} عقد</small></article>
+      </section>
       <section className={styles.alertList}>
         {alerts.length === 0 ? <p className={styles.empty}>لا توجد تنبيهات حالياً.</p> : alerts.map((alert) => (
           <Link data-tone={alert.tone} href={`/platform/contracts/${alert.contractId}`} key={alert.id}>
