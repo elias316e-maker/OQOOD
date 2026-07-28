@@ -3782,11 +3782,11 @@ a {
    ========================================================= */
 
 .platformDarkShell {
-  --oqood-dark-bg: #050b18;
-  --oqood-dark-bg-soft: #081121;
-  --oqood-dark-surface: #0b1426;
-  --oqood-dark-surface-hover: #101c32;
-  --oqood-dark-surface-elevated: #111c31;
+  --oqood-dark-bg: #0b172a;
+  --oqood-dark-bg-soft: #0e1d33;
+  --oqood-dark-surface: #12233a;
+  --oqood-dark-surface-hover: #172b46;
+  --oqood-dark-surface-elevated: #19304d;
   --oqood-dark-border: rgba(148, 163, 184, 0.11);
   --oqood-dark-border-strong: rgba(99, 102, 241, 0.26);
 
@@ -3813,8 +3813,8 @@ a {
     linear-gradient(
       145deg,
       var(--oqood-dark-bg) 0%,
-      #060c1a 48%,
-      #050a15 100%
+      #0d1b30 48%,
+      #0a1628 100%
     );
 }
 
@@ -3852,9 +3852,9 @@ a {
     ),
     linear-gradient(
       180deg,
-      #07101f 0%,
-      #080f1d 50%,
-      #07101d 100%
+      #0d1d33 0%,
+      #10213a 50%,
+      #0c1b30 100%
     );
   box-shadow: 16px 0 50px rgba(0, 0, 0, 0.12);
 }
@@ -3864,7 +3864,7 @@ a {
 .platformDarkShell .odsAppShell__header {
   min-height: 4.75rem;
   border-bottom: 1px solid var(--oqood-dark-border);
-  background: rgba(5, 11, 24, 0.88);
+  background: rgba(11, 23, 42, 0.92);
   backdrop-filter: blur(1.25rem);
 }
 
@@ -6715,5 +6715,267 @@ main.platformContent
   .opportunityDirectoryHeader {
     align-items: stretch;
     flex-direction: column;
+  }
+}
+
+/* =========================================================
+   APPROVED DENSE NAVY DIRECTORY SYSTEM
+   The command center is the visual source of truth.
+   ========================================================= */
+
+.platformDarkShell :is(
+  .opportunityDirectoryRefresh,
+  .partnerDirectoryRefresh,
+  .opportunityDetailRefresh
+) {
+  color: #e8f0f8;
+}
+
+.platformDarkShell :is(
+  .opportunityDirectoryRefresh,
+  .partnerDirectoryRefresh
+) :is(
+  .opportunityDirectoryHeader,
+  .partnerDirectoryHeader
+) {
+  min-height: 62px;
+  padding-block-end: 8px;
+  border-color: rgba(148, 163, 184, 0.14);
+}
+
+.platformDarkShell :is(
+  .opportunityDirectoryRefresh,
+  .partnerDirectoryRefresh
+) :is(h1, h2) {
+  color: #f1f6fb !important;
+  -webkit-text-fill-color: #f1f6fb !important;
+}
+
+.platformDarkShell :is(
+  .opportunityDirectoryRefresh,
+  .partnerDirectoryRefresh
+) :is(p, small) {
+  color: #8ea1b8 !important;
+  -webkit-text-fill-color: #8ea1b8 !important;
+}
+
+.platformDarkShell :is(
+  .opportunityDirectoryRefresh .listSummaryCards article,
+  .partnerDirectorySummary article
+) {
+  min-height: 72px;
+  padding: 9px 12px;
+  border-color: rgba(148, 163, 184, 0.12);
+  background:
+    linear-gradient(145deg, #162a44, #102139);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 8px 20px rgba(4, 12, 25, 0.12);
+}
+
+.platformDarkShell :is(
+  .opportunityDirectoryRefresh .listSummaryCards,
+  .partnerDirectorySummary
+) :is(span, small) {
+  color: #8da0b7 !important;
+}
+
+.platformDarkShell :is(
+  .opportunityDirectoryRefresh .listSummaryCards,
+  .partnerDirectorySummary
+) strong {
+  color: #7dd3b0 !important;
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCardsPanel {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard {
+  min-height: 302px !important;
+  overflow: hidden;
+  border-color: rgba(148, 163, 184, 0.13) !important;
+  background:
+    linear-gradient(150deg, #162b46 0%, #10223a 58%, #0f2036 100%) !important;
+  box-shadow:
+    0 10px 26px rgba(4, 12, 25, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025) !important;
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard:hover {
+  border-color: rgba(45, 212, 191, 0.34) !important;
+  transform: translateY(-2px);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__header {
+  min-height: 70px;
+  padding: 9px 10px;
+  border-color: rgba(148, 163, 184, 0.1);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__mark {
+  background: rgba(16, 185, 129, 0.13);
+  color: #6ee7b7;
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__header h2 {
+  min-height: 2.2rem;
+  color: #edf5fb !important;
+}
+
+.platformDarkShell .opportunityDirectoryRefresh :is(
+  .opportunityCompactCard__header span,
+  .opportunityCompactCard__meta span,
+  .opportunityCompactCard__meta small
+) {
+  color: #8498b0 !important;
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__meta {
+  padding: 7px 10px;
+  background: rgba(9, 24, 43, 0.38);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCountdown {
+  width: 52px;
+  height: 52px;
+  color: #d9f7eb;
+  background:
+    radial-gradient(circle at center, #132a43 58%, transparent 60%),
+    conic-gradient(#22b68a var(--opportunity-progress), rgba(116, 141, 168, 0.18) 0);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__meta strong {
+  color: #dce8f3;
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__facts {
+  border-color: rgba(148, 163, 184, 0.1);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__facts > div {
+  min-height: 31px;
+  border-color: rgba(148, 163, 184, 0.09);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__facts :is(dt, dd) {
+  padding: 5px 9px;
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__facts dt {
+  color: #899db5;
+  background: rgba(26, 48, 76, 0.62);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__facts dd {
+  color: #d9e5f0;
+  background: rgba(13, 30, 51, 0.36);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCompactCard__footer {
+  padding: 7px 10px;
+  border-color: rgba(148, 163, 184, 0.1);
+}
+
+.platformDarkShell .opportunityDirectoryRefresh .opportunityCardAction {
+  background: linear-gradient(135deg, #118766, #126f68);
+}
+
+.platformDarkShell .partnerDirectoryRefresh .partnerDirectoryPanel {
+  border-color: rgba(148, 163, 184, 0.13);
+  background: linear-gradient(145deg, #142842, #0f2037);
+  box-shadow: 0 10px 28px rgba(4, 12, 25, 0.15);
+}
+
+.platformDarkShell .partnerDirectoryRefresh .opportunitySection__head {
+  padding: 8px 12px;
+  border-color: rgba(148, 163, 184, 0.11);
+  background: rgba(24, 45, 72, 0.62);
+}
+
+.platformDarkShell .partnerDirectoryRefresh .oqDataTableViewport {
+  background: transparent;
+}
+
+.platformDarkShell .partnerDirectoryRefresh .oqDataTableElement th {
+  padding: 8px 10px !important;
+  color: #9fb1c5 !important;
+  border-color: rgba(148, 163, 184, 0.1);
+  background: #1a304d;
+}
+
+.platformDarkShell .partnerDirectoryRefresh .oqDataTableElement td {
+  padding: 8px 10px !important;
+  color: #d6e2ed !important;
+  border-color: rgba(148, 163, 184, 0.08);
+}
+
+.platformDarkShell .partnerDirectoryRefresh .oqDataTableElement tbody tr:nth-child(even) {
+  background: rgba(30, 53, 82, 0.34);
+}
+
+.platformDarkShell .partnerDirectoryRefresh .oqDataTableElement tbody tr:hover {
+  background: rgba(27, 92, 91, 0.24);
+}
+
+.platformDarkShell .partnerDirectoryRefresh .partnerIdentityName > span {
+  background: rgba(16, 185, 129, 0.14);
+  color: #6ee7b7;
+}
+
+.platformDarkShell .partnerDirectoryRefresh .partnerIdentityName a {
+  color: #8de0c0;
+}
+
+.platformDarkShell .opportunityDetailRefresh :is(
+  .listPageHeader,
+  .opportunityDetailIdentity,
+  .opportunityDetailTabs,
+  .opportunityDensePanel,
+  .dashboardPanel
+) {
+  color: #e6eef6;
+  border-color: rgba(148, 163, 184, 0.13) !important;
+  background: linear-gradient(145deg, #162a44, #102139) !important;
+  box-shadow: 0 9px 24px rgba(4, 12, 25, 0.13) !important;
+}
+
+.platformDarkShell .opportunityDetailRefresh :is(h1, h2, h3, strong) {
+  color: #edf5fb !important;
+}
+
+.platformDarkShell .opportunityDetailRefresh :is(p, small, span) {
+  color: #8fa2b8;
+}
+
+.platformDarkShell .opportunityDetailRefresh .opportunityDetailTabs a {
+  min-height: 56px;
+  color: #a9b9ca;
+  border-color: rgba(148, 163, 184, 0.09);
+  background: rgba(18, 38, 63, 0.72);
+}
+
+.platformDarkShell .opportunityDetailRefresh .opportunityDetailTabs a:is(:hover, .is-active) {
+  color: #f1fffb;
+  background: linear-gradient(135deg, #118766, #176a72);
+}
+
+.platformDarkShell .opportunityDetailRefresh .detailGrid article {
+  min-height: 54px !important;
+  color: #dce7f1;
+  border-color: rgba(148, 163, 184, 0.09);
+  background: rgba(18, 39, 65, 0.62);
+}
+
+@media (max-width: 760px) {
+  .platformDarkShell :is(
+    .opportunityDirectoryRefresh,
+    .partnerDirectoryRefresh,
+    .opportunityDetailRefresh
+  ) {
+    padding: 10px !important;
   }
 }
