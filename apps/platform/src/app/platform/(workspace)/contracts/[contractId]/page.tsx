@@ -7,6 +7,7 @@ import {
   ContractLifecycleActions,
   PartnerEvaluation,
 } from "@/features/contract";
+import { LinkedDocuments } from "@/features/documents/linked-documents";
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
 import { resolveOpportunityActionContext } from "@/features/opportunity/actions";
 import { hasPermission, Permissions } from "@/lib/permissions";
@@ -309,6 +310,12 @@ export default async function ContractDetailsPage({ params }: Props) {
           />
         </section>
       )}
+      <LinkedDocuments
+        canManage={hasPermission(workspaceContext, Permissions.contracts.update)}
+        entityId={contract.id}
+        entityType="CONTRACT"
+        workspaceId={context.workspaceId}
+      />
     </main>
   );
 }

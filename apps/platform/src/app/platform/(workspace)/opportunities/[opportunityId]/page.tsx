@@ -18,6 +18,7 @@ import {
 import {
   OpportunityLifecycleActions,
 } from "@/features/opportunity/components";
+import { LinkedDocuments } from "@/features/documents/linked-documents";
 
 
 type OpportunityDetailsPageProps = {
@@ -399,6 +400,12 @@ export default async function OpportunityDetailsPage({
           )}
         </div>
       </section>
+      <LinkedDocuments
+        canManage={canUpdate}
+        entityId={opportunity.id}
+        entityType="OPPORTUNITY"
+        workspaceId={workspaceContext.workspace.id}
+      />
     </main>
   );
 }

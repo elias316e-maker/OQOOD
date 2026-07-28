@@ -20,7 +20,7 @@ export async function GET(
 
   const { documentId } = await params;
   const document = await prisma.document.findFirst({
-    where: { id: documentId, workspaceId: context.workspace.id },
+    where: { id: documentId, workspaceId: context.workspace.id, deletedAt: null },
   });
   if (!document) return new Response("Not found", { status: 404 });
 

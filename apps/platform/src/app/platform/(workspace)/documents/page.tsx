@@ -1,7 +1,12 @@
 import Link from "next/link";
 
-import { reviewDocumentAction } from "@/features/documents/actions";
+import {
+  archiveDocumentAction,
+  reviewDocumentAction,
+  softDeleteDocumentAction,
+} from "@/features/documents/actions";
 import { DocumentUploadForm } from "@/features/documents/document-upload-form";
+import { DocumentVersionForm } from "@/features/documents/document-version-form";
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
@@ -48,7 +53,7 @@ export default async function DocumentsPage() {
   }
 
   const documents = await prisma.document.findMany({
-    where: { workspaceId: context.workspace.id },
+    where: { workspaceId: context.workspace.id, deletedAt: null },
     include: { uploadedBy: { select: { name: true } } },
     orderBy: { updatedAt: "desc" },
   });
@@ -149,6 +154,9 @@ export default async function DocumentsPage() {
                     <form action={reviewDocumentAction}><input name="documentId" type="hidden" value={document.id} /><input name="decision" type="hidden" value="APPROVED" /><button type="submit">اعتماد</button></form>
                     <form action={reviewDocumentAction}><input name="documentId" type="hidden" value={document.id} /><input name="decision" type="hidden" value="REJECTED" /><button data-tone="danger" type="submit">رفض</button></form>
                   </>}
+                  {canUpload && document.reviewStatus !== "ARCHIVED" && <DocumentVersionForm documentId={document.id} />}
+                  {canUpload && document.reviewStatus !== "ARCHIVED" && <form action={archiveDocumentAction}><input name="documentId" type="hidden" value={document.id} /><button type="submit">أرشفة</button></form>}
+                  {canUpload && <form action={softDeleteDocumentAction}><input name="documentId" type="hidden" value={document.id} /><button data-tone="danger" type="submit">حذف</button></form>}
                 </div></td>
               </tr>;
             })}</tbody>

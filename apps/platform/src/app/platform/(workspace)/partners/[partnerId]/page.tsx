@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { LinkedDocuments } from "@/features/documents/linked-documents";
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
@@ -61,5 +62,11 @@ export default async function PartnerScorecardPage({ params }: { params: Promise
     <section className={styles.panel}><h2>المخاطر والتنبيهات</h2><div className={styles.risks}>{overdue > 0 && <div className={styles.risk} data-tone="danger">{overdue} مرحلة تنفيذ متأخرة</div>}{unpaid > 0 && <div className={styles.risk}>{unpaid} مطالبة مالية غير مسددة</div>}{overdue === 0 && unpaid === 0 && <p className={styles.empty}>لا توجد مخاطر تشغيلية حالية.</p>}</div></section>
     <section className={styles.panel}><h2>تاريخ العقود</h2><table className={styles.table}><thead><tr><th>العقد</th><th>الحالة</th><th>القيمة</th><th>المراحل</th></tr></thead><tbody>{partner.contracts.map((contract) => <tr key={contract.id}><td><Link href={`/platform/contracts/${contract.id}`}>{contract.number}</Link></td><td>{contract.status}</td><td>{money.format(Number(contract.totalAmount))}</td><td>{contract.milestones.length}</td></tr>)}</tbody></table></section>
     <section className={styles.panel}><h2>سجل التقييمات</h2><table className={styles.table}><thead><tr><th>العقد</th><th>النتيجة</th><th>المقيّم</th><th>التاريخ</th></tr></thead><tbody>{evaluations.map((evaluation) => <tr key={evaluation.id}><td>{evaluation.contract.number}</td><td>{evaluation.overallScore.toString()} / 5</td><td>{evaluation.createdBy.name}</td><td>{new Intl.DateTimeFormat("ar-SA").format(evaluation.createdAt)}</td></tr>)}</tbody></table></section>
+    <LinkedDocuments
+      canManage={hasPermission(context, Permissions.vendors.update)}
+      entityId={partner.id}
+      entityType="BUSINESS_PARTNER"
+      workspaceId={context.workspace.id}
+    />
   </main>;
 }

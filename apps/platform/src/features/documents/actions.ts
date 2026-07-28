@@ -60,6 +60,15 @@ function canReview(context: Awaited<ReturnType<typeof requireCurrentWorkspace>>)
   );
 }
 
+function revalidateDocumentPaths(entityType?: string, entityId?: string | null) {
+  revalidatePath("/platform/documents");
+  if (!entityId) return;
+  if (entityType === "OPPORTUNITY") revalidatePath(`/platform/opportunities/${entityId}`);
+  if (entityType === "CONTRACT") revalidatePath(`/platform/contracts/${entityId}`);
+  if (entityType === "BUSINESS_PARTNER") revalidatePath(`/platform/partners/${entityId}`);
+  if (entityType === "PROCUREMENT_REQUEST") revalidatePath(`/platform/procurement/${entityId}`);
+}
+
 async function linkedEntityExists(
   workspaceId: string,
   entityType: string,
@@ -146,7 +155,7 @@ export async function uploadDocumentAction(
         },
       });
     });
-    revalidatePath("/platform/documents");
+    revalidateDocumentPaths(entityType, entityId);
     return { status: "success", message: "تم رفع المستند وإرساله للمراجعة." };
   } catch (error) {
     if (storedKey) await removeDocumentFile(storedKey);
@@ -168,10 +177,10 @@ export async function reviewDocumentAction(formData: FormData) {
   const decision = text(formData, "decision");
   if (decision !== "APPROVED" && decision !== "REJECTED") throw new Error("قرار المراجعة غير صالح.");
 
-  await prisma.$transaction(async (transaction) => {
+  const reviewedDocument = await prisma.$transaction(async (transaction) => {
     const document = await transaction.document.findFirst({
       where: { id: documentId, workspaceId: context.workspace.id },
-      select: { id: true },
+      select: { id: true, entityType: true, entityId: true },
     });
     if (!document) throw new Error("المستند غير موجود.");
     await transaction.document.update({
@@ -192,6 +201,138 @@ export async function reviewDocumentAction(formData: FormData) {
         entityId: document.id,
       },
     });
+    return document;
   });
-  revalidatePath("/platform/documents");
+  revalidateDocumentPaths(reviewedDocument.entityType, reviewedDocument.entityId);
+}
+
+export async function createDocumentVersionAction(
+  _state: DocumentFormState,
+  formData: FormData,
+): Promise<DocumentFormState> {
+  let storedKey: string | undefined;
+  try {
+    const [context, user] = await Promise.all([
+      requireCurrentWorkspace(),
+      requireAuthenticatedUser(),
+    ]);
+    if (!canUpload(context)) throw new Error("لا تملك صلاحية إصدار نسخة جديدة.");
+    const file = formData.get("file");
+    const documentId = text(formData, "documentId");
+    if (!(file instanceof File) || file.size === 0) throw new Error("اختر ملف الإصدار الجديد.");
+    if (file.size > maxFileSize) throw new Error("الحد الأعلى لحجم الملف هو 10 ميجابايت.");
+    if (!allowedTypes.has(file.type)) throw new Error("نوع الملف غير مدعوم.");
+
+    const current = await prisma.document.findFirst({
+      where: { id: documentId, workspaceId: context.workspace.id, deletedAt: null },
+    });
+    if (!current) throw new Error("المستند غير موجود.");
+    storedKey = await storeDocumentFile(context.workspace.id, file);
+
+    await prisma.$transaction(async (transaction) => {
+      const next = await transaction.document.create({
+        data: {
+          workspaceId: current.workspaceId,
+          entityType: current.entityType,
+          entityId: current.entityId,
+          title: current.title,
+          category: current.category,
+          fileName: file.name.slice(0, 240),
+          mimeType: file.type,
+          storageKey: storedKey!,
+          sizeBytes: file.size,
+          version: current.version + 1,
+          reviewStatus: "PENDING_REVIEW",
+          isConfidential: current.isConfidential,
+          expiresAt: current.expiresAt,
+          notes: text(formData, "notes") || current.notes,
+          uploadedById: user.id,
+          previousVersionId: current.id,
+        },
+      });
+      await transaction.document.update({
+        where: { id: current.id },
+        data: { reviewStatus: "ARCHIVED" },
+      });
+      await transaction.auditLog.create({
+        data: {
+          workspaceId: context.workspace.id,
+          userId: user.id,
+          action: "document.version_created",
+          entityType: "Document",
+          entityId: next.id,
+          metadata: { previousVersionId: current.id, version: next.version },
+        },
+      });
+    });
+    revalidateDocumentPaths(current.entityType, current.entityId);
+    return { status: "success", message: `تم إنشاء الإصدار ${current.version + 1}.` };
+  } catch (error) {
+    if (storedKey) await removeDocumentFile(storedKey);
+    return { status: "error", message: error instanceof Error ? error.message : "تعذر إنشاء الإصدار." };
+  }
+}
+
+export async function archiveDocumentAction(formData: FormData) {
+  const [context, user] = await Promise.all([
+    requireCurrentWorkspace(),
+    requireAuthenticatedUser(),
+  ]);
+  if (!canUpload(context)) throw new Error("لا تملك صلاحية أرشفة المستند.");
+  const documentId = text(formData, "documentId");
+  const document = await prisma.document.findFirst({
+    where: { id: documentId, workspaceId: context.workspace.id, deletedAt: null },
+    select: { id: true, entityType: true, entityId: true },
+  });
+  if (!document) throw new Error("المستند غير موجود.");
+  await prisma.$transaction([
+    prisma.document.update({ where: { id: document.id }, data: { reviewStatus: "ARCHIVED" } }),
+    prisma.auditLog.create({
+      data: {
+        workspaceId: context.workspace.id,
+        userId: user.id,
+        action: "document.archived",
+        entityType: "Document",
+        entityId: document.id,
+      },
+    }),
+  ]);
+  revalidateDocumentPaths(document.entityType, document.entityId);
+}
+
+export async function softDeleteDocumentAction(formData: FormData) {
+  const [context, user] = await Promise.all([
+    requireCurrentWorkspace(),
+    requireAuthenticatedUser(),
+  ]);
+  if (!canUpload(context)) throw new Error("لا تملك صلاحية حذف المستند.");
+  const documentId = text(formData, "documentId");
+  const reason = text(formData, "reason");
+  const document = await prisma.document.findFirst({
+    where: { id: documentId, workspaceId: context.workspace.id, deletedAt: null },
+    select: { id: true, entityType: true, entityId: true },
+  });
+  if (!document) throw new Error("المستند غير موجود.");
+  await prisma.$transaction([
+    prisma.document.update({
+      where: { id: document.id },
+      data: {
+        reviewStatus: "ARCHIVED",
+        deletedAt: new Date(),
+        deletedById: user.id,
+        deletionReason: reason || "حذف من مركز المستندات",
+      },
+    }),
+    prisma.auditLog.create({
+      data: {
+        workspaceId: context.workspace.id,
+        userId: user.id,
+        action: "document.soft_deleted",
+        entityType: "Document",
+        entityId: document.id,
+        metadata: { reason: reason || null },
+      },
+    }),
+  ]);
+  revalidateDocumentPaths(document.entityType, document.entityId);
 }

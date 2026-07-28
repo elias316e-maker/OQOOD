@@ -276,6 +276,7 @@ model User {
   createdProcurementRequests   ProcurementRequest[] @relation("ProcurementCreatedBy")
   uploadedDocuments            Document[]           @relation("DocumentUploader")
   reviewedDocuments            Document[]           @relation("DocumentReviewer")
+  deletedDocuments             Document[]           @relation("DocumentDeleter")
   auditLogs                    AuditLog[]
 
   createdAt DateTime @default(now())
@@ -1107,10 +1108,17 @@ model Document {
   reviewedById   String?
   reviewedAt     DateTime?
   reviewNotes    String?
+  previousVersionId String? @unique
+  deletedById    String?
+  deletedAt      DateTime?
+  deletionReason String?
 
   workspace  Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   uploadedBy User      @relation("DocumentUploader", fields: [uploadedById], references: [id])
   reviewedBy User?     @relation("DocumentReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  deletedBy  User?     @relation("DocumentDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
+  previousVersion Document?  @relation("DocumentVersions", fields: [previousVersionId], references: [id], onDelete: SetNull)
+  nextVersions    Document[] @relation("DocumentVersions")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1120,4 +1128,7 @@ model Document {
   @@index([workspaceId, category])
   @@index([expiresAt])
   @@index([reviewedById])
+  @@index([previousVersionId])
+  @@index([deletedById])
+  @@index([workspaceId, deletedAt])
 }
