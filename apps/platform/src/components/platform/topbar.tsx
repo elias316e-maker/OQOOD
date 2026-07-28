@@ -5,10 +5,10 @@ import {
   Button,
   TopNavigation,
   TopNavigationAction,
-  TopNavigationSearch,
   TopNavigationUser,
 } from "@oqood/design-system";
 import { getOperationalNotifications } from "@/features/notifications/operational-notifications";
+import { GlobalSearchBox } from "@/features/search/global-search-box";
 import { requireAuthenticatedUser } from "@/features/workspace/guards";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
@@ -31,11 +31,7 @@ export async function PlatformTopbar() {
         </div>
       }
       center={
-        <TopNavigationSearch
-          icon={<span aria-hidden="true">⌕</span>}
-          placeholder="ابحث في العقود، المنافسات، المشاريع والمستندات..."
-          shortcut="Ctrl K"
-        />
+        <GlobalSearchBox />
       }
       end={
         <div className="approvedTopbarActions">
