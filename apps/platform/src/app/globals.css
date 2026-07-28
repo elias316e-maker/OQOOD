@@ -888,6 +888,222 @@ a {
   }
 }
 
+/* Opportunity setup flow: BOQ and partner invitations */
+.opportunitySetupRefresh {
+  gap: 10px !important;
+  padding: 14px 18px 26px !important;
+}
+
+.opportunitySetupShell {
+  display: grid;
+  gap: 10px;
+}
+
+.opportunitySetupRefresh .listPageHeader {
+  min-height: 70px;
+  margin: 0 !important;
+  padding: 0 2px 9px !important;
+  border-block-end: 1px solid #dbe4ed;
+}
+
+.opportunitySetupFlow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: hidden;
+  border: 1px solid #dbe4ed;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.opportunitySetupFlow a,
+.opportunitySetupFlow strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  border-inline-start: 1px solid #e3e9ef;
+  color: #6c7d90;
+  font-size: .68rem;
+  text-decoration: none;
+}
+
+.opportunitySetupFlow strong {
+  background: #12805f;
+  color: #fff;
+}
+
+.opportunitySetupFlow span {
+  font-weight: 800;
+}
+
+.platformDarkShell .opportunitySetupRefresh .opportunitySetupPanel {
+  overflow: hidden;
+  padding: 0 !important;
+  border: 1px solid #dce5ed !important;
+  border-radius: 11px !important;
+  background: #fff !important;
+  box-shadow: 0 2px 9px rgb(24 57 88 / 5%) !important;
+}
+
+.opportunitySetupRefresh .wizardSectionHeader {
+  padding: 11px 14px;
+  border-block-end: 1px solid #e3e9ef;
+}
+
+.opportunitySetupRefresh .boqTableWrapper {
+  margin: 0;
+  overflow-x: auto;
+}
+
+.opportunitySetupRefresh .boqTable {
+  min-width: 840px;
+}
+
+.opportunitySetupRefresh .boqTable th,
+.opportunitySetupRefresh .boqTable td {
+  padding: 7px 9px;
+  font-size: .68rem;
+}
+
+.opportunitySetupRefresh .boqTable input,
+.opportunitySetupRefresh .boqTable select {
+  min-height: 34px !important;
+  border-radius: 6px !important;
+  background: #fbfcfd !important;
+}
+
+.boqSummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  padding: 10px 14px;
+  border-block-start: 1px solid #e5ebf0;
+  background: #f8fafc;
+}
+
+.boqSummary article {
+  padding: 8px 10px;
+  border: 1px solid #dce5ed;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.boqSummary span,
+.boqSummary strong {
+  display: block;
+}
+
+.boqSummary span {
+  color: #738397;
+  font-size: .62rem;
+}
+
+.boqSummary strong {
+  color: #17684f;
+  font-size: 1rem;
+}
+
+.opportunitySetupRefresh .partnerSelectionList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.opportunitySetupRefresh .partnerSelectionCard {
+  min-height: 72px;
+  padding: 9px;
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+.opportunitySetupRefresh .partnerSelectionCard.selected {
+  border-color: #12805f;
+  background: #f0faf6;
+  box-shadow: inset 0 0 0 1px #12805f;
+}
+
+.opportunitySetupRefresh .partnerAvatar {
+  width: 34px;
+  height: 34px;
+  background: #e8f5ef;
+  color: #117457;
+}
+
+.opportunitySetupRefresh .invitationSettings {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 14px;
+  border-block-start: 1px solid #e3e9ef;
+  background: #f8fafc;
+}
+
+.invitationSettings__intro {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.invitationSettings__intro > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8f5ef;
+  color: #117457;
+}
+
+.invitationSettings__intro strong,
+.invitationSettings__intro small {
+  display: block;
+}
+
+.invitationSettings__intro strong {
+  color: #29485f;
+  font-size: .72rem;
+}
+
+.invitationSettings__intro small {
+  color: #77869a;
+  font-size: .62rem;
+}
+
+.opportunitySetupRefresh .wizardFooter {
+  padding: 9px 14px;
+}
+
+@media (max-width: 1050px) {
+  .opportunitySetupRefresh .partnerSelectionList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .opportunitySetupRefresh {
+    padding-inline: 10px !important;
+  }
+
+  .opportunitySetupFlow a,
+  .opportunitySetupFlow strong {
+    gap: 3px;
+    font-size: .6rem;
+  }
+
+  .opportunitySetupFlow span {
+    display: none;
+  }
+
+  .boqSummary,
+  .opportunitySetupRefresh .partnerSelectionList,
+  .opportunitySetupRefresh .invitationSettings {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Authentication */
 
 .authPage {

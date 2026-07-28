@@ -105,8 +105,8 @@ export function OpportunityPartnersForm({
   }
 
   return (
-    <main className="platformContent">
-      <form action={formAction}>
+    <main className="platformContent opportunitySetupRefresh">
+      <form action={formAction} className="opportunitySetupShell">
         <section className="listPageHeader">
           <div>
             <span className="pageEyebrow">
@@ -126,6 +126,13 @@ export function OpportunityPartnersForm({
             <SaveInvitationsButton />
           </div>
         </section>
+
+        <nav className="opportunitySetupFlow" aria-label="مراحل إعداد المنافسة">
+          <Link href={`/platform/opportunities/${opportunity.id}`}>1 <span>البيانات</span></Link>
+          <Link href={`/platform/opportunities/${opportunity.id}/boq`}>2 <span>جدول الكميات</span></Link>
+          <strong>3 <span>الموردون</span></strong>
+          <Link href={`/platform/opportunities/${opportunity.id}/offers`}>4 <span>العروض</span></Link>
+        </nav>
 
         <section className="wizardContent opportunitySetupPanel">
           <div className="wizardSectionHeader">
@@ -227,6 +234,10 @@ export function OpportunityPartnersForm({
           )}
 
           <div className="invitationSettings">
+            <div className="invitationSettings__intro">
+              <span aria-hidden="true">✉</span>
+              <div><strong>رسالة موحدة للموردين</strong><small>ستُرفق الرسالة مع كل دعوة عند نشر المنافسة.</small></div>
+            </div>
             <div className="formField">
               <label htmlFor="invitationMessage">
                 رسالة الدعوة
@@ -262,4 +273,3 @@ export function OpportunityPartnersForm({
     </main>
   );
 }
-

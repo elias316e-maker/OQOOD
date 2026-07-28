@@ -133,8 +133,8 @@ export function OpportunityBoqForm({
   }
 
   return (
-    <main className="platformContent">
-      <form action={formAction}>
+    <main className="platformContent opportunitySetupRefresh">
+      <form action={formAction} className="opportunitySetupShell">
         <section className="listPageHeader">
           <div>
             <span className="pageEyebrow">
@@ -154,6 +154,13 @@ export function OpportunityBoqForm({
             <SaveButton />
           </div>
         </section>
+
+        <nav className="opportunitySetupFlow" aria-label="مراحل إعداد المنافسة">
+          <Link href={`/platform/opportunities/${opportunity.id}`}>1 <span>البيانات</span></Link>
+          <strong>2 <span>جدول الكميات</span></strong>
+          <Link href={`/platform/opportunities/${opportunity.id}/partners`}>3 <span>الموردون</span></Link>
+          <Link href={`/platform/opportunities/${opportunity.id}/offers`}>4 <span>العروض</span></Link>
+        </nav>
 
         <section className="wizardContent opportunitySetupPanel">
           <div className="wizardSectionHeader">
@@ -293,6 +300,12 @@ export function OpportunityBoqForm({
             </table>
           </div>
 
+          <div className="boqSummary">
+            <article><span>عدد البنود</span><strong>{items.length}</strong></article>
+            <article><span>إجمالي الكميات</span><strong>{items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0).toLocaleString("ar-SA")}</strong></article>
+            <article><span>البنود المكتملة</span><strong>{items.filter((item) => item.description.trim() && Number(item.quantity) > 0).length}</strong></article>
+          </div>
+
           <div className="wizardFooter">
             <span>
               عدد البنود: {items.length}
@@ -313,4 +326,3 @@ export function OpportunityBoqForm({
     </main>
   );
 }
-

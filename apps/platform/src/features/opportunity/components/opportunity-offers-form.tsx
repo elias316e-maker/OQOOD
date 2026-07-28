@@ -151,6 +151,13 @@ export function OpportunityOffersForm({
         </Link>
       </header>
 
+      <nav className={styles.flow} aria-label="مراحل إعداد المنافسة">
+        <Link href={`/platform/opportunities/${data.opportunity.id}`}>1 <span>البيانات</span></Link>
+        <Link href={`/platform/opportunities/${data.opportunity.id}/boq`}>2 <span>جدول الكميات</span></Link>
+        <Link href={`/platform/opportunities/${data.opportunity.id}/partners`}>3 <span>الموردون</span></Link>
+        <strong>4 <span>العروض</span></strong>
+      </nav>
+
       <section className={styles.summary}>
         <article><span>العروض المسجلة</span><strong>{data.offers.length}</strong></article>
         <article><span>الموردون المدعوون</span><strong>{data.partners.length}</strong></article>
