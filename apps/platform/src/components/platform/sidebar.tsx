@@ -55,6 +55,11 @@ const navigation = [
     badge: "4",
   },
   {
+    label: "الإشعارات",
+    href: "/platform/notifications",
+    icon: "◉",
+  },
+  {
     label: "التقارير",
     href: "/platform/reports",
     icon: "▥",

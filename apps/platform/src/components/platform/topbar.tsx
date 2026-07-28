@@ -8,8 +8,18 @@ import {
   TopNavigationSearch,
   TopNavigationUser,
 } from "@oqood/design-system";
+import { getOperationalNotifications } from "@/features/notifications/operational-notifications";
+import { requireAuthenticatedUser } from "@/features/workspace/guards";
+import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
-export function PlatformTopbar() {
+export async function PlatformTopbar() {
+  const [context, user] = await Promise.all([
+    requireCurrentWorkspace(),
+    requireAuthenticatedUser(),
+  ]);
+  const notifications = await getOperationalNotifications(context, user.id);
+  const unreadCount = notifications.filter((item) => !item.read).length;
+
   return (
     <TopNavigation
       className="platformApprovedTopbar"
@@ -29,12 +39,14 @@ export function PlatformTopbar() {
       }
       end={
         <div className="approvedTopbarActions">
+          <Link href="/platform/notifications">
           <TopNavigationAction
-            badge={<span>4</span>}
+            badge={unreadCount ? <span>{unreadCount > 99 ? "99+" : unreadCount}</span> : undefined}
             label="الإشعارات"
           >
             <span aria-hidden="true">♢</span>
           </TopNavigationAction>
+          </Link>
 
           <TopNavigationAction
             badge={<span>2</span>}

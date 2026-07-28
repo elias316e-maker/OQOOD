@@ -277,6 +277,7 @@ model User {
   uploadedDocuments            Document[]           @relation("DocumentUploader")
   reviewedDocuments            Document[]           @relation("DocumentReviewer")
   deletedDocuments             Document[]           @relation("DocumentDeleter")
+  notificationReceipts        NotificationReceipt[]
   auditLogs                    AuditLog[]
 
   createdAt DateTime @default(now())
@@ -357,6 +358,7 @@ model Workspace {
   contracts           Contract[]
   procurementRequests ProcurementRequest[]
   documents           Document[]
+  notificationReceipts NotificationReceipt[]
   roles               Role[]
   auditLogs           AuditLog[]
   billingAccount      BillingAccount?
@@ -1131,4 +1133,22 @@ model Document {
   @@index([previousVersionId])
   @@index([deletedById])
   @@index([workspaceId, deletedAt])
+}
+
+model NotificationReceipt {
+  id          String   @id @default(cuid())
+  workspaceId String
+  userId      String
+  fingerprint String
+  readAt      DateTime?
+  dismissedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId, fingerprint])
+  @@index([workspaceId, userId, readAt])
+  @@index([workspaceId, userId, dismissedAt])
 }
