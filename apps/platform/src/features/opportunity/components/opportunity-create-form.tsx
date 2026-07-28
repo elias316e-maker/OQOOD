@@ -215,8 +215,8 @@ export function OpportunityCreateForm({
   ]);
 
   return (
-    <main className="platformContent">
-      <form action={formAction}>
+    <main className="platformContent opportunityFormRefresh">
+      <form action={formAction} className="opportunityFormShell">
         <section className="listPageHeader">
           <div>
             <span className="pageEyebrow">
@@ -292,6 +292,14 @@ export function OpportunityCreateForm({
               </span>
             </div>
 
+            <div className="formGuidance">
+              <span aria-hidden="true">✓</span>
+              <div>
+                <strong>ابدأ بالبيانات الأساسية</strong>
+                <small>بعد حفظ المسودة ستتمكن من إضافة جدول الكميات والموردين ثم مراجعة المنافسة ونشرها.</small>
+              </div>
+            </div>
+
             {state.status === "error" && (
               <div
                 className="formAlert formAlertError"
@@ -312,7 +320,10 @@ export function OpportunityCreateForm({
               </div>
             )}
 
-            <div className="opportunityForm">
+            <div className="opportunityForm opportunityFormCompact">
+              <div className="formSectionTitle fullWidth">
+                <span>01</span><div><strong>تعريف المنافسة</strong><small>العنوان والنوع والتصنيف والأولوية</small></div>
+              </div>
               <div className="formField fullWidth">
                 <label htmlFor="title">
                   عنوان الفرصة
@@ -377,6 +388,10 @@ export function OpportunityCreateForm({
                     state.fieldErrors?.type
                   }
                 />
+              </div>
+
+              <div className="formSectionTitle fullWidth">
+                <span>02</span><div><strong>القيمة والمواعيد</strong><small>الميزانية والعملة وفترة استقبال العروض</small></div>
               </div>
 
               <div className="formField">
@@ -577,6 +592,10 @@ export function OpportunityCreateForm({
                   سيظهر هذا الوصف للشركات
                   المدعوة للمنافسة.
                 </small>
+              </div>
+
+              <div className="formSectionTitle fullWidth">
+                <span>03</span><div><strong>إتاحة المنافسة</strong><small>حدد من يمكنه رؤية المنافسة والمشاركة فيها</small></div>
               </div>
 
               <div className="formField fullWidth">

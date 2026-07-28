@@ -100,7 +100,7 @@ export function PartnerCreateForm() {
   return (
     <form
       action={formAction}
-      className="opportunitySetupPanel"
+      className="opportunitySetupPanel partnerCreateForm"
     >
       <section className="opportunitySection">
         <div className="opportunitySection__head">
@@ -121,6 +121,9 @@ export function PartnerCreateForm() {
         ) : null}
 
         <div className="opportunityFormGrid">
+          <div className="partnerFormGroupTitle">
+            <span>01</span><div><strong>هوية المنشأة</strong><small>الاسم والتصنيف والموقع</small></div>
+          </div>
           <label>
             <span>الاسم بالعربية *</span>
             <Input
@@ -150,6 +153,9 @@ export function PartnerCreateForm() {
             <span>المدينة</span>
             <Input name="city" placeholder="الرياض" />
           </label>
+          <div className="partnerFormGroupTitle">
+            <span>02</span><div><strong>البيانات النظامية</strong><small>السجل التجاري والرقم الضريبي</small></div>
+          </div>
           <label>
             <span>السجل التجاري</span>
             <Input name="commercialRegister" />
@@ -158,6 +164,9 @@ export function PartnerCreateForm() {
             <span>الرقم الضريبي</span>
             <Input name="taxNumber" />
           </label>
+          <div className="partnerFormGroupTitle">
+            <span>03</span><div><strong>بيانات التواصل</strong><small>القنوات المستخدمة للدعوات والتنبيهات</small></div>
+          </div>
           <label>
             <span>البريد الإلكتروني</span>
             <Input name="email" type="email" />
@@ -189,4 +198,3 @@ export function PartnerCreateForm() {
     </form>
   );
 }
-

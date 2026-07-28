@@ -639,6 +639,255 @@ a {
   }
 }
 
+/* Opportunity and partner form experience refresh */
+.opportunityFormRefresh,
+.partnerFormRefresh {
+  gap: 12px !important;
+  padding: 14px 18px 28px !important;
+}
+
+.opportunityFormShell {
+  display: grid;
+  gap: 12px;
+}
+
+.opportunityFormRefresh .listPageHeader,
+.partnerFormRefresh .listPageHeader {
+  min-height: 72px;
+  margin: 0 !important;
+  padding: 0 2px 10px !important;
+  border-block-end: 1px solid #dbe4ed;
+}
+
+.opportunityFormRefresh .opportunityWizard {
+  align-items: start;
+  gap: 12px;
+  grid-template-columns: 210px minmax(0, 1fr);
+}
+
+.opportunityFormRefresh .wizardSteps {
+  position: sticky;
+  top: 74px;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid #dce5ed;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.opportunityFormRefresh .wizardStep {
+  min-height: 52px;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.opportunityFormRefresh .wizardStep.active {
+  background: #eaf6f1;
+}
+
+.opportunityFormRefresh .wizardStep.active > span {
+  background: #12805f;
+}
+
+.opportunityFormRefresh .wizardContent,
+.platformDarkShell .opportunityFormRefresh .opportunityEditPanel,
+.platformDarkShell .partnerFormRefresh .partnerCreateForm {
+  overflow: hidden;
+  padding: 0 !important;
+  border: 1px solid #dce5ed !important;
+  border-radius: 11px !important;
+  background: #fff !important;
+  box-shadow: 0 2px 9px rgb(24 57 88 / 5%) !important;
+}
+
+.opportunityFormRefresh .wizardSectionHeader {
+  padding: 12px 16px;
+  border-block-end: 1px solid #e3e9ef;
+}
+
+.formGuidance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 16px 0;
+  padding: 9px 11px;
+  border: 1px solid #bfe1d5;
+  border-radius: 9px;
+  background: #f0faf6;
+}
+
+.formGuidance > span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border-radius: 50%;
+  background: #12805f;
+  color: #fff;
+  font-weight: 900;
+}
+
+.formGuidance strong,
+.formGuidance small {
+  display: block;
+}
+
+.formGuidance strong {
+  color: #155d52;
+  font-size: .76rem;
+}
+
+.formGuidance small {
+  margin-top: 2px;
+  color: #63788a;
+  font-size: .65rem;
+}
+
+.opportunityFormCompact {
+  gap: 10px 12px !important;
+  padding: 12px 16px 16px;
+}
+
+.formSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 4px -2px 0;
+  padding: 8px 2px 6px;
+  border-block-end: 1px solid #e6ebf0;
+}
+
+.formSectionTitle > span,
+.partnerFormGroupTitle > span {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border-radius: 7px;
+  background: #e8f5ef;
+  color: #117457;
+  font-size: .65rem;
+  font-weight: 900;
+}
+
+.formSectionTitle strong,
+.formSectionTitle small,
+.partnerFormGroupTitle strong,
+.partnerFormGroupTitle small {
+  display: block;
+}
+
+.formSectionTitle strong,
+.partnerFormGroupTitle strong {
+  color: #28465f;
+  font-size: .75rem;
+}
+
+.formSectionTitle small,
+.partnerFormGroupTitle small {
+  color: #7b8998;
+  font-size: .62rem;
+}
+
+.opportunityFormRefresh .formField {
+  gap: 5px;
+}
+
+.opportunityFormRefresh .formField label {
+  color: #40566d;
+  font-size: .7rem;
+}
+
+.opportunityFormRefresh .formField input,
+.opportunityFormRefresh .formField select,
+.opportunityFormRefresh .formField textarea,
+.partnerFormRefresh input,
+.partnerFormRefresh select {
+  min-height: 38px !important;
+  border-color: #d5dfe8 !important;
+  border-radius: 7px !important;
+  background: #fbfcfd !important;
+}
+
+.opportunityFormRefresh .choiceGrid {
+  gap: 8px;
+}
+
+.opportunityFormRefresh .choiceCard {
+  min-height: 70px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.opportunityFormRefresh .wizardFooter {
+  padding: 10px 16px;
+  border-block-start: 1px solid #e2e9ef;
+  background: #f8fafc;
+}
+
+.partnerFormRefresh .partnerCreateForm {
+  margin: 0;
+}
+
+.partnerFormRefresh .opportunitySection__head {
+  padding: 12px 16px;
+  border-block-end: 1px solid #e3e9ef;
+}
+
+.partnerFormRefresh .opportunityFormGrid {
+  gap: 10px 12px;
+  padding: 12px 16px 16px;
+}
+
+.partnerFormGroupTitle {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 0 5px;
+  border-block-end: 1px solid #e6ebf0;
+}
+
+.partnerFormRefresh .opportunityFormGrid > label {
+  gap: 5px;
+}
+
+.partnerFormRefresh .opportunityFormGrid > label > span {
+  color: #40566d;
+  font-size: .7rem;
+}
+
+.partnerFormRefresh .opportunityFormActions {
+  padding: 10px 16px;
+  border-block-start: 1px solid #e2e9ef;
+  background: #f8fafc;
+}
+
+@media (max-width: 820px) {
+  .opportunityFormRefresh .opportunityWizard {
+    grid-template-columns: 1fr;
+  }
+
+  .opportunityFormRefresh .wizardSteps {
+    position: static;
+    grid-template-columns: repeat(5, minmax(120px, 1fr));
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .opportunityFormRefresh,
+  .partnerFormRefresh {
+    padding-inline: 10px !important;
+  }
+
+  .opportunityFormCompact,
+  .partnerFormRefresh .opportunityFormGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 /* Authentication */
 
 .authPage {

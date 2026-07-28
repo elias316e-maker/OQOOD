@@ -4,7 +4,7 @@ import { PartnerCreateForm } from "@/features/partner";
 
 export default function NewPartnerPage() {
   return (
-    <main className="platformContent">
+    <main className="platformContent partnerFormRefresh">
       <header className="listPageHeader">
         <div>
           <span className="pageEyebrow">دليل المنشأة</span>
@@ -25,4 +25,3 @@ export default function NewPartnerPage() {
     </main>
   );
 }
-

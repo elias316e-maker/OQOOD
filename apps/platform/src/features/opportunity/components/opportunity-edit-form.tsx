@@ -246,8 +246,8 @@ export function OpportunityEditForm({
   ]);
 
   return (
-    <main className="platformContent">
-      <form action={formAction}>
+    <main className="platformContent opportunityFormRefresh">
+      <form action={formAction} className="opportunityFormShell">
         <input
           type="hidden"
           name="opportunityId"
@@ -283,7 +283,14 @@ export function OpportunityEditForm({
           </div>
         </section>
 
-        <section className="dashboardPanel opportunityVisiblePanel">
+        <section className="dashboardPanel opportunityVisiblePanel opportunityEditPanel">
+          <div className="formGuidance">
+            <span aria-hidden="true">✎</span>
+            <div>
+              <strong>تعديل بيانات المنافسة</strong>
+              <small>راجع المواعيد ونطاق النشر قبل الحفظ؛ التغييرات لا تُنشر تلقائيًا للموردين.</small>
+            </div>
+          </div>
           {state.status === "error" && (
             <div
               className="formAlert formAlertError"
@@ -304,7 +311,10 @@ export function OpportunityEditForm({
             </div>
           )}
 
-          <div className="opportunityForm">
+          <div className="opportunityForm opportunityFormCompact">
+            <div className="formSectionTitle fullWidth">
+              <span>01</span><div><strong>تعريف المنافسة</strong><small>البيانات التي تظهر في القائمة وبطاقة التفاصيل</small></div>
+            </div>
             <div className="formField fullWidth">
               <label htmlFor="title">
                 عنوان الفرصة
@@ -368,6 +378,10 @@ export function OpportunityEditForm({
                   state.fieldErrors?.type
                 }
               />
+            </div>
+
+            <div className="formSectionTitle fullWidth">
+              <span>02</span><div><strong>القيمة والمواعيد</strong><small>الميزانية وفترة استقبال العروض</small></div>
             </div>
 
             <div className="formField">
@@ -541,6 +555,10 @@ export function OpportunityEditForm({
                     ?.description
                 }
               />
+            </div>
+
+            <div className="formSectionTitle fullWidth">
+              <span>03</span><div><strong>نطاق النشر</strong><small>تحكم في الجهات التي يمكنها الوصول إلى المنافسة</small></div>
             </div>
 
             <div className="formField fullWidth">
