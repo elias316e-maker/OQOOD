@@ -159,6 +159,25 @@ enum ProcurementItemType {
   WORK
 }
 
+enum DocumentEntityType {
+  WORKSPACE
+  PROCUREMENT_REQUEST
+  OPPORTUNITY
+  OFFER
+  CONTRACT
+  BUSINESS_PARTNER
+  PROJECT
+}
+
+enum DocumentReviewStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  EXPIRED
+  ARCHIVED
+}
+
 enum PlanStatus {
   DRAFT
   ACTIVE
@@ -255,6 +274,7 @@ model User {
   requestedProcurementRequests ProcurementRequest[] @relation("ProcurementRequestedBy")
   assignedProcurementRequests  ProcurementRequest[] @relation("ProcurementAssignedTo")
   createdProcurementRequests   ProcurementRequest[] @relation("ProcurementCreatedBy")
+  uploadedDocuments            Document[]           @relation("DocumentUploader")
   auditLogs                    AuditLog[]
 
   createdAt DateTime @default(now())
@@ -334,6 +354,7 @@ model Workspace {
   opportunities       Opportunity[]
   contracts           Contract[]
   procurementRequests ProcurementRequest[]
+  documents           Document[]
   roles               Role[]
   auditLogs           AuditLog[]
   billingAccount      BillingAccount?
@@ -1063,4 +1084,34 @@ model ProcurementRequestItem {
 
   @@unique([procurementRequestId, lineNumber])
   @@index([procurementRequestId])
+}
+
+model Document {
+  id             String               @id @default(cuid())
+  workspaceId    String
+  entityType     DocumentEntityType
+  entityId       String?
+  title          String
+  category       String
+  fileName       String
+  mimeType       String
+  storageKey     String               @unique
+  sizeBytes      BigInt
+  version        Int                  @default(1)
+  reviewStatus   DocumentReviewStatus @default(DRAFT)
+  isConfidential Boolean              @default(false)
+  expiresAt      DateTime?
+  notes          String?
+  uploadedById   String
+
+  workspace  Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  uploadedBy User      @relation("DocumentUploader", fields: [uploadedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workspaceId, entityType, entityId])
+  @@index([workspaceId, reviewStatus])
+  @@index([workspaceId, category])
+  @@index([expiresAt])
 }
