@@ -275,6 +275,7 @@ model User {
   assignedProcurementRequests  ProcurementRequest[] @relation("ProcurementAssignedTo")
   createdProcurementRequests   ProcurementRequest[] @relation("ProcurementCreatedBy")
   uploadedDocuments            Document[]           @relation("DocumentUploader")
+  reviewedDocuments            Document[]           @relation("DocumentReviewer")
   auditLogs                    AuditLog[]
 
   createdAt DateTime @default(now())
@@ -1103,9 +1104,13 @@ model Document {
   expiresAt      DateTime?
   notes          String?
   uploadedById   String
+  reviewedById   String?
+  reviewedAt     DateTime?
+  reviewNotes    String?
 
   workspace  Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   uploadedBy User      @relation("DocumentUploader", fields: [uploadedById], references: [id])
+  reviewedBy User?     @relation("DocumentReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1114,4 +1119,5 @@ model Document {
   @@index([workspaceId, reviewStatus])
   @@index([workspaceId, category])
   @@index([expiresAt])
+  @@index([reviewedById])
 }

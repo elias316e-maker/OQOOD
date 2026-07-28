@@ -1,10 +1,13 @@
 import Link from "next/link";
 
+import { reviewDocumentAction } from "@/features/documents/actions";
+import { DocumentUploadForm } from "@/features/documents/document-upload-form";
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
 import styles from "./documents.module.css";
+import actionStyles from "./document-actions.module.css";
 
 const entityLabels: Record<string, string> = {
   WORKSPACE: "مساحة العمل",
@@ -49,6 +52,37 @@ export default async function DocumentsPage() {
     include: { uploadedBy: { select: { name: true } } },
     orderBy: { updatedAt: "desc" },
   });
+  const canUpload =
+    hasPermission(context, Permissions.workspace.update) ||
+    hasPermission(context, Permissions.opportunities.create) ||
+    hasPermission(context, Permissions.opportunities.update) ||
+    hasPermission(context, Permissions.contracts.create) ||
+    hasPermission(context, Permissions.contracts.update) ||
+    hasPermission(context, Permissions.procurement.create) ||
+    hasPermission(context, Permissions.procurement.update) ||
+    hasPermission(context, Permissions.vendors.create) ||
+    hasPermission(context, Permissions.vendors.update);
+  const canReview =
+    hasPermission(context, Permissions.workspace.manageRoles) ||
+    hasPermission(context, Permissions.contracts.approve) ||
+    hasPermission(context, Permissions.procurement.approve) ||
+    hasPermission(context, Permissions.opportunities.evaluate);
+  const [opportunities, contracts, partners, procurementRequests, projects] = canUpload
+    ? await Promise.all([
+        prisma.opportunity.findMany({ where: { workspaceId: context.workspace.id }, select: { id: true, number: true, title: true }, orderBy: { createdAt: "desc" }, take: 100 }),
+        prisma.contract.findMany({ where: { workspaceId: context.workspace.id }, select: { id: true, number: true, title: true }, orderBy: { createdAt: "desc" }, take: 100 }),
+        prisma.businessPartner.findMany({ where: { workspaceId: context.workspace.id }, select: { id: true, nameAr: true }, orderBy: { nameAr: "asc" }, take: 100 }),
+        prisma.procurementRequest.findMany({ where: { workspaceId: context.workspace.id }, select: { id: true, number: true, title: true }, orderBy: { createdAt: "desc" }, take: 100 }),
+        prisma.project.findMany({ where: { workspaceId: context.workspace.id }, select: { id: true, code: true, nameAr: true }, orderBy: { createdAt: "desc" }, take: 100 }),
+      ])
+    : [[], [], [], [], []];
+  const entityOptions = {
+    OPPORTUNITY: opportunities.map((item) => ({ id: item.id, label: `${item.number} — ${item.title}` })),
+    CONTRACT: contracts.map((item) => ({ id: item.id, label: `${item.number} — ${item.title}` })),
+    BUSINESS_PARTNER: partners.map((item) => ({ id: item.id, label: item.nameAr })),
+    PROCUREMENT_REQUEST: procurementRequests.map((item) => ({ id: item.id, label: `${item.number} — ${item.title}` })),
+    PROJECT: projects.map((item) => ({ id: item.id, label: `${item.code} — ${item.nameAr}` })),
+  };
 
   // Request time is required for live expiry indicators.
   // eslint-disable-next-line react-hooks/purity
@@ -70,7 +104,7 @@ export default async function DocumentsPage() {
           <h1>مركز المستندات</h1>
           <p>الوصول إلى ملفات المشتريات والمنافسات والعقود والموردين من مكان واحد.</p>
         </div>
-        <button type="button" disabled title="يتطلب تهيئة مزود التخزين">رفع مستند جديد</button>
+        {canUpload && <DocumentUploadForm entities={entityOptions} />}
       </header>
 
       <section className={styles.kpis}>
@@ -92,7 +126,7 @@ export default async function DocumentsPage() {
         <div className={styles.panelHead}><div><span>سجل الملفات</span><h2>آخر المستندات تحديثًا</h2></div><small>{documents.length} مستند</small></div>
         {documents.length ? (
           <div className={styles.tableWrap}><table>
-            <thead><tr><th>المستند</th><th>التصنيف</th><th>مرتبط بـ</th><th>النسخة</th><th>الحالة</th><th>الحجم</th><th>آخر تحديث</th></tr></thead>
+            <thead><tr><th>المستند</th><th>التصنيف</th><th>مرتبط بـ</th><th>النسخة</th><th>الحالة</th><th>الحجم</th><th>آخر تحديث</th><th>الإجراء</th></tr></thead>
             <tbody>{documents.map((document) => {
               const href = document.entityType === "OPPORTUNITY" && document.entityId
                 ? `/platform/opportunities/${document.entityId}`
@@ -109,11 +143,18 @@ export default async function DocumentsPage() {
                 <td><span className={styles.status} data-status={document.reviewStatus}>{statusLabels[document.reviewStatus]}</span></td>
                 <td>{formatSize(document.sizeBytes)}</td>
                 <td>{new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium" }).format(document.updatedAt)}</td>
+                <td><div className={actionStyles.rowActions}>
+                  <a href={`/api/documents/${document.id}/download`}>تنزيل</a>
+                  {canReview && document.reviewStatus === "PENDING_REVIEW" && <>
+                    <form action={reviewDocumentAction}><input name="documentId" type="hidden" value={document.id} /><input name="decision" type="hidden" value="APPROVED" /><button type="submit">اعتماد</button></form>
+                    <form action={reviewDocumentAction}><input name="documentId" type="hidden" value={document.id} /><input name="decision" type="hidden" value="REJECTED" /><button data-tone="danger" type="submit">رفض</button></form>
+                  </>}
+                </div></td>
               </tr>;
             })}</tbody>
           </table></div>
         ) : (
-          <div className={styles.emptyState}><i>⌁</i><h3>مستودع المستندات جاهز</h3><p>لم تتم إضافة ملفات بعد. سيظهر هنا كل مستند مع نسخته وحالته والكيان المرتبط به.</p><span>يصبح الرفع متاحًا بعد ربط مزود التخزين الآمن.</span></div>
+          <div className={styles.emptyState}><i>⌁</i><h3>مستودع المستندات جاهز</h3><p>لم تتم إضافة ملفات بعد. ارفع أول مستند ليظهر هنا مع نسخته وحالته والكيان المرتبط به.</p></div>
         )}
       </section>
     </main>
