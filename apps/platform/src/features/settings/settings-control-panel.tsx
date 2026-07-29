@@ -30,6 +30,7 @@ const initialState: SettingsActionState = { status: "idle" };
 
 export function SettingsControlPanel(props: Props) {
   const [state, action, pending] = useActionState(manageSettingsAction, initialState);
+  const assignableRoles = props.roles.filter((role) => role.code !== "OWNER");
   const permissionGroups = Object.entries(
     props.permissions.reduce<Record<string, Permission[]>>((groups, permission) => {
       const key = permission.code.split(".")[0] ?? "other";
@@ -60,7 +61,7 @@ export function SettingsControlPanel(props: Props) {
         {props.canManageMembers && <form action={action} className={styles.invite}>
           <input name="intent" type="hidden" value="add-member" />
           <label>البريد الإلكتروني<input name="email" placeholder="name@company.sa" required type="email" /></label>
-          <label>الدور<select name="roleId" required>{props.roles.map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}</select></label>
+          <label>الدور<select name="roleId" required>{assignableRoles.map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}</select></label>
           <button disabled={pending}>إضافة عضو مسجل</button>
         </form>}
         <div className={styles.memberList}>
@@ -70,7 +71,7 @@ export function SettingsControlPanel(props: Props) {
               <input name="intent" type="hidden" value="update-member" />
               <input name="memberId" type="hidden" value={member.id} />
               <select defaultValue={member.roleIds[0]} disabled={!props.canManageMembers || member.isOwner} name="roleId">
-                {props.roles.map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}
+                {(member.isOwner ? props.roles : assignableRoles).map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}
               </select>
               <select defaultValue={member.status} disabled={!props.canManageMembers || member.isOwner} name="status"><option value="ACTIVE">نشط</option><option value="SUSPENDED">معلّق</option></select>
               {props.canManageMembers && !member.isOwner && <button disabled={pending}>تحديث</button>}
@@ -82,7 +83,35 @@ export function SettingsControlPanel(props: Props) {
 
       <section className={styles.panel}>
         <div className={styles.panelHead}><div><span>التحكم الدقيق</span><h2>الأدوار والصلاحيات</h2></div><small>{props.roles.length} أدوار</small></div>
-        <div className={styles.roles}>{props.roles.map((role) => <article key={role.id}><div><b>{role.name}</b>{role.isSystem && <span>نظامي</span>}</div><p>{role.description ?? "دور مخصص لمساحة العمل"}</p><small>{role.permissionCodes.length} صلاحية</small></article>)}</div>
+        <div className={styles.roles}>{props.roles.map((role) => <article key={role.id}>
+          <div><b>{role.name}</b>{role.isSystem && <span>نظامي</span>}</div>
+          <p>{role.description ?? "دور مخصص لمساحة العمل"}</p>
+          <small>{role.permissionCodes.length} صلاحية</small>
+          {props.canManageRoles && !role.isSystem && role.code !== "OWNER" && <details>
+            <summary>تعديل الدور والصلاحيات</summary>
+            <form action={action} className={styles.roleForm}>
+              <input name="intent" type="hidden" value="update-role" />
+              <input name="roleId" type="hidden" value={role.id} />
+              <div className={styles.roleFields}>
+                <label>اسم الدور<input defaultValue={role.name} name="name" required /></label>
+                <label>الوصف<input defaultValue={role.description ?? ""} name="description" /></label>
+              </div>
+              <div className={styles.permissions}>{permissionGroups.map(([group, permissions]) => <fieldset key={group}>
+                <legend>{group}</legend>
+                {permissions.map((permission) => <label key={permission.code}>
+                  <input defaultChecked={role.permissionCodes.includes(permission.code)} name="permissions" type="checkbox" value={permission.code} />
+                  <span><b>{permission.name}</b><small>{permission.code}</small></span>
+                </label>)}
+              </fieldset>)}</div>
+              <button disabled={pending}>حفظ تعديلات الدور</button>
+            </form>
+            <form action={action}>
+              <input name="intent" type="hidden" value="delete-role" />
+              <input name="roleId" type="hidden" value={role.id} />
+              <button data-tone="danger" disabled={pending} type="submit">حذف الدور غير المستخدم</button>
+            </form>
+          </details>}
+        </article>)}</div>
         {props.canManageRoles && <form action={action} className={styles.roleForm}>
           <input name="intent" type="hidden" value="create-role" />
           <div className={styles.roleFields}><label>اسم الدور<input name="name" placeholder="مثال: مسؤول العقود" required /></label><label>الوصف<input name="description" placeholder="نطاق مسؤوليات الدور" /></label></div>

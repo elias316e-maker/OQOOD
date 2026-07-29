@@ -83,12 +83,18 @@ export async function manageSettingsAction(
       }
       const [user, role] = await Promise.all([
         prisma.user.findUnique({ where: { email }, select: { id: true, name: true } }),
-        prisma.role.findFirst({ where: { id: roleId, workspaceId }, select: { id: true, name: true } }),
+        prisma.role.findFirst({
+          where: { id: roleId, workspaceId },
+          select: { id: true, name: true, code: true },
+        }),
       ]);
       if (!user) {
         throw new Error("لا يوجد حساب مسجل بهذا البريد. اطلب من المستخدم إنشاء حساب أولًا.");
       }
       if (!role) throw new Error("الدور المحدد غير موجود.");
+      if (role.code === "OWNER") {
+        throw new Error("لا يمكن منح دور المالك من إدارة الأعضاء. استخدم إجراء نقل الملكية المخصص.");
+      }
       const existing = await prisma.workspaceMember.findUnique({
         where: { workspaceId_userId: { workspaceId, userId: user.id } },
         select: { id: true },
@@ -133,6 +139,9 @@ export async function manageSettingsAction(
       const role = await prisma.role.findFirst({ where: { id: roleId, workspaceId } });
       if (!member || !role) throw new Error("تعذر العثور على العضو أو الدور.");
       const isOwner = member.roles.some((assignment) => assignment.role.code === "OWNER");
+      if (role.code === "OWNER" && !isOwner) {
+        throw new Error("لا يمكن منح دور المالك من إدارة الأعضاء. استخدم إجراء نقل الملكية المخصص.");
+      }
       if (isOwner && (status !== "ACTIVE" || role.code !== "OWNER")) {
         throw new Error("لا يمكن تعليق المالك أو إزالة دور المالك.");
       }
@@ -198,6 +207,98 @@ export async function manageSettingsAction(
       });
       refreshSettings();
       return { status: "success", message: `تم إنشاء دور «${name}».` };
+    }
+
+    if (intent === "update-role") {
+      if (!hasPermission(context, Permissions.workspace.manageRoles)) {
+        throw new Error("لا تملك صلاحية إدارة الأدوار.");
+      }
+      const roleId = value(formData, "roleId");
+      const name = value(formData, "name");
+      const description = value(formData, "description") || null;
+      const permissionCodes = formData.getAll("permissions").filter(
+        (item): item is string => typeof item === "string",
+      );
+      if (name.length < 2 || name.length > 80) {
+        throw new Error("اسم الدور يجب أن يكون بين حرفين و80 حرفًا.");
+      }
+      if (!permissionCodes.length) {
+        throw new Error("حدد صلاحية واحدة على الأقل.");
+      }
+      const [role, permissions] = await Promise.all([
+        prisma.role.findFirst({ where: { id: roleId, workspaceId } }),
+        prisma.permission.findMany({
+          where: { code: { in: permissionCodes } },
+          select: { id: true, code: true },
+        }),
+      ]);
+      if (!role) throw new Error("الدور غير موجود.");
+      if (role.isSystem || role.code === "OWNER") {
+        throw new Error("لا يمكن تعديل الدور النظامي.");
+      }
+      if (permissions.length !== new Set(permissionCodes).size) {
+        throw new Error("توجد صلاحية غير صالحة.");
+      }
+      await prisma.$transaction(async (transaction) => {
+        await transaction.role.update({
+          where: { id: role.id },
+          data: { name, description },
+        });
+        await transaction.rolePermission.deleteMany({
+          where: { roleId: role.id },
+        });
+        await transaction.rolePermission.createMany({
+          data: permissions.map((permission) => ({
+            roleId: role.id,
+            permissionId: permission.id,
+          })),
+        });
+        await transaction.auditLog.create({
+          data: {
+            workspaceId,
+            userId: actor.id,
+            action: "workspace.role_updated",
+            entityType: "Role",
+            entityId: role.id,
+            metadata: { name, permissionCodes },
+          },
+        });
+      });
+      refreshSettings();
+      return { status: "success", message: `تم تحديث دور «${name}».` };
+    }
+
+    if (intent === "delete-role") {
+      if (!hasPermission(context, Permissions.workspace.manageRoles)) {
+        throw new Error("لا تملك صلاحية إدارة الأدوار.");
+      }
+      const roleId = value(formData, "roleId");
+      const role = await prisma.role.findFirst({
+        where: { id: roleId, workspaceId },
+        include: { _count: { select: { members: true } } },
+      });
+      if (!role) throw new Error("الدور غير موجود.");
+      if (role.isSystem || role.code === "OWNER") {
+        throw new Error("لا يمكن حذف الدور النظامي.");
+      }
+      if (role._count.members > 0) {
+        throw new Error("لا يمكن حذف دور مرتبط بأعضاء. انقل الأعضاء إلى دور آخر أولًا.");
+      }
+      await prisma.$transaction([
+        prisma.role.delete({ where: { id: role.id } }),
+        prisma.auditLog.create({
+          data: {
+            workspaceId,
+            userId: actor.id,
+            action: "workspace.role_deleted",
+            entityType: "Role",
+            entityId: role.id,
+            metadata: { name: role.name, code: role.code },
+          },
+        }),
+      ]);
+      refreshSettings();
+      return { status: "success", message: `تم حذف دور «${role.name}».` };
     }
 
     throw new Error("العملية المطلوبة غير معروفة.");
