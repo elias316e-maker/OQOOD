@@ -7,10 +7,11 @@ import { KpiStrip } from "@/components/command-center/kpi";
 import { OpportunitiesCalendar } from "@/components/command-center/opportunities";
 import { PipelineTasks } from "@/components/command-center/operations";
 import { QuickActions } from "@/components/command-center/quick-actions";
-import { commandCenterData } from "@/features/command-center";
+import { getCommandCenterData } from "@/features/command-center";
 import styles from "./page.module.css";
 
-export default function PlatformPage() {
+export default async function PlatformPage() {
+  const commandCenterData = await getCommandCenterData();
   const { operations } = commandCenterData;
 
   return (
