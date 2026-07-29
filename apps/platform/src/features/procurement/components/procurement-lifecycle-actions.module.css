@@ -103,3 +103,4 @@
   background: #fdecec;
   color: #9f3f3f;
 }
+.action{border-color:rgb(148 163 184 / 18%);background:#172b46;color:#aebdcc}.action[data-command=approve],.confirm{border-color:#118766;background:#118766}.action[data-command=reject],.action[data-command=cancel]{border-color:rgb(244 63 94 / 25%);color:#f59aaa}.confirmation{border-color:rgb(148 163 184 / 14%);background:#142842}.confirmation strong{color:#dce7f2}.confirmation p,.confirmation label{color:#9aacc0}.confirmation textarea{border-color:rgb(148 163 184 / 17%);background:#10233b;color:#dce7f2}.dismiss{border-color:rgb(148 163 184 / 18%);background:#172b46;color:#aebdcc}.feedback{background:rgb(16 185 129 / 11%);color:#6ee7b7}.feedback[data-tone=error]{background:rgb(244 63 94 / 10%);color:#f59aaa}
