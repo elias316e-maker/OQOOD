@@ -140,7 +140,7 @@ export default function LoginPage() {
             <span>أو</span>
           </div>
 
-          <Button fullWidth size="lg" variant="outline">
+          <Button disabled fullWidth size="lg" title="يتطلب ربط مزود هوية الشركة" variant="outline">
             تسجيل الدخول باستخدام حساب الشركة
           </Button>
 
