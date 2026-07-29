@@ -15,6 +15,7 @@ type Member = {
   isOwner: boolean;
 };
 type Permission = { code: string; name: string; description: string | null };
+type Invitation = { id: string; email: string; roleName: string; expiresAt: string };
 
 type Props = {
   workspace: { nameAr: string; nameEn: string | null; timezone: string; defaultCurrency: string; defaultLanguage: string };
@@ -24,6 +25,9 @@ type Props = {
   canUpdateWorkspace: boolean;
   canManageMembers: boolean;
   canManageRoles: boolean;
+  currentMemberId: string;
+  currentUserIsOwner: boolean;
+  invitations: Invitation[];
 };
 
 const initialState: SettingsActionState = { status: "idle" };
@@ -64,6 +68,20 @@ export function SettingsControlPanel(props: Props) {
           <label>الدور<select name="roleId" required>{assignableRoles.map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}</select></label>
           <button disabled={pending}>إضافة عضو مسجل</button>
         </form>}
+        {props.invitations.length > 0 && <div className={styles.memberList}>
+          {props.invitations.map((invitation) => <article key={invitation.id}>
+            <div className={styles.identity}>
+              <b>{invitation.email}</b>
+              <span>دعوة معلقة · {invitation.roleName}</span>
+              <small>تنتهي {new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium" }).format(new Date(invitation.expiresAt))}</small>
+            </div>
+            {props.canManageMembers && <form action={action}>
+              <input name="intent" type="hidden" value="revoke-invitation" />
+              <input name="invitationId" type="hidden" value={invitation.id} />
+              <button data-tone="danger" disabled={pending}>إلغاء الدعوة</button>
+            </form>}
+          </article>)}
+        </div>}
         <div className={styles.memberList}>
           {props.members.map((member) => <article key={member.id}>
             <div className={styles.identity}><b>{member.user.name}</b><span>{member.user.email}</span><small>انضم {new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium" }).format(new Date(member.joinedAt))}</small></div>
@@ -80,6 +98,24 @@ export function SettingsControlPanel(props: Props) {
           </article>)}
         </div>
       </section>
+
+      {props.currentUserIsOwner && <section className={styles.panel}>
+        <div className={styles.panelHead}>
+          <div><span>إجراء حساس</span><h2>نقل ملكية مساحة العمل</h2></div>
+          <small>يُنقل دور المالك بالكامل إلى عضو نشط آخر</small>
+        </div>
+        <form action={action} className={styles.form}>
+          <input name="intent" type="hidden" value="transfer-ownership" />
+          <label>المالك الجديد<select name="targetMemberId" required>
+            <option value="">اختر عضوًا نشطًا</option>
+            {props.members.filter((member) => member.status === "ACTIVE" && member.id !== props.currentMemberId).map((member) => <option key={member.id} value={member.id}>{member.user.name} — {member.user.email}</option>)}
+          </select></label>
+          <label>دورك بعد النقل<select name="fallbackRoleId" required>
+            {assignableRoles.map((role) => <option key={role.id} value={role.id}>{role.name}</option>)}
+          </select></label>
+          <button data-tone="danger" disabled={pending}>تأكيد نقل الملكية</button>
+        </form>
+      </section>}
 
       <section className={styles.panel}>
         <div className={styles.panelHead}><div><span>التحكم الدقيق</span><h2>الأدوار والصلاحيات</h2></div><small>{props.roles.length} أدوار</small></div>

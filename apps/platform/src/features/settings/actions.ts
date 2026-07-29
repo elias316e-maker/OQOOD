@@ -7,6 +7,8 @@ import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
+import { createInvitationToken } from "./invitation-token";
+
 export type SettingsActionState = {
   status: "idle" | "success" | "error";
   message?: string;
@@ -88,12 +90,45 @@ export async function manageSettingsAction(
           select: { id: true, name: true, code: true },
         }),
       ]);
-      if (!user) {
-        throw new Error("لا يوجد حساب مسجل بهذا البريد. اطلب من المستخدم إنشاء حساب أولًا.");
-      }
       if (!role) throw new Error("الدور المحدد غير موجود.");
       if (role.code === "OWNER") {
         throw new Error("لا يمكن منح دور المالك من إدارة الأعضاء. استخدم إجراء نقل الملكية المخصص.");
+      }
+      if (!user) {
+        const { token, tokenHash } = createInvitationToken();
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        const invitation = await prisma.$transaction(async (transaction) => {
+          await transaction.workspaceInvitation.updateMany({
+            where: { workspaceId, email, status: "PENDING" },
+            data: { status: "REVOKED", revokedAt: new Date() },
+          });
+          const created = await transaction.workspaceInvitation.create({
+            data: {
+              workspaceId,
+              email,
+              roleId: role.id,
+              tokenHash,
+              invitedById: actor.id,
+              expiresAt,
+            },
+          });
+          await transaction.auditLog.create({
+            data: {
+              workspaceId,
+              userId: actor.id,
+              action: "workspace.invitation_created",
+              entityType: "WorkspaceInvitation",
+              entityId: created.id,
+              metadata: { email, roleId: role.id, expiresAt },
+            },
+          });
+          return created;
+        });
+        refreshSettings();
+        return {
+          status: "success",
+          message: `تم إنشاء دعوة صالحة لمدة 7 أيام: /invitations/${token} (${invitation.email})`,
+        };
       }
       const existing = await prisma.workspaceMember.findUnique({
         where: { workspaceId_userId: { workspaceId, userId: user.id } },
@@ -167,6 +202,99 @@ export async function manageSettingsAction(
       });
       refreshSettings();
       return { status: "success", message: "تم تحديث العضو بنجاح." };
+    }
+
+    if (intent === "revoke-invitation") {
+      if (!hasPermission(context, Permissions.workspace.manageMembers)) {
+        throw new Error("لا تملك صلاحية إدارة أعضاء الفريق.");
+      }
+      const invitationId = value(formData, "invitationId");
+      const invitation = await prisma.workspaceInvitation.findFirst({
+        where: { id: invitationId, workspaceId, status: "PENDING" },
+      });
+      if (!invitation) throw new Error("الدعوة غير موجودة أو لم تعد معلقة.");
+      await prisma.$transaction([
+        prisma.workspaceInvitation.update({
+          where: { id: invitation.id },
+          data: { status: "REVOKED", revokedAt: new Date() },
+        }),
+        prisma.auditLog.create({
+          data: {
+            workspaceId,
+            userId: actor.id,
+            action: "workspace.invitation_revoked",
+            entityType: "WorkspaceInvitation",
+            entityId: invitation.id,
+            metadata: { email: invitation.email },
+          },
+        }),
+      ]);
+      refreshSettings();
+      return { status: "success", message: "تم إلغاء الدعوة." };
+    }
+
+    if (intent === "transfer-ownership") {
+      const targetMemberId = value(formData, "targetMemberId");
+      const fallbackRoleId = value(formData, "fallbackRoleId");
+      const actorMember = await prisma.workspaceMember.findFirst({
+        where: { workspaceId, userId: actor.id, status: "ACTIVE" },
+        include: { roles: { include: { role: true } } },
+      });
+      const actorIsOwner = actorMember?.roles.some(
+        (assignment) => assignment.role.code === "OWNER",
+      );
+      if (!actorMember || !actorIsOwner) {
+        throw new Error("نقل الملكية متاح للمالك الحالي فقط.");
+      }
+      const [target, ownerRole, fallbackRole] = await Promise.all([
+        prisma.workspaceMember.findFirst({
+          where: { id: targetMemberId, workspaceId, status: "ACTIVE" },
+          include: { roles: { include: { role: true } } },
+        }),
+        prisma.role.findFirst({ where: { workspaceId, code: "OWNER" } }),
+        prisma.role.findFirst({
+          where: {
+            id: fallbackRoleId,
+            workspaceId,
+            code: { not: "OWNER" },
+          },
+        }),
+      ]);
+      if (!target || !ownerRole || !fallbackRole) {
+        throw new Error("تعذر العثور على العضو المستلم أو الدور البديل.");
+      }
+      if (target.userId === actor.id) {
+        throw new Error("اختر عضوًا آخر لنقل الملكية إليه.");
+      }
+      await prisma.$transaction(async (transaction) => {
+        await transaction.workspaceMemberRole.deleteMany({
+          where: {
+            workspaceMemberId: { in: [actorMember.id, target.id] },
+          },
+        });
+        await transaction.workspaceMemberRole.createMany({
+          data: [
+            { workspaceMemberId: actorMember.id, roleId: fallbackRole.id },
+            { workspaceMemberId: target.id, roleId: ownerRole.id },
+          ],
+        });
+        await transaction.auditLog.create({
+          data: {
+            workspaceId,
+            userId: actor.id,
+            action: "workspace.ownership_transferred",
+            entityType: "Workspace",
+            entityId: workspaceId,
+            metadata: {
+              previousOwnerUserId: actor.id,
+              newOwnerUserId: target.userId,
+              fallbackRoleId: fallbackRole.id,
+            },
+          },
+        });
+      });
+      refreshSettings();
+      return { status: "success", message: "تم نقل ملكية مساحة العمل بأمان." };
     }
 
     if (intent === "create-role") {

@@ -42,7 +42,8 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/platform");
+    const invitationToken = new URLSearchParams(window.location.search).get("invitation");
+    router.push(invitationToken ? `/invitations/${invitationToken}` : "/platform");
     router.refresh();
   }
 

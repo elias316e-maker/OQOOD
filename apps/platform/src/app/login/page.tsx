@@ -32,7 +32,8 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/platform");
+    const callbackUrl = new URLSearchParams(window.location.search).get("callbackURL");
+    router.push(callbackUrl?.startsWith("/") ? callbackUrl : "/platform");
     router.refresh();
   }
 

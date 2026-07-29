@@ -10,7 +10,7 @@ export default async function SettingsPage() {
   if (!hasPermission(context, Permissions.workspace.read)) {
     return <main className={styles.page}><p>لا تملك صلاحية عرض إعدادات مساحة العمل.</p></main>;
   }
-  const [workspace, members, roles, permissions] = await Promise.all([
+  const [workspace, members, roles, permissions, invitations] = await Promise.all([
     prisma.workspace.findUniqueOrThrow({
       where: { id: context.workspace.id },
       select: { nameAr: true, nameEn: true, timezone: true, defaultCurrency: true, defaultLanguage: true },
@@ -26,6 +26,11 @@ export default async function SettingsPage() {
       orderBy: [{ isSystem: "desc" }, { name: "asc" }],
     }),
     prisma.permission.findMany({ orderBy: { code: "asc" } }),
+    prisma.workspaceInvitation.findMany({
+      where: { workspaceId: context.workspace.id, status: "PENDING" },
+      include: { role: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
   ]);
 
   return (
@@ -38,6 +43,14 @@ export default async function SettingsPage() {
         canManageMembers={hasPermission(context, Permissions.workspace.manageMembers)}
         canManageRoles={hasPermission(context, Permissions.workspace.manageRoles)}
         canUpdateWorkspace={hasPermission(context, Permissions.workspace.update)}
+        currentMemberId={context.id}
+        currentUserIsOwner={context.roles.some((assignment) => assignment.role.code === "OWNER")}
+        invitations={invitations.map((invitation) => ({
+          id: invitation.id,
+          email: invitation.email,
+          expiresAt: invitation.expiresAt.toISOString(),
+          roleName: invitation.role.name,
+        }))}
         members={members.map((member) => ({
           id: member.id,
           status: member.status,

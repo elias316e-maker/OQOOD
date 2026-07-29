@@ -88,6 +88,13 @@ enum InvitationStatus {
   EXPIRED
 }
 
+enum WorkspaceInvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
 enum OfferStatus {
   DRAFT
   SUBMITTED
@@ -278,6 +285,8 @@ model User {
   reviewedDocuments            Document[]           @relation("DocumentReviewer")
   deletedDocuments             Document[]           @relation("DocumentDeleter")
   notificationReceipts        NotificationReceipt[]
+  sentWorkspaceInvitations     WorkspaceInvitation[] @relation("WorkspaceInvitationSender")
+  acceptedWorkspaceInvitations WorkspaceInvitation[] @relation("WorkspaceInvitationAcceptor")
   auditLogs                    AuditLog[]
 
   createdAt DateTime @default(now())
@@ -359,6 +368,7 @@ model Workspace {
   procurementRequests ProcurementRequest[]
   documents           Document[]
   notificationReceipts NotificationReceipt[]
+  invitations          WorkspaceInvitation[]
   roles               Role[]
   auditLogs           AuditLog[]
   billingAccount      BillingAccount?
@@ -390,6 +400,32 @@ model WorkspaceMember {
   @@unique([workspaceId, userId])
   @@index([userId])
   @@index([workspaceId, status])
+}
+
+model WorkspaceInvitation {
+  id           String                    @id @default(cuid())
+  workspaceId  String
+  email        String
+  roleId       String
+  tokenHash    String                    @unique
+  status       WorkspaceInvitationStatus @default(PENDING)
+  invitedById  String
+  acceptedById String?
+  expiresAt    DateTime
+  acceptedAt   DateTime?
+  revokedAt    DateTime?
+
+  workspace  Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  role       Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  invitedBy  User      @relation("WorkspaceInvitationSender", fields: [invitedById], references: [id])
+  acceptedBy User?     @relation("WorkspaceInvitationAcceptor", fields: [acceptedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workspaceId, status])
+  @@index([email, status])
+  @@index([expiresAt])
 }
 
 model Company {
@@ -793,6 +829,7 @@ model Role {
   workspace   Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   members     WorkspaceMemberRole[]
   permissions RolePermission[]
+  invitations WorkspaceInvitation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
