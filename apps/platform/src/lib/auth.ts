@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { twoFactor } from "better-auth/plugins";
 import { prisma } from "@/lib/prisma";
 
 const appUrl = process.env.BETTER_AUTH_URL;
@@ -39,5 +40,23 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    revokeSessionsOnPasswordReset: true,
   },
+
+  session: {
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 12,
+    freshAge: 60 * 10,
+  },
+
+  plugins: [
+    twoFactor({
+      issuer: "OQOOD",
+      accountLockout: {
+        enabled: true,
+        maxFailedAttempts: 5,
+        durationSeconds: 15 * 60,
+      },
+    }),
+  ],
 });

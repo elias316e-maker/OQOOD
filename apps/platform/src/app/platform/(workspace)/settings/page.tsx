@@ -1,12 +1,15 @@
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { requireCurrentUser } from "@/lib/session";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
 import { SettingsControlPanel } from "@/features/settings/settings-control-panel";
+import { AccountSecurityPanel } from "@/features/settings/account-security-panel";
 
 import styles from "./settings.module.css";
 
 export default async function SettingsPage() {
   const context = await requireCurrentWorkspace();
+  const currentUser = await requireCurrentUser();
   if (!hasPermission(context, Permissions.workspace.read)) {
     return <main className={styles.page}><p>لا تملك صلاحية عرض إعدادات مساحة العمل.</p></main>;
   }
@@ -69,6 +72,16 @@ export default async function SettingsPage() {
           permissionCodes: role.permissions.map((item) => item.permission.code),
         }))}
         workspace={workspace}
+      />
+      <AccountSecurityPanel
+        twoFactorEnabled={Boolean(
+          await prisma.user
+            .findUnique({
+              where: { id: currentUser.id },
+              select: { twoFactorEnabled: true },
+            })
+            .then((user) => user?.twoFactorEnabled),
+        )}
       />
     </main>
   );

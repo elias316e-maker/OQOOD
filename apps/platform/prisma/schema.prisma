@@ -260,6 +260,7 @@ model User {
   image           String?
   phone           String?
   isActive        Boolean   @default(true)
+  twoFactorEnabled Boolean? @default(false)
 
   // حقول توافقية مؤقتة وفق ADR-007.
   // تزال بعد اكتمال Migration والتحقق من البيانات.
@@ -268,6 +269,7 @@ model User {
 
   sessions Session[]
   accounts Account[]
+  twoFactors TwoFactor[]
 
   memberships                  WorkspaceMember[]
   createdWorkspaces            Workspace[]          @relation("WorkspaceCreator")
@@ -341,6 +343,20 @@ model Verification {
 
   @@index([identifier])
   @@index([expiresAt])
+}
+
+model TwoFactor {
+  id                      String    @id
+  secret                  String
+  backupCodes             String
+  verified                Boolean   @default(false)
+  failedVerificationCount Int       @default(0)
+  lockedUntil             DateTime?
+  userId                  String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Workspace {
