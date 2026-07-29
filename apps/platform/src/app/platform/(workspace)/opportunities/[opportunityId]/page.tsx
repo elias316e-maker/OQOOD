@@ -249,14 +249,14 @@ export default async function OpportunityDetailsPage({
         className="opportunityDetailTabs"
         aria-label="أقسام المنافسة"
       >
-        <a className="is-active" href="#basic-info">
+        <Link className="is-active" href={`/platform/opportunities/${opportunity.id}#basic-info`}>
           <span>▦</span>
           المعلومات الأساسية
-        </a>
-        <a href="#dates">
+        </Link>
+        <Link href={`/platform/opportunities/${opportunity.id}#dates`}>
           <span>◷</span>
           المواعيد
-        </a>
+        </Link>
         <Link
           href={`/platform/opportunities/${opportunity.id}/boq`}
         >
@@ -269,10 +269,10 @@ export default async function OpportunityDetailsPage({
           <span>♧</span>
           الموردون المدعوون
         </Link>
-        <a href="#description">
+        <Link href={`/platform/opportunities/${opportunity.id}#scope`}>
           <span>≡</span>
           النطاق والوصف
-        </a>
+        </Link>
       </nav>
 
       <section className="opportunityDetailIdentity" id="basic-info">
@@ -343,43 +343,44 @@ export default async function OpportunityDetailsPage({
       </section>
 
       <section className="opportunityDensePanel" id="dates">
+        <div className="panelHeader">
+          <div>
+            <span className="pageEyebrow">المواعيد</span>
+            <h2>الجدول الزمني للمنافسة</h2>
+          </div>
+        </div>
         <div className="detailGrid">
           <article>
-            <span>رقم الفرصة</span>
+            <span>تاريخ الإصدار</span>
             <strong>
-              {opportunity.number}
+              {formatDate(opportunity.issueDate)}
             </strong>
           </article>
 
           <article>
-            <span>الفئة</span>
+            <span>آخر موعد للتقديم</span>
             <strong>
-              {opportunity.category ??
-                "غير محددة"}
-            </strong>
-          </article>
-
-          <article>
-            <span>المشروع</span>
-            <strong>
-              {opportunity.projectId
-                ? "مرتبطة بمشروع"
-                : "غير مرتبطة"}
+              {formatDate(opportunity.closingDate)}
             </strong>
           </article>
 
           <article>
             <span>تاريخ الإنشاء</span>
             <strong>
-              {formatDate(
-                opportunity.createdAt,
-              )}
+              {formatDate(opportunity.createdAt)}
+            </strong>
+          </article>
+
+          <article>
+            <span>آخر تحديث</span>
+            <strong>
+              {formatDate(opportunity.updatedAt)}
             </strong>
           </article>
         </div>
       </section>
 
-      <section className="opportunityDensePanel" id="description">
+      <section className="opportunityDensePanel" id="scope">
         <div className="panelHeader">
           <div>
             <span className="pageEyebrow">
