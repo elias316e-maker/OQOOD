@@ -7,6 +7,7 @@ import {
 } from "@/features/documents/actions";
 import { DocumentUploadForm } from "@/features/documents/document-upload-form";
 import { DocumentVersionForm } from "@/features/documents/document-version-form";
+import { requireAuthenticatedUser } from "@/features/workspace/guards";
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
@@ -40,7 +41,10 @@ function formatSize(bytes: bigint | number) {
 }
 
 export default async function DocumentsPage() {
-  const context = await requireCurrentWorkspace();
+  const [context, user] = await Promise.all([
+    requireCurrentWorkspace(),
+    requireAuthenticatedUser(),
+  ]);
   const canRead =
     hasPermission(context, Permissions.workspace.read) ||
     hasPermission(context, Permissions.opportunities.read) ||
@@ -52,8 +56,19 @@ export default async function DocumentsPage() {
     return <main className={styles.page}><section className={styles.empty}>لا تملك صلاحية الاطلاع على المستندات.</section></main>;
   }
 
+  const canReview =
+    hasPermission(context, Permissions.workspace.manageRoles) ||
+    hasPermission(context, Permissions.contracts.approve) ||
+    hasPermission(context, Permissions.procurement.approve) ||
+    hasPermission(context, Permissions.opportunities.evaluate);
   const documents = await prisma.document.findMany({
-    where: { workspaceId: context.workspace.id, deletedAt: null },
+    where: {
+      workspaceId: context.workspace.id,
+      deletedAt: null,
+      ...(canReview
+        ? {}
+        : { OR: [{ isConfidential: false }, { uploadedById: user.id }] }),
+    },
     include: { uploadedBy: { select: { name: true } } },
     orderBy: { updatedAt: "desc" },
   });
@@ -67,11 +82,6 @@ export default async function DocumentsPage() {
     hasPermission(context, Permissions.procurement.update) ||
     hasPermission(context, Permissions.vendors.create) ||
     hasPermission(context, Permissions.vendors.update);
-  const canReview =
-    hasPermission(context, Permissions.workspace.manageRoles) ||
-    hasPermission(context, Permissions.contracts.approve) ||
-    hasPermission(context, Permissions.procurement.approve) ||
-    hasPermission(context, Permissions.opportunities.evaluate);
   const [opportunities, contracts, partners, procurementRequests, projects] = canUpload
     ? await Promise.all([
         prisma.opportunity.findMany({ where: { workspaceId: context.workspace.id }, select: { id: true, number: true, title: true }, orderBy: { createdAt: "desc" }, take: 100 }),

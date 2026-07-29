@@ -4,7 +4,10 @@ import {
 } from "./actions";
 import { DocumentVersionForm } from "./document-version-form";
 import styles from "./linked-documents.module.css";
+import { requireAuthenticatedUser } from "@/features/workspace/guards";
+import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
 type EntityType = "OPPORTUNITY" | "CONTRACT" | "BUSINESS_PARTNER" | "PROJECT" | "PROCUREMENT_REQUEST";
 
@@ -28,8 +31,28 @@ export async function LinkedDocuments({
   entityId: string;
   canManage: boolean;
 }) {
+  const [context, user] = await Promise.all([
+    requireCurrentWorkspace(),
+    requireAuthenticatedUser(),
+  ]);
+  if (context.workspace.id !== workspaceId) {
+    return null;
+  }
+  const canReviewConfidential =
+    hasPermission(context, Permissions.workspace.manageRoles) ||
+    hasPermission(context, Permissions.contracts.approve) ||
+    hasPermission(context, Permissions.procurement.approve) ||
+    hasPermission(context, Permissions.opportunities.evaluate);
   const documents = await prisma.document.findMany({
-    where: { workspaceId, entityType, entityId, deletedAt: null },
+    where: {
+      workspaceId,
+      entityType,
+      entityId,
+      deletedAt: null,
+      ...(canReviewConfidential
+        ? {}
+        : { OR: [{ isConfidential: false }, { uploadedById: user.id }] }),
+    },
     include: { uploadedBy: { select: { name: true } } },
     orderBy: [{ title: "asc" }, { version: "desc" }],
   });
