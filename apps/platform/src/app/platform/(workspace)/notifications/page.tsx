@@ -4,9 +4,11 @@ import {
   dismissNotificationAction,
   markAllNotificationsReadAction,
   markNotificationReadAction,
+  updateNotificationPreferencesAction,
 } from "@/features/notifications/actions";
 import { getOperationalNotifications } from "@/features/notifications/operational-notifications";
 import { requireAuthenticatedUser } from "@/features/workspace/guards";
+import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
 import styles from "./notifications.module.css";
@@ -25,6 +27,10 @@ export default async function NotificationsPage() {
     requireAuthenticatedUser(),
   ]);
   const notifications = await getOperationalNotifications(context, user.id);
+  const preferences = await prisma.notificationPreference.findMany({
+    where: { workspaceId: context.workspace.id, userId: user.id },
+  });
+  const preferenceMap = new Map(preferences.map((item) => [item.category, item]));
   const unread = notifications.filter((item) => !item.read);
   const danger = notifications.filter((item) => item.severity === "danger");
   const warning = notifications.filter((item) => item.severity === "warning");
@@ -55,6 +61,35 @@ export default async function NotificationsPage() {
           {!item.read && <form action={markNotificationReadAction}><input name="fingerprint" type="hidden" value={item.fingerprint} /><button type="submit">مقروء</button></form>}
           <form action={dismissNotificationAction}><input name="fingerprint" type="hidden" value={item.fingerprint} /><button data-dismiss type="submit">إخفاء</button></form>
         </article>)}</div>}
+    </section>
+    <section className={styles.panel}>
+      <div className={styles.panelHead}>
+        <div><span>قنوات التواصل</span><h2>تفضيلات الإشعارات</h2></div>
+        <small>يمكن تخصيص الإشعارات داخل المنصة والبريد لكل فئة.</small>
+      </div>
+      <form action={updateNotificationPreferencesAction}>
+        {[
+          ["TEAM_INVITATIONS", "دعوات الفريق"],
+          ["OPPORTUNITIES", "المنافسات والمواعيد"],
+          ["CONTRACTS", "العقود ومراحل التنفيذ"],
+          ["APPROVALS", "الموافقات والقرارات"],
+        ].map(([category, label]) => {
+          const preference = preferenceMap.get(category);
+          return <div key={category}>
+            <strong>{label}</strong>
+            <label><input defaultChecked={preference?.inAppEnabled ?? true} name={`inApp:${category}`} type="checkbox" /> داخل المنصة</label>
+            <label><input defaultChecked={preference?.emailEnabled ?? true} name={`email:${category}`} type="checkbox" /> البريد الإلكتروني</label>
+          </div>;
+        })}
+        <label>تجميع رسائل البريد
+          <select defaultValue={preferences[0]?.digest ?? "IMMEDIATE"} name="digest">
+            <option value="IMMEDIATE">فوري</option>
+            <option value="DAILY">ملخص يومي</option>
+            <option value="WEEKLY">ملخص أسبوعي</option>
+          </select>
+        </label>
+        <button type="submit">حفظ التفضيلات</button>
+      </form>
     </section>
   </main>;
 }

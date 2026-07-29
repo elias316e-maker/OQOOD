@@ -287,6 +287,8 @@ model User {
   reviewedDocuments            Document[]           @relation("DocumentReviewer")
   deletedDocuments             Document[]           @relation("DocumentDeleter")
   notificationReceipts        NotificationReceipt[]
+  notificationPreferences     NotificationPreference[]
+  notificationDeliveries      NotificationDelivery[]
   sentWorkspaceInvitations     WorkspaceInvitation[] @relation("WorkspaceInvitationSender")
   acceptedWorkspaceInvitations WorkspaceInvitation[] @relation("WorkspaceInvitationAcceptor")
   auditLogs                    AuditLog[]
@@ -384,6 +386,8 @@ model Workspace {
   procurementRequests ProcurementRequest[]
   documents           Document[]
   notificationReceipts NotificationReceipt[]
+  notificationPreferences NotificationPreference[]
+  notificationDeliveries NotificationDelivery[]
   invitations          WorkspaceInvitation[]
   roles               Role[]
   auditLogs           AuditLog[]
@@ -1204,4 +1208,51 @@ model NotificationReceipt {
   @@unique([workspaceId, userId, fingerprint])
   @@index([workspaceId, userId, readAt])
   @@index([workspaceId, userId, dismissedAt])
+}
+
+model NotificationPreference {
+  id           String  @id @default(cuid())
+  workspaceId  String
+  userId       String
+  category     String
+  inAppEnabled Boolean @default(true)
+  emailEnabled Boolean @default(true)
+  digest       String  @default("IMMEDIATE")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, userId, category])
+  @@index([userId, emailEnabled])
+}
+
+model NotificationDelivery {
+  id          String   @id @default(cuid())
+  workspaceId String
+  userId      String?
+  category    String
+  channel     String
+  recipient   String
+  subject     String
+  body        String
+  href        String?
+  status      String   @default("PENDING")
+  attempts    Int      @default(0)
+  providerId  String?
+  lastError   String?
+  scheduledAt DateTime @default(now())
+  sentAt      DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, scheduledAt])
+  @@index([workspaceId, category])
+  @@index([userId, createdAt])
 }

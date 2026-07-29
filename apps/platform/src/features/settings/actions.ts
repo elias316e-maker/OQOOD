@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
 import { createInvitationToken } from "./invitation-token";
+import { queueNotificationEmail } from "@/features/notifications/email-delivery";
 
 export type SettingsActionState = {
   status: "idle" | "success" | "error";
@@ -123,6 +124,16 @@ export async function manageSettingsAction(
             },
           });
           return created;
+        });
+        const publicUrl = process.env.NEXT_PUBLIC_BETTER_AUTH_URL ?? process.env.BETTER_AUTH_URL ?? "";
+        const invitationUrl = `${publicUrl.replace(/\/$/, "")}/invitations/${token}`;
+        await queueNotificationEmail({
+          workspaceId,
+          category: "TEAM_INVITATIONS",
+          recipient: invitation.email,
+          subject: `دعوة للانضمام إلى ${context.workspace.nameAr} على OQOOD`,
+          body: `دعاك فريق ${context.workspace.nameAr} للانضمام بدور ${role.name}. تنتهي الدعوة خلال 7 أيام.`,
+          href: invitationUrl,
         });
         refreshSettings();
         return {

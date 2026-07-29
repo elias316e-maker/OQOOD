@@ -55,3 +55,32 @@ export async function markAllNotificationsReadAction(formData: FormData) {
   revalidatePath("/platform/notifications");
   revalidatePath("/platform", "layout");
 }
+
+export async function updateNotificationPreferencesAction(formData: FormData) {
+  const owner = await context();
+  const categories = ["TEAM_INVITATIONS", "OPPORTUNITIES", "CONTRACTS", "APPROVALS"];
+  const digest = value(formData, "digest");
+  const safeDigest = ["IMMEDIATE", "DAILY", "WEEKLY"].includes(digest)
+    ? digest
+    : "IMMEDIATE";
+  await prisma.$transaction(categories.map((category) =>
+    prisma.notificationPreference.upsert({
+      where: {
+        workspaceId_userId_category: { ...owner, category },
+      },
+      update: {
+        inAppEnabled: formData.get(`inApp:${category}`) === "on",
+        emailEnabled: formData.get(`email:${category}`) === "on",
+        digest: safeDigest,
+      },
+      create: {
+        ...owner,
+        category,
+        inAppEnabled: formData.get(`inApp:${category}`) === "on",
+        emailEnabled: formData.get(`email:${category}`) === "on",
+        digest: safeDigest,
+      },
+    }),
+  ));
+  revalidatePath("/platform/notifications");
+}

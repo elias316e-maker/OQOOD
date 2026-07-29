@@ -126,12 +126,27 @@ export async function getOperationalNotifications(
     })),
   ];
 
-  const receipts = generated.length ? await prisma.notificationReceipt.findMany({
-    where: { workspaceId, userId, fingerprint: { in: generated.map((item) => item.fingerprint) } },
-  }) : [];
+  const [receipts, preferences] = await Promise.all([
+    generated.length ? prisma.notificationReceipt.findMany({
+      where: { workspaceId, userId, fingerprint: { in: generated.map((item) => item.fingerprint) } },
+    }) : Promise.resolve([]),
+    prisma.notificationPreference.findMany({
+      where: { workspaceId, userId },
+      select: { category: true, inAppEnabled: true },
+    }),
+  ]);
   const receiptMap = new Map(receipts.map((item) => [item.fingerprint, item]));
+  const preferenceMap = new Map(preferences.map((item) => [item.category, item.inAppEnabled]));
+  const categoryByKind = {
+    document: "CONTRACTS",
+    opportunity: "OPPORTUNITIES",
+    contract: "CONTRACTS",
+    milestone: "CONTRACTS",
+    approval: "APPROVALS",
+  } as const;
 
   return generated
+    .filter((item) => preferenceMap.get(categoryByKind[item.kind]) !== false)
     .filter((item) => !receiptMap.get(item.fingerprint)?.dismissedAt)
     .map((item) => ({ ...item, read: Boolean(receiptMap.get(item.fingerprint)?.readAt) }))
     .sort((a, b) => {
