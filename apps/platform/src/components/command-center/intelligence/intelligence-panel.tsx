@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type {
   AiInsight,
   CommandCenterIntelligenceData,
@@ -24,9 +25,9 @@ function InsightItem({ insight }: { insight: AiInsight }) {
         <p>{insight.description}</p>
       </div>
 
-      <button type="button">
+      <Link href={insight.href}>
         {insight.actionLabel}
-      </button>
+      </Link>
     </article>
   );
 }
@@ -54,9 +55,9 @@ export function IntelligencePanel({
           </p>
         </div>
 
-        <button className={styles.viewAll} type="button">
+        <Link className={styles.viewAll} href="/platform/reports">
           عرض جميع التحليلات
-        </button>
+        </Link>
       </header>
 
       <div className={styles.content}>
@@ -99,10 +100,10 @@ export function IntelligencePanel({
         </div>
       </div>
 
-      <button className={styles.commandBar} type="button">
+      <Link className={styles.commandBar} href="/platform/search">
         <span>اسأل مساعد OQOOD الذكي أي سؤال...</span>
         <strong aria-hidden="true">✦</strong>
-      </button>
+      </Link>
     </section>
   );
 }

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type {
   CommandTask,
   PipelineStage,
@@ -42,6 +43,11 @@ export function PipelineTasks({
   pipeline,
   tasks,
 }: PipelineTasksProps) {
+  const activeOperations = pipeline.reduce(
+    (sum, stage) => sum + stage.value,
+    0,
+  );
+
   return (
     <section className={styles.layout}>
       <article className={styles.pipelinePanel}>
@@ -51,7 +57,7 @@ export function PipelineTasks({
             <p>الحالة التشغيلية الحالية للمنافسات.</p>
           </div>
 
-          <button type="button">عرض التفاصيل</button>
+          <Link href="/platform/opportunities">عرض التفاصيل</Link>
         </header>
 
         <div className={styles.pipeline}>
@@ -81,13 +87,12 @@ export function PipelineTasks({
 
         <footer className={styles.pipelineFooter}>
           <span>
-            <strong>47</strong>
+            <strong>{activeOperations}</strong>
             عملية نشطة
           </span>
 
           <span>
-            متوسط مدة الدورة:
-            <strong> 21 يومًا</strong>
+            بيانات محدثة مباشرة من مساحة العمل
           </span>
         </footer>
       </article>
@@ -110,9 +115,9 @@ export function PipelineTasks({
           ))}
         </div>
 
-        <button className={styles.viewTasks} type="button">
+        <Link className={styles.viewTasks} href="/platform/notifications">
           عرض جميع المهام
-        </button>
+        </Link>
       </article>
     </section>
   );

@@ -68,6 +68,7 @@ export type AiInsight = {
   title: string;
   description: string;
   actionLabel: string;
+  href: string;
   tone: AiInsightTone;
   icon: string;
 };

@@ -227,9 +227,9 @@ export async function getCommandCenterData(): Promise<CommandCenterData> {
       winProbability: opportunities.length ? Math.round(opportunities.filter((item) => item.status === "AWARDED").length / opportunities.length * 100) : 0,
       change: `${opportunities.length} منافسة`,
       insights: [
-        { id: "decisions", title: "قرارات تحتاج المتابعة", description: `${pendingApprovals} طلباً أو منافسة أو عقداً بانتظار القرار.`, actionLabel: "عرض الموافقات", tone: "blue", icon: "✓" },
-        { id: "deadlines", title: "المواعيد القادمة", description: `${closingToday + expiringContracts.length} موعداً مهماً يستحق المتابعة.`, actionLabel: "فتح التقويم", tone: "green", icon: "⌛" },
-        { id: "risk", title: "التنبيهات الحرجة", description: dangerNotifications.length ? `${dangerNotifications.length} تنبيهات متأخرة أو حرجة.` : "لا توجد تنبيهات حرجة حالياً.", actionLabel: "عرض الإشعارات", tone: "purple", icon: "!" },
+        { id: "decisions", title: "قرارات تحتاج المتابعة", description: `${pendingApprovals} طلباً أو منافسة أو عقداً بانتظار القرار.`, actionLabel: "عرض الموافقات", href: "/platform/approvals", tone: "blue", icon: "✓" },
+        { id: "deadlines", title: "المواعيد القادمة", description: `${closingToday + expiringContracts.length} موعداً مهماً يستحق المتابعة.`, actionLabel: "فتح التقويم", href: "/platform/calendar", tone: "green", icon: "⌛" },
+        { id: "risk", title: "التنبيهات الحرجة", description: dangerNotifications.length ? `${dangerNotifications.length} تنبيهات متأخرة أو حرجة.` : "لا توجد تنبيهات حرجة حالياً.", actionLabel: "عرض الإشعارات", href: "/platform/notifications", tone: "purple", icon: "!" },
       ],
     },
     quickActions: {
