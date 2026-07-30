@@ -5,7 +5,6 @@ import Link from "next/link";
 
 import type { OpportunitySummaryResponse } from "../dtos";
 import { OpportunityCardGrid } from "./opportunity-card-grid";
-import { SortableOpportunityTable } from "./sortable-opportunity-table";
 
 type DirectoryView = "table" | "cards";
 type OpportunityStatus = OpportunitySummaryResponse["status"];
@@ -35,6 +34,54 @@ const typeOptions: Array<{ value: OpportunityType | "ALL"; label: string }> = [
   { value: "DIRECT_PURCHASE", label: "شراء مباشر" },
   { value: "SERVICE_REQUEST", label: "طلب خدمة" },
 ];
+
+const statusLabels: Record<OpportunityStatus, string> = {
+  DRAFT: "مسودة",
+  PENDING_APPROVAL: "بانتظار الاعتماد",
+  APPROVED: "معتمدة",
+  PUBLISHED: "مفتوحة",
+  CLARIFICATION: "مرحلة الاستفسارات",
+  SUBMISSION_CLOSED: "أُغلق التقديم",
+  TECHNICAL_EVALUATION: "قيد التقييم",
+  FINANCIAL_EVALUATION: "قيد التقييم",
+  NEGOTIATION: "تفاوض",
+  AWARD_PENDING: "بانتظار الترسية",
+  AWARDED: "مكتملة",
+  CANCELLED: "ملغاة",
+  CLOSED: "منتهية",
+  ARCHIVED: "مؤرشفة",
+};
+
+const typeLabels: Record<OpportunityType, string> = {
+  RFQ: "طلب عرض سعر",
+  RFP: "طلب تقديم عرض",
+  TENDER: "منافسة",
+  DIRECT_PURCHASE: "شراء مباشر",
+  SERVICE_REQUEST: "طلب خدمة",
+  SUBCONTRACT: "مقاولة من الباطن",
+};
+
+function formatDate(value: string | null) {
+  if (!value) return "غير محدد";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "غير محدد";
+  return new Intl.DateTimeFormat("ar-SA", { year: "numeric", month: "short", day: "numeric" }).format(date);
+}
+
+function formatBudget(opportunity: OpportunitySummaryResponse) {
+  if (!opportunity.budget) return "غير محدد";
+  const value = Number(opportunity.budget);
+  if (!Number.isFinite(value)) return `${opportunity.budget} ${opportunity.currency}`;
+  return `${new Intl.NumberFormat("ar-SA", { maximumFractionDigits: 0 }).format(value)} ${opportunity.currency}`;
+}
+
+function statusTone(status: OpportunityStatus) {
+  if (["PUBLISHED", "APPROVED"].includes(status)) return "success";
+  if (["TECHNICAL_EVALUATION", "FINANCIAL_EVALUATION", "NEGOTIATION", "AWARD_PENDING"].includes(status)) return "warning";
+  if (["CANCELLED"].includes(status)) return "danger";
+  if (["AWARDED", "CLOSED"].includes(status)) return "info";
+  return "neutral";
+}
 
 function isClosingSoon(opportunity: OpportunitySummaryResponse) {
   if (!opportunity.closingDate) return false;
@@ -146,7 +193,42 @@ export function OpportunityDirectory({
         <div className={view === "table" ? "approvedOpportunityTable" : "approvedOpportunityCards"}>
           {filtered.length ? (
             view === "table"
-              ? <SortableOpportunityTable opportunities={filtered} />
+              ? (
+                <div className="approvedTableScroller">
+                  <table>
+                    <caption>قائمة المنافسات</caption>
+                    <thead>
+                      <tr>
+                        <th>المنافسة</th>
+                        <th>الجهة المالكة</th>
+                        <th>نوع المنافسة</th>
+                        <th>قيمة المنافسة</th>
+                        <th>تاريخ الإغلاق</th>
+                        <th>الحالة</th>
+                        <th><span className="srOnly">الإجراءات</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filtered.map((opportunity) => (
+                        <tr key={opportunity.id}>
+                          <td>
+                            <Link href={`/platform/opportunities/${opportunity.id}`}>
+                              <strong>{opportunity.title}</strong>
+                              <small>{opportunity.number}</small>
+                            </Link>
+                          </td>
+                          <td><span className="approvedOwnerMark">ع</span><span>مساحة العمل الحالية</span></td>
+                          <td><span className={`approvedTypeTag type-${opportunity.type.toLocaleLowerCase()}`}>{typeLabels[opportunity.type]}</span></td>
+                          <td><strong className="approvedBudget">{formatBudget(opportunity)}</strong></td>
+                          <td><span>{formatDate(opportunity.closingDate)}</span><small>{isClosingSoon(opportunity) ? "تنتهي قريبًا" : "موعد التقديم"}</small></td>
+                          <td><span className={`approvedStatusTag ${statusTone(opportunity.status)}`}>{statusLabels[opportunity.status]}</span></td>
+                          <td><Link className="approvedRowAction" href={`/platform/opportunities/${opportunity.id}`} aria-label={`عرض تفاصيل ${opportunity.title}`}>•••</Link></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )
               : <OpportunityCardGrid opportunities={[...filtered]} />
           ) : (
             <div className="approvedOpportunityEmpty">
