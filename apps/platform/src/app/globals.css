@@ -1104,6 +1104,197 @@ a {
   }
 }
 
+/* Opportunity pages are independently scoped because AppShell does not
+   consistently forward its custom class to the content ancestor. */
+.opportunityDirectoryRefresh,
+.opportunityDetailRefresh,
+.opportunitySetupRefresh {
+  color: #dce8f4;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(59, 130, 246, 0.08), transparent 28%),
+    #0c1b2e !important;
+}
+
+.opportunityDirectoryRefresh .opportunityDirectoryHeader,
+.opportunityDetailRefresh .listPageHeader,
+.opportunitySetupRefresh .listPageHeader {
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityDirectoryHeader :is(h1, p, span),
+.opportunityDetailRefresh .listPageHeader :is(h1, p, span),
+.opportunitySetupRefresh .listPageHeader :is(h1, p, span) {
+  color: #eef5fb !important;
+  -webkit-text-fill-color: #eef5fb !important;
+}
+
+.opportunityDirectoryRefresh .listSummaryCards article {
+  border: 1px solid rgba(96, 165, 250, 0.15) !important;
+  background: linear-gradient(145deg, #172d49, #10223a) !important;
+}
+
+.opportunityDirectoryRefresh .listSummaryCards :is(span, small) {
+  color: #91a5bd !important;
+}
+
+.opportunityDirectoryRefresh .listSummaryCards strong {
+  color: #7dd3fc !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCardsPanel {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard {
+  min-height: 278px !important;
+  border: 1px solid rgba(96, 165, 250, 0.2) !important;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(79, 70, 229, 0.14), transparent 34%),
+    linear-gradient(150deg, #172d49, #10223a 58%, #0d1d32) !important;
+  box-shadow: 0 12px 30px rgba(3, 10, 24, 0.24) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__header {
+  border-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__header h2 {
+  color: #f0f6fc !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__header span,
+.opportunityDirectoryRefresh .opportunityCompactCard__meta :is(span, small) {
+  color: #91a5bd !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__mark {
+  background: linear-gradient(145deg, #3b82f6, #4f46e5) !important;
+  color: #fff !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__meta {
+  background: rgba(8, 23, 42, 0.5) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__meta strong {
+  color: #e6f0f8 !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCountdown {
+  color: #fff !important;
+  background:
+    radial-gradient(circle at center, #1b3150 55%, transparent 58%),
+    conic-gradient(#60a5fa var(--opportunity-progress), rgba(148, 163, 184, 0.2) 0) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCountdown strong {
+  color: #fff !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCountdown span {
+  color: #bfdbfe !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__facts {
+  border-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__facts > div {
+  border-color: rgba(148, 163, 184, 0.09) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__facts dt {
+  color: #9fb2c8 !important;
+  background: #1b3150 !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__facts dd {
+  color: #e0ebf5 !important;
+  background: #11243d !important;
+}
+
+.opportunityDirectoryRefresh .opportunityState {
+  color: #bfdbfe !important;
+  background: rgba(59, 130, 246, 0.16) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__footer {
+  border-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCardAction {
+  background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+}
+
+.opportunityDetailRefresh :is(
+  .listPageHeader,
+  .opportunityDetailIdentity,
+  .opportunityDetailTabs,
+  .opportunityDensePanel,
+  .dashboardPanel,
+  .listSummaryCards article
+),
+.opportunitySetupRefresh :is(
+  .opportunitySetupFlow,
+  .opportunitySetupPanel
+) {
+  color: #dce8f4 !important;
+  border-color: rgba(96, 165, 250, 0.16) !important;
+  background: linear-gradient(145deg, #172d49, #10223a) !important;
+}
+
+.opportunityDetailRefresh :is(h1, h2, h3, strong),
+.opportunitySetupRefresh :is(h1, h2, h3, strong) {
+  color: #f0f6fc !important;
+}
+
+.opportunityDetailRefresh :is(p, small, span),
+.opportunitySetupRefresh :is(p, small, label, span) {
+  color: #91a5bd;
+}
+
+.opportunityDetailRefresh .opportunityDetailTabs a {
+  color: #b4c5d7 !important;
+  border-color: rgba(148, 163, 184, 0.1) !important;
+  background: #122740 !important;
+}
+
+.opportunityDetailRefresh .opportunityDetailTabs a:is(:hover, .is-active) {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+}
+
+.opportunitySetupRefresh .opportunitySetupFlow strong {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+}
+
+.opportunitySetupRefresh .boqTable th {
+  color: #b7c8d9 !important;
+  background: #1a3150 !important;
+}
+
+.opportunitySetupRefresh .boqTable td,
+.opportunitySetupRefresh .partnerSelectionCard {
+  color: #dce8f4 !important;
+  border-color: rgba(148, 163, 184, 0.1) !important;
+  background: #11243d !important;
+}
+
+.opportunitySetupRefresh :is(input, select, textarea) {
+  color: #edf5fb !important;
+  border-color: rgba(96, 165, 250, 0.22) !important;
+  background: #0d1f36 !important;
+}
+
+.opportunitySetupRefresh .partnerSelectionCard.selected {
+  border-color: #60a5fa !important;
+  background: rgba(37, 99, 235, 0.16) !important;
+}
+
 /* Authentication */
 
 .authPage {
@@ -7254,4 +7445,192 @@ main.platformContent
     flex: 0 0 auto;
     scroll-snap-align: start;
   }
+}
+
+/* Final page-level override: these selectors do not depend on AppShell forwarding
+   a custom class, and intentionally sit after the legacy procurement theme. */
+.opportunityDirectoryRefresh,
+.opportunityDetailRefresh,
+.opportunitySetupRefresh {
+  color: #dce8f4;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(59, 130, 246, 0.08), transparent 28%),
+    #0c1b2e !important;
+}
+
+.opportunityDirectoryRefresh .opportunityDirectoryHeader,
+.opportunityDetailRefresh .listPageHeader,
+.opportunitySetupRefresh .listPageHeader {
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityDirectoryHeader :is(h1, p, span),
+.opportunityDetailRefresh .listPageHeader :is(h1, p, span),
+.opportunitySetupRefresh .listPageHeader :is(h1, p, span) {
+  color: #eef5fb !important;
+  -webkit-text-fill-color: #eef5fb !important;
+}
+
+.opportunityDirectoryRefresh .listSummaryCards article {
+  border: 1px solid rgba(96, 165, 250, 0.15) !important;
+  background: linear-gradient(145deg, #172d49, #10223a) !important;
+}
+
+.opportunityDirectoryRefresh .listSummaryCards :is(span, small) {
+  color: #91a5bd !important;
+}
+
+.opportunityDirectoryRefresh .listSummaryCards strong {
+  color: #7dd3fc !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCardsPanel {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard {
+  min-height: 278px !important;
+  border: 1px solid rgba(96, 165, 250, 0.2) !important;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(79, 70, 229, 0.14), transparent 34%),
+    linear-gradient(150deg, #172d49, #10223a 58%, #0d1d32) !important;
+  box-shadow: 0 12px 30px rgba(3, 10, 24, 0.24) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__header {
+  border-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__header h2 {
+  color: #f0f6fc !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__header span,
+.opportunityDirectoryRefresh .opportunityCompactCard__meta :is(span, small) {
+  color: #91a5bd !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__mark {
+  background: linear-gradient(145deg, #3b82f6, #4f46e5) !important;
+  color: #fff !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__meta {
+  background: rgba(8, 23, 42, 0.5) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__meta strong {
+  color: #e6f0f8 !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCountdown {
+  color: #fff !important;
+  background:
+    radial-gradient(circle at center, #1b3150 55%, transparent 58%),
+    conic-gradient(#60a5fa var(--opportunity-progress), rgba(148, 163, 184, 0.2) 0) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCountdown strong {
+  color: #fff !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCountdown span {
+  color: #bfdbfe !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__facts {
+  border-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__facts > div {
+  border-color: rgba(148, 163, 184, 0.09) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__facts dt {
+  color: #9fb2c8 !important;
+  background: #1b3150 !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__facts dd {
+  color: #e0ebf5 !important;
+  background: #11243d !important;
+}
+
+.opportunityDirectoryRefresh .opportunityState {
+  color: #bfdbfe !important;
+  background: rgba(59, 130, 246, 0.16) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCompactCard__footer {
+  border-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+.opportunityDirectoryRefresh .opportunityCardAction {
+  background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+}
+
+.opportunityDetailRefresh :is(
+  .listPageHeader,
+  .opportunityDetailIdentity,
+  .opportunityDetailTabs,
+  .opportunityDensePanel,
+  .dashboardPanel,
+  .listSummaryCards article
+),
+.opportunitySetupRefresh :is(
+  .opportunitySetupFlow,
+  .opportunitySetupPanel
+) {
+  color: #dce8f4 !important;
+  border-color: rgba(96, 165, 250, 0.16) !important;
+  background: linear-gradient(145deg, #172d49, #10223a) !important;
+}
+
+.opportunityDetailRefresh :is(h1, h2, h3, strong),
+.opportunitySetupRefresh :is(h1, h2, h3, strong) {
+  color: #f0f6fc !important;
+}
+
+.opportunityDetailRefresh :is(p, small, span),
+.opportunitySetupRefresh :is(p, small, label, span) {
+  color: #91a5bd;
+}
+
+.opportunityDetailRefresh .opportunityDetailTabs a {
+  color: #b4c5d7 !important;
+  border-color: rgba(148, 163, 184, 0.1) !important;
+  background: #122740 !important;
+}
+
+.opportunityDetailRefresh .opportunityDetailTabs a:is(:hover, .is-active) {
+  color: #fff !important;
+  background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+}
+
+.opportunityDetailRefresh :is(.detailField, .detailTable, .boqTable),
+.opportunitySetupRefresh :is(
+  .opportunitySetupSection,
+  .opportunitySetupField,
+  .partnerSelectionList,
+  .invitationSettings,
+  .boqTable
+) {
+  color: #dce8f4 !important;
+  border-color: rgba(148, 163, 184, 0.12) !important;
+  background: #11243d !important;
+}
+
+.opportunityDetailRefresh :is(th, dt),
+.opportunitySetupRefresh :is(th, dt) {
+  color: #9fb2c8 !important;
+  background: #1b3150 !important;
+}
+
+.opportunityDetailRefresh :is(td, dd),
+.opportunitySetupRefresh :is(td, dd) {
+  color: #e0ebf5 !important;
+  background: #11243d !important;
 }
