@@ -2806,6 +2806,52 @@ a {
   }
 }
 
+/* High-density desktop displays can report a CSS viewport below 900px even
+   though there is enough physical room for the approved two-column layout. */
+@media (min-width: 651px) {
+  .approvedOpportunityDirectory .approvedOpportunityWorkspace {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr) !important;
+    grid-template-areas: "filters results" !important;
+    gap: 10px !important;
+  }
+
+  .approvedOpportunityDirectory .approvedOpportunityFilters {
+    position: sticky !important;
+    top: 10px !important;
+    width: 220px !important;
+    min-width: 220px !important;
+    max-width: 220px !important;
+    padding: 11px !important;
+    gap: 9px !important;
+  }
+
+  .approvedOpportunityDirectory .approvedOpportunityResults {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .approvedOpportunityDirectory .approvedOpportunityToolbar {
+    flex-wrap: nowrap !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .approvedOpportunityDirectory .approvedOpportunityWorkspace {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "filters"
+      "results" !important;
+  }
+
+  .approvedOpportunityDirectory .approvedOpportunityFilters {
+    position: static !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}
+
 @media (max-width: 650px) {
   .boqSummary {
     gap: 18px;
