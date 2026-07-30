@@ -1,339 +1,100 @@
 import Link from "next/link";
 
-import {
-  OpportunityCardGrid,
-} from "@/features/opportunity/components";
+import { OpportunityDirectory } from "@/features/opportunity/components";
+import { listWorkspaceOpportunitiesAction } from "@/features/opportunity/actions/list-workspace-opportunities";
+import type { OpportunitySummaryResponse } from "@/features/opportunity/dtos";
+import { hasPermission, Permissions } from "@/lib/permissions";
+import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
-
-import {
-  listWorkspaceOpportunitiesAction,
-} from "@/features/opportunity/actions/list-workspace-opportunities";
-
-import type {
-  OpportunitySummaryResponse,
-} from "@/features/opportunity/dtos";
-
-import {
-  hasPermission,
-  Permissions,
-} from "@/lib/permissions";
-
-import {
-  requireCurrentWorkspace,
-} from "@/lib/workspace-context";
-
-type OpportunityStatus =
-  OpportunitySummaryResponse["status"];
-
-type OpportunityType =
-  OpportunitySummaryResponse["type"];
-
-const typeLabels: Record<
-  OpportunityType,
-  string
-> = {
-  RFQ: "طلب عرض سعر",
-  RFP: "طلب تقديم عرض",
-  TENDER: "منافسة",
-  DIRECT_PURCHASE: "شراء مباشر",
-  SERVICE_REQUEST: "طلب خدمة",
-  SUBCONTRACT: "مقاولة من الباطن",
-};
-
-const statusLabels: Record<
-  OpportunityStatus,
-  string
-> = {
-  DRAFT: "مسودة",
-  PENDING_APPROVAL: "بانتظار الاعتماد",
-  APPROVED: "معتمدة",
-  PUBLISHED: "منشورة",
-  CLARIFICATION: "مرحلة الاستفسارات",
-  SUBMISSION_CLOSED: "أغلق التقديم",
-  TECHNICAL_EVALUATION: "تقييم فني",
-  FINANCIAL_EVALUATION: "تقييم مالي",
-  NEGOTIATION: "تفاوض",
-  AWARD_PENDING: "بانتظار الترسية",
-  AWARDED: "تمت الترسية",
-  CANCELLED: "ملغاة",
-  CLOSED: "مغلقة",
-  ARCHIVED: "مؤرشفة",
-};
-
-const statusClasses: Record<
-  OpportunityStatus,
-  string
-> = {
-  DRAFT: "neutral",
-  PENDING_APPROVAL: "warning",
-  APPROVED: "info",
-  PUBLISHED: "success",
-  CLARIFICATION: "info",
-  SUBMISSION_CLOSED: "neutral",
-  TECHNICAL_EVALUATION: "warning",
-  FINANCIAL_EVALUATION: "warning",
-  NEGOTIATION: "warning",
-  AWARD_PENDING: "warning",
-  AWARDED: "success",
-  CANCELLED: "danger",
-  CLOSED: "neutral",
-  ARCHIVED: "neutral",
-};
-
-function formatDate(
-  value: string | null,
-): string {
-  if (!value) {
-    return "غير محدد";
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "غير محدد";
-  }
-
-  return new Intl.DateTimeFormat(
-    "ar-SA",
-    {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    },
-  ).format(date);
-}
-
-function formatBudget(
-  budget: string | null,
-  currency: string,
-): string {
-  if (!budget) {
-    return "غير محدد";
-  }
-
-  const value = Number(budget);
-
-  if (!Number.isFinite(value)) {
-    return `${budget} ${currency}`;
-  }
-
-  try {
-    return new Intl.NumberFormat(
-      "ar-SA",
-      {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 2,
-      },
-    ).format(value);
-  } catch {
-    return `${value.toLocaleString("ar-SA")} ${currency}`;
-  }
-}
+type OpportunityStatus = OpportunitySummaryResponse["status"];
 
 function countByStatuses(
   opportunities: readonly OpportunitySummaryResponse[],
   statuses: readonly OpportunityStatus[],
-): number {
-  const acceptedStatuses =
-    new Set<OpportunityStatus>(statuses);
-
-  return opportunities.filter(
-    (opportunity) =>
-      acceptedStatuses.has(
-        opportunity.status,
-      ),
-  ).length;
+) {
+  const accepted = new Set<OpportunityStatus>(statuses);
+  return opportunities.filter((opportunity) => accepted.has(opportunity.status)).length;
 }
 
 export default async function OpportunitiesPage() {
-  const [
-    result,
-    workspaceContext,
-  ] = await Promise.all([
-    listWorkspaceOpportunitiesAction({
-      page: 1,
-      pageSize: 50,
-    }),
+  const [result, workspaceContext] = await Promise.all([
+    listWorkspaceOpportunitiesAction({ page: 1, pageSize: 50 }),
     requireCurrentWorkspace(),
   ]);
 
-  const canCreate = hasPermission(
-    workspaceContext,
-    Permissions.opportunities.create,
-  );
+  const canCreate = hasPermission(workspaceContext, Permissions.opportunities.create);
 
   if (!result.success) {
     return (
       <main className="platformContent">
-        <section
-          className="dashboardPanel"
-          role="alert"
-        >
+        <section className="dashboardPanel" role="alert">
           <div className="emptyState">
-            <h1>تعذر تحميل الفرص</h1>
+            <h1>تعذر تحميل المنافسات</h1>
             <p>{result.message}</p>
-
-            <Link
-              className="primaryButton compactButton"
-              href="/platform/opportunities"
-            >
-              إعادة المحاولة
-            </Link>
+            <Link className="primaryButton compactButton" href="/platform/opportunities">إعادة المحاولة</Link>
           </div>
         </section>
       </main>
     );
   }
 
-  const {
-    items: opportunities,
-    total,
-    page,
-    totalPages,
-  } = result.data;
-
-  const openCount = countByStatuses(
-    opportunities,
-    [
-      "APPROVED",
-      "PUBLISHED",
-      "CLARIFICATION",
-    ],
-  );
-
-  const evaluationCount = countByStatuses(
-    opportunities,
-    [
-      "TECHNICAL_EVALUATION",
-      "FINANCIAL_EVALUATION",
-      "NEGOTIATION",
-      "AWARD_PENDING",
-    ],
-  );
-
-  const awardedCount = countByStatuses(
-    opportunities,
-    ["AWARDED"],
-  );
+  const { items: opportunities, total, page, totalPages } = result.data;
+  const openCount = countByStatuses(opportunities, ["APPROVED", "PUBLISHED", "CLARIFICATION"]);
+  const evaluationCount = countByStatuses(opportunities, [
+    "TECHNICAL_EVALUATION",
+    "FINANCIAL_EVALUATION",
+    "NEGOTIATION",
+    "AWARD_PENDING",
+  ]);
+  const completedCount = countByStatuses(opportunities, ["AWARDED", "CLOSED"]);
+  const closingSoonCount = opportunities.filter((opportunity) => {
+    if (!opportunity.closingDate) return false;
+    const remaining = new Date(opportunity.closingDate).getTime() - Date.now();
+    return remaining > 0 && remaining <= 7 * 24 * 60 * 60 * 1000;
+  }).length;
 
   return (
-    <main className="platformContent opportunityDirectoryRefresh">
-
-
-      <section className="opportunityDirectoryHeader">
-        <div>
-          <span className="pageEyebrow">
-            إدارة الفرص
-          </span>
-
-          <h1
-            style={{
-              background: "none",
-              color: "#12223a",
-              fontSize: "clamp(1.55rem, 2.3vw, 2.2rem)",
-              WebkitTextFillColor: "#12223a",
-            }}
-          >
-            الفرص والمنافسات
-          </h1>
-
-          <p style={{ color: "#64748b", WebkitTextFillColor: "#64748b" }}>
-            أنشئ وتابع طلبات الأسعار
-            والعروض والمنافسات من مكان واحد.
-          </p>
+    <main className="platformContent opportunityDirectoryRefresh approvedOpportunityDirectory">
+      <section className="opportunityDirectoryHeader approvedOpportunityHeader">
+        <div className="approvedOpportunityTitle">
+          <span className="approvedOpportunityTitleIcon" aria-hidden="true">♜</span>
+          <div>
+            <span className="pageEyebrow">إدارة المنافسات</span>
+            <h1>المنافسات</h1>
+            <p>استعرض وشارك في جميع المنافسات والفرص المتاحة من مكان واحد.</p>
+          </div>
         </div>
 
         {canCreate && (
-          <Link
-            className="primaryButton compactButton"
-            href="/platform/opportunities/new"
-          >
-            + إنشاء فرصة جديدة
+          <Link className="primaryButton compactButton" href="/platform/opportunities/new">
+            ＋ إنشاء منافسة جديدة
           </Link>
         )}
       </section>
 
-      <section
-        className="listSummaryCards"
-        aria-label="ملخص الفرص"
-      >
-        <article>
-          <span>إجمالي الفرص</span>
-          <strong>{total}</strong>
-          <small>
-            داخل مساحة العمل الحالية
-          </small>
-        </article>
-
-        <article>
-          <span>الفرص المفتوحة</span>
-          <strong>{openCount}</strong>
-          <small className="positive">
-            نشطة حاليًا
-          </small>
-        </article>
-
-        <article>
-          <span>تحت التقييم</span>
-          <strong>
-            {evaluationCount}
-          </strong>
-          <small>تحتاج متابعة</small>
-        </article>
-
-        <article>
-          <span>تمت الترسية</span>
-          <strong>{awardedCount}</strong>
-          <small>لا توجد قيمة مسجلة</small>
-        </article>
+      <section className="listSummaryCards approvedOpportunityKpis" aria-label="ملخص المنافسات">
+        <article><span className="approvedKpiIcon purple">◇</span><div><span>إجمالي المنافسات</span><strong>{total}</strong><small>جميع المنافسات</small></div></article>
+        <article><span className="approvedKpiIcon green">♧</span><div><span>مفتوحة</span><strong>{openCount}</strong><small>متاحة للمشاركة</small></div></article>
+        <article><span className="approvedKpiIcon amber">⌛</span><div><span>قيد التقييم</span><strong>{evaluationCount}</strong><small>تحت المراجعة</small></div></article>
+        <article><span className="approvedKpiIcon blue">✓</span><div><span>مكتملة</span><strong>{completedCount}</strong><small>تمت الترسية</small></div></article>
+        <article><span className="approvedKpiIcon rose">▣</span><div><span>تنتهي قريبًا</span><strong>{closingSoonCount}</strong><small>خلال 7 أيام</small></div></article>
       </section>
 
-      <section className="dashboardPanel opportunityListPanel opportunityCardsPanel">
-
+      <section className="dashboardPanel opportunityListPanel opportunityCardsPanel approvedOpportunityPanel">
         {opportunities.length === 0 ? (
-          <div
-            className="emptyState"
-            role="status"
-          >
-            <h2>
-              لا توجد فرص حتى الآن
-            </h2>
-
-            <p>
-              لم تُنشأ أي فرصة داخل
-              مساحة العمل الحالية.
-            </p>
-
-            {canCreate && (
-              <Link
-                className="primaryButton compactButton"
-                href="/platform/opportunities/new"
-              >
-                إنشاء فرصة جديدة
-              </Link>
-            )}
+          <div className="emptyState" role="status">
+            <h2>لا توجد منافسات حتى الآن</h2>
+            <p>لم تُنشأ أي منافسة داخل مساحة العمل الحالية.</p>
+            {canCreate && <Link className="primaryButton compactButton" href="/platform/opportunities/new">إنشاء منافسة جديدة</Link>}
           </div>
         ) : (
-          <>
-            <OpportunityCardGrid
-              opportunities={opportunities}
-            />
-
-            <div
-              className="tablePagination"
-              aria-label="ملخص نتائج الفرص"
-            >
-              <span>
-                الصفحة {page} من{" "}
-                {Math.max(totalPages, 1)}
-              </span>
-
-              <span>
-                إجمالي النتائج: {total}
-              </span>
-            </div>
-          </>
+          <OpportunityDirectory
+            opportunities={opportunities}
+            total={total}
+            page={page}
+            totalPages={totalPages}
+            canCreate={canCreate}
+          />
         )}
       </section>
     </main>
