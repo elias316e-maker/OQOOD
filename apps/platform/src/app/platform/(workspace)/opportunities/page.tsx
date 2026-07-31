@@ -47,9 +47,12 @@ export default async function OpportunitiesPage() {
     "AWARD_PENDING",
   ]);
   const completedCount = countByStatuses(opportunities, ["AWARDED", "CLOSED"]);
+  const now = new Date().getTime();
+
   const closingSoonCount = opportunities.filter((opportunity) => {
     if (!opportunity.closingDate) return false;
-    const remaining = new Date(opportunity.closingDate).getTime() - Date.now();
+    const remaining =
+      new Date(opportunity.closingDate).getTime() - now;
     return remaining > 0 && remaining <= 7 * 24 * 60 * 60 * 1000;
   }).length;
 
