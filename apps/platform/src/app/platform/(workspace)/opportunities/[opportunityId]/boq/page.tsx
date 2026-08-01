@@ -5,7 +5,7 @@ import {
 } from "@/features/opportunity/actions";
 
 import {
-  OpportunityBoqForm,
+  OpportunityBoqWorkspace,
 } from "@/features/opportunity/components";
 
 type OpportunityBoqPageProps = {
@@ -18,6 +18,7 @@ export default async function OpportunityBoqPage({
   params,
 }: OpportunityBoqPageProps) {
   const { opportunityId } = await params;
+
   const result =
     await getOpportunitySetupAction(
       opportunityId,
@@ -25,28 +26,26 @@ export default async function OpportunityBoqPage({
 
   if (!result.success) {
     return (
-      <main className="platformContent">
-        <section className="dashboardPanel opportunityVisiblePanel">
-          <div className="emptyState" role="alert">
-            <h1>تعذر تحميل جدول الكميات</h1>
-            <p>{result.message}</p>
-            <Link
-              className="primaryButton compactButton"
-              href={`/platform/opportunities/${opportunityId}`}
-            >
-              العودة إلى الفرصة
-            </Link>
-          </div>
+      <main className="opportunityWorkspaceSection">
+        <section className="opportunityWorkspaceEmptyPanel">
+          <h1>تعذر تحميل جدول الكميات</h1>
+          <p>{result.message}</p>
+
+          <Link
+            className="primaryButton compactButton"
+            href={`/platform/opportunities/${opportunityId}`}
+          >
+            العودة إلى المنافسة
+          </Link>
         </section>
       </main>
     );
   }
 
   return (
-    <OpportunityBoqForm
+    <OpportunityBoqWorkspace
       opportunity={result.data.opportunity}
-      initialItems={result.data.items}
+      items={result.data.items}
     />
   );
 }
-

@@ -7,3 +7,4 @@ export * from "./opportunity-lifecycle-actions";
 export * from "./opportunity-partners-form";
 export * from "./opportunity-offers-form";
 export * from "./sortable-opportunity-table";
+export * from "./workspace";

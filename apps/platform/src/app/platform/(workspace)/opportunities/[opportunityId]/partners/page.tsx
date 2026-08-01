@@ -5,7 +5,7 @@ import {
 } from "@/features/opportunity/actions";
 
 import {
-  OpportunityPartnersForm,
+  OpportunityPartnersWorkspace,
 } from "@/features/opportunity/components";
 
 type OpportunityPartnersPageProps = {
@@ -18,6 +18,7 @@ export default async function OpportunityPartnersPage({
   params,
 }: OpportunityPartnersPageProps) {
   const { opportunityId } = await params;
+
   const result =
     await getOpportunitySetupAction(
       opportunityId,
@@ -25,25 +26,24 @@ export default async function OpportunityPartnersPage({
 
   if (!result.success) {
     return (
-      <main className="platformContent">
-        <section className="dashboardPanel opportunityVisiblePanel">
-          <div className="emptyState" role="alert">
-            <h1>تعذر تحميل شركاء الأعمال</h1>
-            <p>{result.message}</p>
-            <Link
-              className="primaryButton compactButton"
-              href={`/platform/opportunities/${opportunityId}`}
-            >
-              العودة إلى الفرصة
-            </Link>
-          </div>
+      <main className="opportunityWorkspaceSection">
+        <section className="opportunityWorkspaceEmptyPanel">
+          <h1>تعذر تحميل الموردين</h1>
+          <p>{result.message}</p>
+
+          <Link
+            className="primaryButton compactButton"
+            href={`/platform/opportunities/${opportunityId}`}
+          >
+            العودة إلى المنافسة
+          </Link>
         </section>
       </main>
     );
   }
 
   return (
-    <OpportunityPartnersForm
+    <OpportunityPartnersWorkspace
       opportunity={result.data.opportunity}
       partners={result.data.partners}
       initialPartnerIds={
@@ -55,4 +55,3 @@ export default async function OpportunityPartnersPage({
     />
   );
 }
-

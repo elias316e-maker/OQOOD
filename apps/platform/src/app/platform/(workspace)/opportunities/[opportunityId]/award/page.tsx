@@ -3,7 +3,7 @@ import {
 } from "@/features/opportunity/actions";
 
 import {
-  OpportunityOffersWorkspace,
+  OpportunityAwardWorkspace,
 } from "@/features/opportunity/components";
 
 import {
@@ -15,22 +15,20 @@ import {
   requireCurrentWorkspace,
 } from "@/lib/workspace-context";
 
-type OpportunityOffersPageProps = {
+type OpportunityAwardPageProps = {
   params: Promise<{
     opportunityId: string;
   }>;
 };
 
-export default async function OpportunityOffersPage({
+export default async function OpportunityAwardPage({
   params,
-}: OpportunityOffersPageProps) {
+}: OpportunityAwardPageProps) {
   const { opportunityId } = await params;
 
   const [result, workspaceContext] =
     await Promise.all([
-      getOpportunityOffersAction(
-        opportunityId,
-      ),
+      getOpportunityOffersAction(opportunityId),
       requireCurrentWorkspace(),
     ]);
 
@@ -38,7 +36,7 @@ export default async function OpportunityOffersPage({
     return (
       <main className="opportunityWorkspaceSection">
         <section className="opportunityWorkspaceEmptyPanel">
-          <h1>تعذر تحميل عروض الموردين</h1>
+          <h1>تعذر تحميل بيانات الترسية</h1>
           <p>{result.message}</p>
         </section>
       </main>
@@ -46,16 +44,8 @@ export default async function OpportunityOffersPage({
   }
 
   return (
-    <OpportunityOffersWorkspace
+    <OpportunityAwardWorkspace
       data={result.data}
-      canEvaluate={hasPermission(
-        workspaceContext,
-        Permissions.opportunities.evaluate,
-      )}
-      canAward={hasPermission(
-        workspaceContext,
-        Permissions.opportunities.award,
-      )}
       canCreateContract={hasPermission(
         workspaceContext,
         Permissions.contracts.create,
