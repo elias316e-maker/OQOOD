@@ -77,3 +77,39 @@ export class OpportunityPublishRequirementsError
       "OpportunityPublishRequirementsError";
   }
 }
+
+export class OpportunityCriterionNotFoundError extends Error {
+  constructor(
+    public readonly criterionId: string,
+  ) {
+    super("معيار التقييم المطلوب غير موجود.");
+    this.name = "OpportunityCriterionNotFoundError";
+  }
+}
+
+export class OpportunityCriterionDuplicateNameError extends Error {
+  constructor(
+    public readonly name: string,
+  ) {
+    super("يوجد معيار آخر بالاسم نفسه داخل المنافسة.");
+    this.name = "OpportunityCriterionDuplicateNameError";
+  }
+}
+
+export class OpportunityCriteriaWeightExceededError extends Error {
+  constructor(
+    public readonly totalWeight: string,
+  ) {
+    super("لا يجوز أن يتجاوز مجموع أوزان المعايير النشطة 100%.");
+    this.name = "OpportunityCriteriaWeightExceededError";
+  }
+}
+
+export class OpportunityCriterionImmutableError extends Error {
+  constructor(
+    public readonly opportunityStatus: string,
+  ) {
+    super("لا يمكن تعديل معايير المنافسة في حالتها الحالية.");
+    this.name = "OpportunityCriterionImmutableError";
+  }
+}

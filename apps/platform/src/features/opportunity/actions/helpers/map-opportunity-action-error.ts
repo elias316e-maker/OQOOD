@@ -13,6 +13,10 @@ import {
 
 import {
   OpportunityArchivedError,
+  OpportunityCriteriaWeightExceededError,
+  OpportunityCriterionDuplicateNameError,
+  OpportunityCriterionImmutableError,
+  OpportunityCriterionNotFoundError,
   OpportunityInvalidStatusTransitionError,
   OpportunityNotFoundError,
   OpportunityNumberAlreadyExistsError,
@@ -104,6 +108,14 @@ export function mapOpportunityActionError(
     error instanceof
       OpportunityUpdateFieldsRequiredError ||
     error instanceof OpportunityArchivedError ||
+    error instanceof
+      OpportunityCriterionNotFoundError ||
+    error instanceof
+      OpportunityCriterionDuplicateNameError ||
+    error instanceof
+      OpportunityCriteriaWeightExceededError ||
+    error instanceof
+      OpportunityCriterionImmutableError ||
     error instanceof
       OpportunityInvalidStatusTransitionError ||
     error instanceof

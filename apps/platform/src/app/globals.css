@@ -11732,3 +11732,297 @@ main.platformContent
   flex-wrap: wrap;
   gap: var(--competition-gap-sm, 9px);
 }
+
+/* Competition Workspace — Criteria Manager */
+
+.opportunityCriteriaManager {
+  display: grid;
+  min-width: 0;
+  gap: var(--competition-gap-md, 16px);
+}
+
+.opportunityCriteriaManager__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.opportunityCriteriaManager__header h2,
+.opportunityCriteriaManager__form h3,
+.opportunityCriteriaManager__item h3 {
+  margin: 5px 0 0;
+  color: var(--competition-text, #f4f6ff);
+}
+
+.opportunityCriteriaManager__header p,
+.opportunityCriteriaManager__item p {
+  margin: 7px 0 0;
+  color: var(--competition-muted, #7e88a5);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.opportunityCriteriaManager__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.opportunityCriteriaManager__summary > div {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(
+    --competition-border-soft,
+    rgba(139, 149, 190, 0.1)
+  );
+  border-radius: var(--competition-radius-md, 14px);
+  background: var(
+    --competition-bg-soft,
+    rgba(5, 8, 19, 0.34)
+  );
+}
+
+.opportunityCriteriaManager__summary span {
+  display: block;
+  color: var(--competition-muted, #7e88a5);
+  font-size: 9px;
+}
+
+.opportunityCriteriaManager__summary strong {
+  display: block;
+  margin-top: 7px;
+  color: var(--competition-text, #f4f6ff);
+  font-size: 18px;
+}
+
+.opportunityCriteriaManager__form {
+  display: grid;
+  gap: 16px;
+  padding: 17px;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: var(--competition-radius-lg, 18px);
+  background: rgba(139, 92, 246, 0.055);
+}
+
+.opportunityCriteriaManager__form > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.opportunityCriteriaManager__fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.opportunityCriteriaManager__fields .formField {
+  display: grid;
+  gap: 7px;
+}
+
+.opportunityCriteriaManager__fields .formField > span {
+  color: var(--competition-muted-strong, #8790ad);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.opportunityCriteriaManager__fields
+  :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(
+    --competition-border,
+    rgba(139, 149, 190, 0.15)
+  );
+  border-radius: var(--competition-radius-sm, 10px);
+  background: var(
+    --competition-bg-input,
+    rgba(7, 10, 23, 0.72)
+  );
+  color: var(--competition-text, #f4f6ff);
+}
+
+.opportunityCriteriaManager__fields
+  :is(input, select) {
+  min-height: 42px;
+  padding-inline: 11px;
+}
+
+.opportunityCriteriaManager__fields textarea {
+  resize: vertical;
+  padding: 11px;
+}
+
+.opportunityCriteriaManager__fields
+  :is(input, select, textarea):focus {
+  border-color: rgba(139, 92, 246, 0.65);
+  outline: 2px solid rgba(139, 92, 246, 0.16);
+  outline-offset: 1px;
+}
+
+.opportunityCriteriaManager__fields
+  :is(input, select):disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.opportunityCriteriaManager__description {
+  grid-column: 1 / -1;
+}
+
+.opportunityCriteriaManager__checks {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.opportunityCriteriaManager__checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--competition-text-soft, #dfe3ef);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.opportunityCriteriaManager__checks input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--competition-purple, #8b5cf6);
+}
+
+.opportunityCriteriaManager__form > footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.opportunityCriteriaManager__list {
+  display: grid;
+  gap: 11px;
+}
+
+.opportunityCriteriaManager__item {
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    minmax(190px, 1.1fr)
+    minmax(350px, 1.5fr)
+    auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(
+    --competition-border,
+    rgba(139, 149, 190, 0.15)
+  );
+  border-radius: var(--competition-radius-md, 14px);
+  background: var(
+    --competition-bg-soft,
+    rgba(5, 8, 19, 0.34)
+  );
+}
+
+.opportunityCriteriaManager__item.is-inactive {
+  opacity: 0.62;
+}
+
+.opportunityCriteriaManager__identity > span {
+  color: #a78bfa;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.opportunityCriteriaManager__item dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  gap: 8px;
+}
+
+.opportunityCriteriaManager__item dl > div {
+  min-width: 0;
+  padding: 10px;
+  border-radius: var(--competition-radius-sm, 10px);
+  background: rgba(9, 13, 28, 0.52);
+}
+
+.opportunityCriteriaManager__item dt {
+  color: var(--competition-muted, #7e88a5);
+  font-size: 8px;
+}
+
+.opportunityCriteriaManager__item dd {
+  overflow: hidden;
+  margin: 5px 0 0;
+  color: var(--competition-text-soft, #dfe3ef);
+  font-size: 10px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opportunityCriteriaManager__item > footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.opportunityCriteriaManager__required {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  min-height: 22px;
+  align-items: center;
+  padding-inline: 8px;
+  border-radius: 999px;
+  background: rgba(244, 183, 64, 0.12);
+  color: #f7c96a;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+@media (max-width: 1050px) {
+  .opportunityCriteriaManager__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .opportunityCriteriaManager__item {
+    grid-template-columns: 1fr;
+  }
+
+  .opportunityCriteriaManager__item > footer {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 680px) {
+  .opportunityCriteriaManager__header,
+  .opportunityCriteriaManager__form > header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .opportunityCriteriaManager__summary,
+  .opportunityCriteriaManager__fields,
+  .opportunityCriteriaManager__item dl {
+    grid-template-columns: 1fr;
+  }
+
+  .opportunityCriteriaManager__header .primaryButton,
+  .opportunityCriteriaManager__form
+    .secondaryButton {
+    width: 100%;
+  }
+
+  .opportunityCriteriaManager__form > footer
+    .primaryButton {
+    width: 100%;
+  }
+}

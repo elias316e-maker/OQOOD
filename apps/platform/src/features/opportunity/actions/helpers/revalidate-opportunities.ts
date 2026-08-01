@@ -24,3 +24,22 @@ export function revalidateOpportunityDetails(
     );
   }
 }
+
+export function revalidateOpportunityCriteria(
+  opportunityId: string,
+): void {
+  const normalizedOpportunityId =
+    opportunityId.trim();
+
+  if (!normalizedOpportunityId) {
+    return;
+  }
+
+  const opportunityPath =
+    `${opportunitiesPath}/${normalizedOpportunityId}`;
+
+  revalidatePath(opportunitiesPath);
+  revalidatePath(opportunityPath);
+  revalidatePath(`${opportunityPath}/criteria`);
+  revalidatePath(`${opportunityPath}/evaluation`);
+}

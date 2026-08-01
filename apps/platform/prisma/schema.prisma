@@ -79,6 +79,22 @@ enum OpportunityVisibility {
   PUBLIC
 }
 
+enum OpportunityCriterionCategory {
+  TECHNICAL
+  FINANCIAL
+  COMMERCIAL
+  COMPLIANCE
+  DOCUMENT
+  CUSTOM
+}
+
+enum OpportunityCriterionScoringMethod {
+  PASS_FAIL
+  NUMERIC
+  PERCENTAGE
+  MANUAL
+}
+
 enum InvitationStatus {
   PENDING
   SENT
@@ -252,45 +268,45 @@ enum UsageResetPeriod {
 }
 
 model User {
-  id              String    @id @default(cuid())
-  name            String
-  email           String    @unique
-  emailVerified   Boolean   @default(false)
-  emailVerifiedAt DateTime?
-  image           String?
-  phone           String?
-  isActive        Boolean   @default(true)
-  twoFactorEnabled Boolean? @default(false)
+  id               String    @id @default(cuid())
+  name             String
+  email            String    @unique
+  emailVerified    Boolean   @default(false)
+  emailVerifiedAt  DateTime?
+  image            String?
+  phone            String?
+  isActive         Boolean   @default(true)
+  twoFactorEnabled Boolean?  @default(false)
 
   // حقول توافقية مؤقتة وفق ADR-007.
   // تزال بعد اكتمال Migration والتحقق من البيانات.
   passwordHash String?
   imageUrl     String?
 
-  sessions Session[]
-  accounts Account[]
+  sessions   Session[]
+  accounts   Account[]
   twoFactors TwoFactor[]
 
   memberships                  WorkspaceMember[]
-  createdWorkspaces            Workspace[]          @relation("WorkspaceCreator")
-  createdProjects              Project[]            @relation("ProjectCreator")
-  createdOpportunities         Opportunity[]        @relation("OpportunityCreator")
-  createdContracts             Contract[]           @relation("ContractCreator")
-  createdContractAmendments    ContractAmendment[]  @relation("ContractAmendmentCreator")
-  approvedContractAmendments   ContractAmendment[]  @relation("ContractAmendmentApprover")
-  createdContractMilestones    ContractMilestone[]  @relation("ContractMilestoneCreator")
-  createdPartnerEvaluations    PartnerEvaluation[]  @relation("PartnerEvaluationCreator")
-  requestedProcurementRequests ProcurementRequest[] @relation("ProcurementRequestedBy")
-  assignedProcurementRequests  ProcurementRequest[] @relation("ProcurementAssignedTo")
-  createdProcurementRequests   ProcurementRequest[] @relation("ProcurementCreatedBy")
-  uploadedDocuments            Document[]           @relation("DocumentUploader")
-  reviewedDocuments            Document[]           @relation("DocumentReviewer")
-  deletedDocuments             Document[]           @relation("DocumentDeleter")
-  notificationReceipts        NotificationReceipt[]
-  notificationPreferences     NotificationPreference[]
-  notificationDeliveries      NotificationDelivery[]
-  sentWorkspaceInvitations     WorkspaceInvitation[] @relation("WorkspaceInvitationSender")
-  acceptedWorkspaceInvitations WorkspaceInvitation[] @relation("WorkspaceInvitationAcceptor")
+  createdWorkspaces            Workspace[]              @relation("WorkspaceCreator")
+  createdProjects              Project[]                @relation("ProjectCreator")
+  createdOpportunities         Opportunity[]            @relation("OpportunityCreator")
+  createdContracts             Contract[]               @relation("ContractCreator")
+  createdContractAmendments    ContractAmendment[]      @relation("ContractAmendmentCreator")
+  approvedContractAmendments   ContractAmendment[]      @relation("ContractAmendmentApprover")
+  createdContractMilestones    ContractMilestone[]      @relation("ContractMilestoneCreator")
+  createdPartnerEvaluations    PartnerEvaluation[]      @relation("PartnerEvaluationCreator")
+  requestedProcurementRequests ProcurementRequest[]     @relation("ProcurementRequestedBy")
+  assignedProcurementRequests  ProcurementRequest[]     @relation("ProcurementAssignedTo")
+  createdProcurementRequests   ProcurementRequest[]     @relation("ProcurementCreatedBy")
+  uploadedDocuments            Document[]               @relation("DocumentUploader")
+  reviewedDocuments            Document[]               @relation("DocumentReviewer")
+  deletedDocuments             Document[]               @relation("DocumentDeleter")
+  notificationReceipts         NotificationReceipt[]
+  notificationPreferences      NotificationPreference[]
+  notificationDeliveries       NotificationDelivery[]
+  sentWorkspaceInvitations     WorkspaceInvitation[]    @relation("WorkspaceInvitationSender")
+  acceptedWorkspaceInvitations WorkspaceInvitation[]    @relation("WorkspaceInvitationAcceptor")
   auditLogs                    AuditLog[]
 
   createdAt DateTime @default(now())
@@ -377,23 +393,23 @@ model Workspace {
   createdById String
   createdBy   User   @relation("WorkspaceCreator", fields: [createdById], references: [id])
 
-  members             WorkspaceMember[]
-  companies           Company[]
-  partners            BusinessPartner[]
-  projects            Project[]
-  opportunities       Opportunity[]
-  contracts           Contract[]
-  procurementRequests ProcurementRequest[]
-  documents           Document[]
-  notificationReceipts NotificationReceipt[]
+  members                 WorkspaceMember[]
+  companies               Company[]
+  partners                BusinessPartner[]
+  projects                Project[]
+  opportunities           Opportunity[]
+  contracts               Contract[]
+  procurementRequests     ProcurementRequest[]
+  documents               Document[]
+  notificationReceipts    NotificationReceipt[]
   notificationPreferences NotificationPreference[]
-  notificationDeliveries NotificationDelivery[]
-  invitations          WorkspaceInvitation[]
-  roles               Role[]
-  auditLogs           AuditLog[]
-  billingAccount      BillingAccount?
-  subscription        Subscription?
-  usageCounters       UsageCounter[]
+  notificationDeliveries  NotificationDelivery[]
+  invitations             WorkspaceInvitation[]
+  roles                   Role[]
+  auditLogs               AuditLog[]
+  billingAccount          BillingAccount?
+  subscription            Subscription?
+  usageCounters           UsageCounter[]
 
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -590,10 +606,11 @@ model Opportunity {
   offers      Offer[]
   contracts   Contract[]
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  publishedAt DateTime?
-  closedAt    DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  publishedAt           DateTime?
+  closedAt              DateTime?
+  opportunityCriterions OpportunityCriterion[]
 
   @@unique([workspaceId, number])
   @@index([workspaceId, status])
@@ -619,6 +636,29 @@ model OpportunityItem {
 
   @@unique([opportunityId, lineNumber])
   @@index([opportunityId])
+}
+
+model OpportunityCriterion {
+  id            String                            @id @default(cuid())
+  opportunityId String
+  name          String
+  description   String?
+  category      OpportunityCriterionCategory
+  scoringMethod OpportunityCriterionScoringMethod
+  weight        Decimal                           @db.Decimal(5, 2)
+  minimumScore  Decimal?                          @db.Decimal(5, 2)
+  required      Boolean                           @default(false)
+  active        Boolean                           @default(true)
+  displayOrder  Int                               @default(0)
+
+  opportunity Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([opportunityId, name])
+  @@index([opportunityId, active, displayOrder])
+  @@index([opportunityId, category])
 }
 
 model OpportunityInvitation {
@@ -697,15 +737,15 @@ model Contract {
   terminationReason String?
   createdById       String
 
-  workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  project         Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  opportunity     Opportunity     @relation(fields: [opportunityId], references: [id], onDelete: Restrict)
-  sourceOffer     Offer           @relation(fields: [sourceOfferId], references: [id], onDelete: Restrict)
-  businessPartner BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Restrict)
-  createdBy       User            @relation("ContractCreator", fields: [createdById], references: [id])
-  items           ContractItem[]
-  amendments      ContractAmendment[]
-  milestones      ContractMilestone[]
+  workspace          Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  project            Project?            @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  opportunity        Opportunity         @relation(fields: [opportunityId], references: [id], onDelete: Restrict)
+  sourceOffer        Offer               @relation(fields: [sourceOfferId], references: [id], onDelete: Restrict)
+  businessPartner    BusinessPartner     @relation(fields: [businessPartnerId], references: [id], onDelete: Restrict)
+  createdBy          User                @relation("ContractCreator", fields: [createdById], references: [id])
+  items              ContractItem[]
+  amendments         ContractAmendment[]
+  milestones         ContractMilestone[]
   partnerEvaluations PartnerEvaluation[]
 
   createdAt DateTime @default(now())
@@ -718,16 +758,16 @@ model Contract {
 }
 
 model PartnerEvaluation {
-  id                String   @id @default(cuid())
-  contractId        String
-  businessPartnerId String
-  timelinessScore   Int
-  qualityScore      Int
+  id                  String  @id @default(cuid())
+  contractId          String
+  businessPartnerId   String
+  timelinessScore     Int
+  qualityScore        Int
   responsivenessScore Int
-  financialScore    Int
-  overallScore      Decimal  @db.Decimal(5, 2)
-  notes             String?
-  createdById       String
+  financialScore      Int
+  overallScore        Decimal @db.Decimal(5, 2)
+  notes               String?
+  createdById         String
 
   contract        Contract        @relation(fields: [contractId], references: [id], onDelete: Cascade)
   businessPartner BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Cascade)
@@ -740,22 +780,22 @@ model PartnerEvaluation {
 }
 
 model ContractMilestone {
-  id            String                 @id @default(cuid())
-  contractId    String
-  number        Int
-  title         String
-  description   String?
-  dueDate       DateTime?
-  amount        Decimal                @default(0) @db.Decimal(18, 2)
-  progress      Int                    @default(0)
-  status        ContractMilestoneStatus @default(PLANNED)
-  paymentStatus MilestonePaymentStatus @default(NOT_CLAIMED)
-  createdById   String
-  startedAt     DateTime?
-  submittedAt   DateTime?
-  acceptedAt    DateTime?
-  claimedAt     DateTime?
-  paidAt        DateTime?
+  id              String                  @id @default(cuid())
+  contractId      String
+  number          Int
+  title           String
+  description     String?
+  dueDate         DateTime?
+  amount          Decimal                 @default(0) @db.Decimal(18, 2)
+  progress        Int                     @default(0)
+  status          ContractMilestoneStatus @default(PLANNED)
+  paymentStatus   MilestonePaymentStatus  @default(NOT_CLAIMED)
+  createdById     String
+  startedAt       DateTime?
+  submittedAt     DateTime?
+  acceptedAt      DateTime?
+  claimedAt       DateTime?
+  paidAt          DateTime?
   rejectionReason String?
 
   contract  Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
@@ -770,23 +810,23 @@ model ContractMilestone {
 }
 
 model ContractAmendment {
-  id              String                  @id @default(cuid())
-  contractId      String
-  number          Int
-  title           String
-  reason          String
-  status          ContractAmendmentStatus @default(DRAFT)
-  valueChange     Decimal                 @default(0) @db.Decimal(18, 2)
-  previousTotal   Decimal                 @db.Decimal(18, 2)
-  resultingTotal  Decimal                 @db.Decimal(18, 2)
-  previousEndDate DateTime?
-  newEndDate      DateTime?
+  id               String                  @id @default(cuid())
+  contractId       String
+  number           Int
+  title            String
+  reason           String
+  status           ContractAmendmentStatus @default(DRAFT)
+  valueChange      Decimal                 @default(0) @db.Decimal(18, 2)
+  previousTotal    Decimal                 @db.Decimal(18, 2)
+  resultingTotal   Decimal                 @db.Decimal(18, 2)
+  previousEndDate  DateTime?
+  newEndDate       DateTime?
   contractSnapshot Json
-  createdById     String
-  approvedById    String?
-  submittedAt     DateTime?
-  approvedAt      DateTime?
-  rejectionReason String?
+  createdById      String
+  approvedById     String?
+  submittedAt      DateTime?
+  approvedAt       DateTime?
+  rejectionReason  String?
 
   contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
   createdBy  User     @relation("ContractAmendmentCreator", fields: [createdById], references: [id])
@@ -1148,34 +1188,34 @@ model ProcurementRequestItem {
 }
 
 model Document {
-  id             String               @id @default(cuid())
-  workspaceId    String
-  entityType     DocumentEntityType
-  entityId       String?
-  title          String
-  category       String
-  fileName       String
-  mimeType       String
-  storageKey     String               @unique
-  sizeBytes      BigInt
-  version        Int                  @default(1)
-  reviewStatus   DocumentReviewStatus @default(DRAFT)
-  isConfidential Boolean              @default(false)
-  expiresAt      DateTime?
-  notes          String?
-  uploadedById   String
-  reviewedById   String?
-  reviewedAt     DateTime?
-  reviewNotes    String?
-  previousVersionId String? @unique
-  deletedById    String?
-  deletedAt      DateTime?
-  deletionReason String?
+  id                String               @id @default(cuid())
+  workspaceId       String
+  entityType        DocumentEntityType
+  entityId          String?
+  title             String
+  category          String
+  fileName          String
+  mimeType          String
+  storageKey        String               @unique
+  sizeBytes         BigInt
+  version           Int                  @default(1)
+  reviewStatus      DocumentReviewStatus @default(DRAFT)
+  isConfidential    Boolean              @default(false)
+  expiresAt         DateTime?
+  notes             String?
+  uploadedById      String
+  reviewedById      String?
+  reviewedAt        DateTime?
+  reviewNotes       String?
+  previousVersionId String?              @unique
+  deletedById       String?
+  deletedAt         DateTime?
+  deletionReason    String?
 
-  workspace  Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  uploadedBy User      @relation("DocumentUploader", fields: [uploadedById], references: [id])
-  reviewedBy User?     @relation("DocumentReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
-  deletedBy  User?     @relation("DocumentDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
+  workspace       Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  uploadedBy      User       @relation("DocumentUploader", fields: [uploadedById], references: [id])
+  reviewedBy      User?      @relation("DocumentReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  deletedBy       User?      @relation("DocumentDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
   previousVersion Document?  @relation("DocumentVersions", fields: [previousVersionId], references: [id], onDelete: SetNull)
   nextVersions    Document[] @relation("DocumentVersions")
 
@@ -1193,14 +1233,14 @@ model Document {
 }
 
 model NotificationReceipt {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   workspaceId String
   userId      String
   fingerprint String
   readAt      DateTime?
   dismissedAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1230,7 +1270,7 @@ model NotificationPreference {
 }
 
 model NotificationDelivery {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   workspaceId String
   userId      String?
   category    String
@@ -1239,11 +1279,11 @@ model NotificationDelivery {
   subject     String
   body        String
   href        String?
-  status      String   @default("PENDING")
-  attempts    Int      @default(0)
+  status      String    @default("PENDING")
+  attempts    Int       @default(0)
   providerId  String?
   lastError   String?
-  scheduledAt DateTime @default(now())
+  scheduledAt DateTime  @default(now())
   sentAt      DateTime?
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)

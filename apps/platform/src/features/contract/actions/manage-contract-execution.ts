@@ -5,7 +5,9 @@ import { Prisma } from "@/generated/prisma/client";
 import { Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
-import { resolveOpportunityActionContext } from "@/features/opportunity/actions";
+import {
+  resolveOpportunityActionContext,
+} from "@/features/opportunity/actions/helpers/resolve-opportunity-context";
 
 type Result = { success: true; message: string } | { success: false; message: string };
 const refresh = (id: string) => revalidatePath(`/platform/contracts/${id}`);

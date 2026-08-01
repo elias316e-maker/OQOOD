@@ -1,7 +1,9 @@
 import Link from "next/link";
 
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
-import { resolveOpportunityActionContext } from "@/features/opportunity/actions";
+import {
+  resolveOpportunityActionContext,
+} from "@/features/opportunity/actions/helpers/resolve-opportunity-context";
 import { Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 

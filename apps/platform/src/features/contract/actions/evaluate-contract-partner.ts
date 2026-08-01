@@ -5,7 +5,9 @@ import { Prisma } from "@/generated/prisma/client";
 import { Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
-import { resolveOpportunityActionContext } from "@/features/opportunity/actions";
+import {
+  resolveOpportunityActionContext,
+} from "@/features/opportunity/actions/helpers/resolve-opportunity-context";
 
 export async function evaluateContractPartnerAction(input: {
   contractId: string;

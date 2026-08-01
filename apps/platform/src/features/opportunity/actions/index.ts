@@ -10,4 +10,7 @@ export * from "./create-opportunity";
 export * from "./action-errors";
 export * from "./action-inputs";
 export * from "./action-result";
-export * from "./helpers";
+export * from "./list-opportunity-criteria";
+export * from "./create-opportunity-criterion";
+export * from "./update-opportunity-criterion";
+export * from "./delete-opportunity-criterion";

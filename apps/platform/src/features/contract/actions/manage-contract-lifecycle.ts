@@ -10,7 +10,9 @@ import {
 import { prisma } from "@/lib/prisma";
 
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
-import { resolveOpportunityActionContext } from "@/features/opportunity/actions";
+import {
+  resolveOpportunityActionContext,
+} from "@/features/opportunity/actions/helpers/resolve-opportunity-context";
 
 export type ContractLifecycleCommand =
   | "SUBMIT_FOR_APPROVAL"

@@ -9,7 +9,9 @@ import {
 } from "@/features/contract";
 import { LinkedDocuments } from "@/features/documents/linked-documents";
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
-import { resolveOpportunityActionContext } from "@/features/opportunity/actions";
+import {
+  resolveOpportunityActionContext,
+} from "@/features/opportunity/actions/helpers/resolve-opportunity-context";
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
