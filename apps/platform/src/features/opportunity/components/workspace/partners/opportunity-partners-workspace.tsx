@@ -3,13 +3,13 @@ import {
 } from "../../opportunity-partners-form";
 
 import {
-  OpportunityKpiGrid,
-} from "../dashboard";
+  FormSection,
+} from "@oqood/design-system";
+
 
 import {
-  WorkspaceCard,
-  WorkspaceSectionHeader,
-} from "../shared";
+  OpportunityKpiGrid,
+} from "../dashboard";
 
 type OpportunityPartnersWorkspaceProps = {
   opportunity: {
@@ -75,13 +75,11 @@ export function OpportunityPartnersWorkspace({
         ]}
       />
 
-      <WorkspaceCard>
-        <WorkspaceSectionHeader
-          eyebrow="الموردون"
-          title="إدارة دعوات المنافسة"
-          description="اختر الموردين المؤهلين لإرسال الدعوات، وحدد الرسالة الموحدة التي ستصل إليهم عند نشر المنافسة."
-        />
-      </WorkspaceCard>
+      <FormSection
+      eyebrow="الموردون"
+      title="إدارة دعوات المنافسة"
+      description="اختر الموردين المؤهلين لإرسال الدعوات، وحدد الرسالة الموحدة التي ستصل إليهم عند نشر المنافسة."
+    />
 
       <div className="opportunityPartnersWorkspace__form">
         <OpportunityPartnersForm

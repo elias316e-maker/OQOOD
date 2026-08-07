@@ -3,6 +3,12 @@ import type {
 } from "../../../actions/manage-opportunity-offers";
 
 import {
+  EmptyState,
+  FormSection,
+} from "@oqood/design-system";
+
+
+import {
   OpportunityKpiGrid,
 } from "../dashboard";
 
@@ -85,13 +91,13 @@ export function OpportunityEvaluationWorkspace({
         ]}
       />
 
-      <WorkspaceCard>
-        <WorkspaceSectionHeader
-          eyebrow="التقييم الفني والمالي"
-          title="مصفوفة تقييم العروض"
-          description="اختر عرضًا ثم قيّم معايير المنافسة واحفظ الدرجات قبل اعتماد النتيجة الفنية."
-        />
-      </WorkspaceCard>
+      <FormSection
+      eyebrow="التقييم الفني والمالي"
+      title="مصفوفة تقييم العروض"
+      description="اختر عرضًا ثم قيّم معايير المنافسة واحفظ الدرجات قبل اعتماد النتيجة الفنية."
+    >
+
+    </FormSection>
 
       <OpportunityEvaluationSelector
         data={data}

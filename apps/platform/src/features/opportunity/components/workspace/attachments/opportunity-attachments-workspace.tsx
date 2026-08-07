@@ -3,13 +3,13 @@ import {
 } from "@/features/documents/linked-documents";
 
 import {
-  OpportunityKpiGrid,
-} from "../dashboard";
+  FormSection,
+} from "@oqood/design-system";
+
 
 import {
-  WorkspaceCard,
-  WorkspaceSectionHeader,
-} from "../shared";
+  OpportunityKpiGrid,
+} from "../dashboard";
 
 type OpportunityAttachmentsWorkspaceProps = {
   opportunityId: string;
@@ -57,13 +57,13 @@ export function OpportunityAttachmentsWorkspace({
         ]}
       />
 
-      <WorkspaceCard>
-        <WorkspaceSectionHeader
-          eyebrow="وثائق المنافسة"
-          title="المرفقات والملفات"
-          description="إدارة مستندات المنافسة والمواصفات والرسومات والجداول والمراسلات المرتبطة بها."
-        />
-      </WorkspaceCard>
+      <FormSection
+      eyebrow="وثائق المنافسة"
+      title="المرفقات والملفات"
+      description="إدارة مستندات المنافسة والمواصفات والرسومات والجداول والمراسلات المرتبطة بها."
+    >
+
+    </FormSection>
 
       <section className="opportunityAttachmentsWorkspace__documents">
         <LinkedDocuments

@@ -3,9 +3,9 @@ import {
 } from "../dashboard";
 
 import {
-  WorkspaceCard,
-  WorkspaceSectionHeader,
-} from "../shared";
+  FormSection,
+} from "@oqood/design-system";
+
 
 type OpportunityActivityItem = {
   title: string;
@@ -102,24 +102,26 @@ export function OpportunityActivityWorkspace({
         ]}
       />
 
-      <WorkspaceCard>
-        <WorkspaceSectionHeader
-          eyebrow="سجل العمليات"
-          title="نشاط المنافسة"
-          description="سجل زمني للتغييرات والإجراءات والمراحل المرتبطة بالمنافسة."
-        />
-
-        <div className="opportunityActivityWorkspace__notice">
+      <FormSection
+      eyebrow="سجل العمليات"
+      title="نشاط المنافسة"
+      description="سجل زمني للتغييرات والإجراءات والمراحل المرتبطة بالمنافسة."
+    >
+      <div className="opportunityActivityWorkspace__notice">
           <strong>البيانات الحالية محدودة</strong>
           <p>
             يعرض هذا القسم الأحداث المستخلصة من بيانات المنافسة
             الحالية. سجل التدقيق الكامل يحتاج إلى ربط Audit Log.
           </p>
         </div>
-      </WorkspaceCard>
+    </FormSection>
 
-      <WorkspaceCard>
-        <div className="opportunityActivityTimeline">
+      <FormSection
+      eyebrow="التسلسل الزمني"
+      title="سجل الأحداث"
+      description="التسلسل الزمني لأهم الأحداث والمراحل المسجلة على المنافسة."
+    >
+      <div className="opportunityActivityTimeline">
           {activities.map((activity, index) => (
             <article
               className={`opportunityActivityTimeline__item is-${activity.tone}`}
@@ -141,7 +143,7 @@ export function OpportunityActivityWorkspace({
             </article>
           ))}
         </div>
-      </WorkspaceCard>
+    </FormSection>
     </main>
   );
 }

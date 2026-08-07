@@ -3,17 +3,17 @@ import type {
 } from "../../../actions/manage-opportunity-offers";
 
 import {
+  FormSection,
+} from "@oqood/design-system";
+
+
+import {
   OpportunityOffersForm,
 } from "../../opportunity-offers-form";
 
 import {
   OpportunityKpiGrid,
 } from "../dashboard";
-
-import {
-  WorkspaceCard,
-  WorkspaceSectionHeader,
-} from "../shared";
 
 type OpportunityOffersWorkspaceProps = {
   data: OpportunityOfferData;
@@ -123,13 +123,11 @@ export function OpportunityOffersWorkspace({
         ]}
       />
 
-      <WorkspaceCard>
-        <WorkspaceSectionHeader
-          eyebrow="عروض الموردين"
-          title="المقارنة والتقييم والترسية"
-          description="راجع العروض التجارية ونتائج التقييم، ثم اعتمد العرض الفائز وأنشئ مسودة العقد."
-        />
-      </WorkspaceCard>
+      <FormSection
+      eyebrow="عروض الموردين"
+      title="المقارنة والتقييم والترسية"
+      description="راجع العروض التجارية ونتائج التقييم، ثم اعتمد العرض الفائز وأنشئ مسودة العقد."
+    />
 
       <div className="opportunityOffersWorkspace__form">
         <OpportunityOffersForm
