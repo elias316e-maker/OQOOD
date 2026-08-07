@@ -1,10 +1,21 @@
 import {
+  getFinancialEvaluationAction,
   getOpportunityOffersAction,
 } from "@/features/opportunity/actions";
 
 import {
+  FinancialEvaluationManager,
   OpportunityEvaluationWorkspace,
 } from "@/features/opportunity/components";
+
+import {
+  hasPermission,
+  Permissions,
+} from "@/lib/permissions";
+
+import {
+  requireCurrentWorkspace,
+} from "@/lib/workspace-context";
 
 type OpportunityEvaluationPageProps = {
   params: Promise<{
@@ -17,25 +28,54 @@ export default async function OpportunityEvaluationPage({
 }: OpportunityEvaluationPageProps) {
   const { opportunityId } = await params;
 
-  const result =
-    await getOpportunityOffersAction(
-      opportunityId,
-    );
+  const [
+    offersResult,
+    financialResult,
+    workspaceContext,
+  ] = await Promise.all([
+    getOpportunityOffersAction(opportunityId),
+    getFinancialEvaluationAction(opportunityId),
+    requireCurrentWorkspace(),
+  ]);
 
-  if (!result.success) {
+  if (!offersResult.success) {
     return (
       <main className="opportunityWorkspaceSection">
         <section className="opportunityWorkspaceEmptyPanel">
           <h1>تعذر تحميل بيانات التقييم</h1>
-          <p>{result.message}</p>
+          <p>{offersResult.message}</p>
         </section>
       </main>
     );
   }
 
+  const canEvaluate = hasPermission(
+    workspaceContext,
+    Permissions.opportunities.evaluate,
+  );
+
   return (
-    <OpportunityEvaluationWorkspace
-      data={result.data}
-    />
+    <>
+      <OpportunityEvaluationWorkspace
+        data={offersResult.data}
+        canEvaluate={canEvaluate}
+      />
+
+      {financialResult.success ? (
+        <FinancialEvaluationManager
+          evaluation={financialResult.data}
+          canEvaluate={canEvaluate}
+        />
+      ) : (
+        <section className="opportunityWorkspaceCard">
+          <div
+            className="formAlert formAlertError"
+            role="alert"
+          >
+            {financialResult.message}
+          </div>
+        </section>
+      )}
+    </>
   );
 }

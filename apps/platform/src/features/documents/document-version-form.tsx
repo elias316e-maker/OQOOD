@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 
 import {
   createDocumentVersionAction,
@@ -12,10 +12,21 @@ const initialState: DocumentFormState = { status: "idle" };
 
 export function DocumentVersionForm({ documentId }: { documentId: string }) {
   const [open, setOpen] = useState(false);
-  const [state, action, pending] = useActionState(createDocumentVersionAction, initialState);
-  useEffect(() => {
-    if (state.status === "success") setOpen(false);
-  }, [state.status]);
+  const [state, action, pending] = useActionState(
+    async (previousState: DocumentFormState, formData: FormData) => {
+      const nextState = await createDocumentVersionAction(
+        previousState,
+        formData,
+      );
+
+      if (nextState.status === "success") {
+        setOpen(false);
+      }
+
+      return nextState;
+    },
+    initialState,
+  );
 
   if (!open) {
     return <button className={styles.trigger} onClick={() => setOpen(true)} type="button">إصدار جديد</button>;

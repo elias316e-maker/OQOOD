@@ -1,5 +1,9 @@
 "use server";
 
+import {
+  queueAwardNotificationsAction as queueAwardNotificationsActionImpl,
+} from "./queue-award-notifications";
+
 import { revalidatePath } from "next/cache";
 
 import { requireAuthenticatedUser } from "@/features/workspace/guards";
@@ -83,4 +87,12 @@ export async function updateNotificationPreferencesAction(formData: FormData) {
     }),
   ));
   revalidatePath("/platform/notifications");
+}
+
+export async function queueAwardNotificationsAction(
+  opportunityId: string,
+) {
+  return queueAwardNotificationsActionImpl(
+    opportunityId,
+  );
 }

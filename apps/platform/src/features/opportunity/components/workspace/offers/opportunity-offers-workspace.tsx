@@ -71,7 +71,7 @@ export function OpportunityOffersWorkspace({
   const lowestOffer = getLowestOffer(data.offers);
 
   const awardedOffer = data.offers.find(
-    (offer) => offer.status === "AWARDED",
+    (offer) => offer.status === "WINNER",
   );
 
   return (

@@ -1,3 +1,4 @@
+@import "./competition-dark-theme.css";
 @import "../styles/foundation-tokens.css";
 
 @import "tailwindcss";
@@ -12025,4 +12026,447 @@ main.platformContent
     .primaryButton {
     width: 100%;
   }
+}
+
+/* Competition Workspace — Offer Evaluation */
+
+.offerEvaluationManager {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.offerEvaluationManager__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.offerEvaluationManager__header h2 {
+  margin: 5px 0 0;
+  color: var(--competition-text, #f4f6ff);
+}
+
+.offerEvaluationManager__header p {
+  margin: 7px 0 0;
+  color: var(--competition-muted, #7e88a5);
+  font-size: 10px;
+}
+
+.offerEvaluationManager__summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.offerEvaluationManager__summary article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(139, 149, 190, 0.12);
+  border-radius: 14px;
+  background: rgba(5, 8, 19, 0.34);
+}
+
+.offerEvaluationManager__summary span {
+  display: block;
+  color: var(--competition-muted, #7e88a5);
+  font-size: 9px;
+}
+
+.offerEvaluationManager__summary strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--competition-text, #f4f6ff);
+  font-size: 18px;
+}
+
+.offerEvaluationManager__criteria {
+  display: grid;
+  gap: 12px;
+}
+
+.offerEvaluationCriterion {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(139, 149, 190, 0.14);
+  border-radius: 16px;
+  background: rgba(5, 8, 19, 0.32);
+}
+
+.offerEvaluationCriterion > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.offerEvaluationCriterion > header span {
+  color: #a78bfa;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.offerEvaluationCriterion h3 {
+  margin: 5px 0 0;
+  color: var(--competition-text, #f4f6ff);
+}
+
+.offerEvaluationCriterion p {
+  margin: 7px 0 0;
+  color: var(--competition-muted, #7e88a5);
+  font-size: 9px;
+}
+
+.offerEvaluationCriterion > header > strong {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.1);
+  color: #8ec5ff;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.offerEvaluationCriterion__fields {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.5fr) minmax(260px, 1.5fr);
+  gap: 14px;
+}
+
+.offerEvaluationCriterion__fields .formField {
+  display: grid;
+  gap: 7px;
+}
+
+.offerEvaluationCriterion__fields .formField > span,
+.offerEvaluationCriterion__fields legend {
+  color: var(--competition-muted-strong, #8790ad);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.offerEvaluationCriterion__fields
+  :is(input[type="number"], textarea) {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(139, 149, 190, 0.15);
+  border-radius: 10px;
+  background: rgba(7, 10, 23, 0.72);
+  color: var(--competition-text, #f4f6ff);
+}
+
+.offerEvaluationCriterion__fields input[type="number"] {
+  min-height: 42px;
+  padding-inline: 11px;
+}
+
+.offerEvaluationCriterion__fields textarea {
+  resize: vertical;
+  padding: 11px;
+}
+
+.offerEvaluationCriterion__fields
+  :is(input[type="number"], textarea):focus {
+  border-color: rgba(139, 92, 246, 0.65);
+  outline: 2px solid rgba(139, 92, 246, 0.16);
+  outline-offset: 1px;
+}
+
+.offerEvaluationCriterion__fields fieldset {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgba(139, 149, 190, 0.14);
+  border-radius: 10px;
+}
+
+.offerEvaluationCriterion__fields fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--competition-text-soft, #dfe3ef);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.offerEvaluationCriterion__fields input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--competition-purple, #8b5cf6);
+}
+
+.offerEvaluationCriterion__notes {
+  min-width: 0;
+}
+
+.offerEvaluationCriterion > footer,
+.offerEvaluationManager__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.offerEvaluationCriterion > footer > span,
+.offerEvaluationManager__footer > span {
+  color: var(--competition-muted, #7e88a5);
+  font-size: 9px;
+}
+
+.opportunityEvaluationWorkspace__table tr.is-selected {
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.opportunityEvaluationWorkspace__table tr.is-selected td {
+  border-color: rgba(139, 92, 246, 0.18);
+}
+
+@media (max-width: 980px) {
+  .offerEvaluationManager__summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .offerEvaluationCriterion__fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .offerEvaluationManager__header,
+  .offerEvaluationCriterion > header,
+  .offerEvaluationCriterion > footer,
+  .offerEvaluationManager__footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .offerEvaluationManager__summary {
+    grid-template-columns: 1fr;
+  }
+
+  .offerEvaluationManager__footer .primaryButton,
+  .offerEvaluationCriterion > footer .secondaryButton {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   OQOOD Competition Workspace v2 — Dark Surface Enforcement
+   ========================================================= */
+
+.platformDarkShell:has(.opportunityWorkspaceShell) {
+  background:
+    radial-gradient(
+      circle at 78% 0%,
+      rgb(91 140 255 / 10%),
+      transparent 32rem
+    ),
+    radial-gradient(
+      circle at 12% 40%,
+      rgb(139 92 246 / 8%),
+      transparent 30rem
+    ),
+    #090d1c;
+}
+
+.opportunityWorkspaceShell {
+  min-height: calc(100vh - 5rem);
+  background:
+    radial-gradient(
+      circle at 82% 0%,
+      rgb(91 140 255 / 11%),
+      transparent 34rem
+    ),
+    radial-gradient(
+      circle at 10% 38%,
+      rgb(139 92 246 / 8%),
+      transparent 30rem
+    ),
+    linear-gradient(
+      180deg,
+      #090d1c 0%,
+      #0b1021 52%,
+      #090d1c 100%
+    );
+
+  box-shadow: 0 0 0 100vmax #090d1c;
+  clip-path: inset(0 -100vmax);
+}
+
+.opportunityWorkspaceContent {
+  min-width: 0;
+  border-radius: var(--competition-radius-lg);
+  background: transparent;
+}
+
+.opportunityWorkspaceContent > .platformContent,
+.opportunityWorkspaceContent > main,
+.opportunityWorkspaceContent > section {
+  background: transparent;
+}
+
+.opportunityWorkspaceSection,
+.opportunityOverviewV2 {
+  color: var(--competition-text);
+  background: transparent;
+}
+
+.opportunityWorkspaceHeader,
+.opportunityWorkspaceNavigation,
+.opportunityOverviewPanel,
+.opportunityWorkspaceCard,
+.opportunityWorkspaceEmptyPanel {
+  border-color: var(--competition-border);
+}
+
+.opportunityWorkspaceNavigation {
+  scrollbar-color:
+    rgb(139 92 246 / 35%)
+    rgb(5 8 20 / 40%);
+  scrollbar-width: thin;
+}
+
+.opportunityWorkspaceNavigation::-webkit-scrollbar {
+  height: 5px;
+}
+
+.opportunityWorkspaceNavigation::-webkit-scrollbar-track {
+  background: rgb(5 8 20 / 40%);
+}
+
+.opportunityWorkspaceNavigation::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgb(139 92 246 / 35%);
+}
+
+.opportunityWorkspaceNavigation__item {
+  text-decoration: none;
+  transition:
+    color 150ms ease,
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.opportunityWorkspaceNavigation__item:hover {
+  transform: translateY(-1px);
+}
+
+.opportunityWorkspaceNavigation__item:focus-visible {
+  outline: 3px solid rgb(91 140 255 / 22%);
+  outline-offset: 2px;
+}
+
+@media (max-width: 680px) {
+  .opportunityWorkspaceShell {
+    min-height: calc(100vh - 4rem);
+  }
+}
+
+/* =========================================================
+   OQOOD Opportunity Overview v2 — Visual Refresh
+   ========================================================= */
+
+.opportunityOverviewV2__grid {
+  gap: 18px;
+}
+
+.opportunityOverviewPanel {
+  border: 1px solid rgba(139,149,190,.14);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(18,28,52,.98),
+      rgba(9,14,28,.98)
+    );
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.22),
+    inset 0 1px rgba(255,255,255,.03);
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+.opportunityOverviewPanel:hover {
+  transform: translateY(-2px);
+  border-color: rgba(91,140,255,.28);
+  box-shadow:
+    0 24px 54px rgba(0,0,0,.28),
+    0 0 0 1px rgba(91,140,255,.08);
+}
+
+.opportunityOverviewPanel__header {
+  border-bottom: 1px solid rgba(139,149,190,.10);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(91,140,255,.06),
+      rgba(139,92,246,.05)
+    );
+}
+
+.opportunityOverviewPanel__header h2 {
+  color: #f3f6ff;
+  font-weight: 800;
+}
+
+.opportunityOverviewStatus,
+.opportunityOverviewPrivateBadge {
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.opportunityOverviewDescription {
+  color: #dbe4f3;
+  line-height: 1.9;
+}
+
+.opportunityOverviewDetails dt,
+.opportunityOverviewFinance dt {
+  color: #7f89a7;
+}
+
+.opportunityOverviewDetails dd,
+.opportunityOverviewFinance dd {
+  color: #eef2fb;
+}
+
+.opportunityOverviewLifecycle__stage {
+  transition:
+    transform .18s ease,
+    background .18s ease;
+}
+
+.opportunityOverviewLifecycle__stage:hover {
+  transform: translateY(-2px);
+}
+
+.opportunityOverviewCriteria > div {
+  border: 1px solid rgba(139,149,190,.10);
+  border-radius: 12px;
+  background: rgba(255,255,255,.02);
+}
+
+.opportunityOverviewActions a {
+  transition:
+    transform .16s ease,
+    background .16s ease;
+}
+
+.opportunityOverviewActions a:hover {
+  transform: translateY(-1px);
+}
+
+.opportunityOverviewActivity > div {
+  border-left: 2px solid rgba(91,140,255,.18);
+}
+
+.opportunityOverviewDocuments > * {
+  border: 1px solid rgba(139,149,190,.10);
+  border-radius: 12px;
+  background: rgba(255,255,255,.02);
 }

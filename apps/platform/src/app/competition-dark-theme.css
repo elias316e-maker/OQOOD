@@ -1,0 +1,991 @@
+/* =========================================================
+   OQOOD Competition Dark Theme
+   Opportunity forms, setup flow, BOQ, partners and offers
+   ========================================================= */
+
+:is(
+  .opportunityWorkspaceShell,
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) {
+  --competition-bg: #090d1c;
+  --competition-surface: #10182f;
+  --competition-surface-raised: #151f3a;
+  --competition-surface-soft: #0b1328;
+  --competition-input: #091426;
+
+  --competition-border: rgb(139 149 190 / 15%);
+  --competition-border-strong: rgb(91 140 255 / 30%);
+
+  --competition-text: #f3f6ff;
+  --competition-text-soft: #d9e1f0;
+  --competition-muted: #8792ae;
+
+  --competition-blue: #5b8cff;
+  --competition-purple: #8b5cf6;
+  --competition-green: #35d399;
+  --competition-rose: #ef6688;
+
+  color: var(--competition-text);
+  color-scheme: dark;
+}
+
+/* Full page surfaces */
+
+.platformDarkShell:has(
+  :is(
+    .opportunityWorkspaceShell,
+    .opportunitySetupRefresh,
+    .opportunityFormRefresh,
+    .partnerFormRefresh
+  )
+) {
+  background:
+    radial-gradient(
+      circle at 80% 0%,
+      rgb(91 140 255 / 11%),
+      transparent 34rem
+    ),
+    radial-gradient(
+      circle at 12% 38%,
+      rgb(139 92 246 / 9%),
+      transparent 30rem
+    ),
+    var(--competition-bg, #090d1c);
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) {
+  min-height: calc(100vh - 5rem);
+  background:
+    radial-gradient(
+      circle at 82% 0%,
+      rgb(91 140 255 / 10%),
+      transparent 32rem
+    ),
+    linear-gradient(
+      180deg,
+      #090d1c,
+      #0b1021 55%,
+      #090d1c
+    ) !important;
+}
+
+/* General headers */
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .listPageHeader {
+  border-color: var(--competition-border) !important;
+  background: transparent !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .listPageHeader h1 {
+  color: var(--competition-text) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .listPageHeader p {
+  color: var(--competition-muted) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .pageEyebrow {
+  color: #b9a8ff !important;
+}
+
+/* Main panels */
+
+.platformDarkShell :is(
+  .opportunitySetupPanel,
+  .opportunityEditPanel,
+  .partnerCreateForm,
+  .wizardContent
+) {
+  overflow: hidden;
+  border: 1px solid var(--competition-border) !important;
+  border-radius: 15px !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgb(18 28 52 / 98%),
+      rgb(9 14 28 / 98%)
+    ) !important;
+  box-shadow:
+    0 18px 42px rgb(0 0 0 / 22%),
+    inset 0 1px rgb(255 255 255 / 3%) !important;
+}
+
+/* Setup flow */
+
+.opportunitySetupFlow {
+  overflow: hidden;
+  border: 1px solid var(--competition-border) !important;
+  border-radius: 12px !important;
+  background: rgb(11 15 31 / 94%) !important;
+}
+
+.opportunitySetupFlow :is(a, strong) {
+  border-color: rgb(139 149 190 / 10%) !important;
+  color: var(--competition-muted) !important;
+}
+
+.opportunitySetupFlow a:hover {
+  background: rgb(91 140 255 / 9%) !important;
+  color: #b9c8ff !important;
+}
+
+.opportunitySetupFlow strong {
+  background:
+    linear-gradient(
+      135deg,
+      rgb(91 140 255 / 22%),
+      rgb(139 92 246 / 18%)
+    ) !important;
+  color: var(--competition-text) !important;
+}
+
+/* Wizard steps */
+
+.opportunityFormRefresh .wizardSteps {
+  border-color: var(--competition-border) !important;
+  background: rgb(11 15 31 / 94%) !important;
+}
+
+.opportunityFormRefresh .wizardStep {
+  color: var(--competition-muted) !important;
+}
+
+.opportunityFormRefresh .wizardStep.active {
+  background:
+    linear-gradient(
+      135deg,
+      rgb(91 140 255 / 16%),
+      rgb(139 92 246 / 12%)
+    ) !important;
+}
+
+.opportunityFormRefresh .wizardStep.active > span {
+  background:
+    linear-gradient(
+      135deg,
+      var(--competition-blue),
+      var(--competition-purple)
+    ) !important;
+}
+
+/* Section headers */
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .wizardSectionHeader,
+.partnerFormRefresh .opportunitySection__head {
+  border-color: var(--competition-border) !important;
+  background: rgb(20 31 58 / 72%) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .wizardSectionHeader h2,
+.partnerFormRefresh .opportunitySection__head h2 {
+  color: var(--competition-text) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .wizardSectionHeader p,
+.partnerFormRefresh .opportunitySection__head p {
+  color: var(--competition-muted) !important;
+}
+
+/* Form guidance */
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .formGuidance {
+  border-color: rgb(53 211 153 / 22%) !important;
+  background: rgb(53 211 153 / 9%) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .formGuidance > span {
+  background: rgb(53 211 153 / 16%) !important;
+  color: #72e5ba !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .formGuidance strong {
+  color: #dff9ef !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .formGuidance small {
+  color: var(--competition-muted) !important;
+}
+
+/* Form section titles */
+
+:is(
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  .formSectionTitle,
+  .partnerFormGroupTitle
+) {
+  border-color: var(--competition-border) !important;
+}
+
+:is(
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  .formSectionTitle,
+  .partnerFormGroupTitle
+) > span {
+  background: rgb(91 140 255 / 14%) !important;
+  color: #91acff !important;
+}
+
+:is(
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  .formSectionTitle,
+  .partnerFormGroupTitle
+) strong {
+  color: var(--competition-text) !important;
+}
+
+:is(
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  .formSectionTitle,
+  .partnerFormGroupTitle
+) small {
+  color: var(--competition-muted) !important;
+}
+
+/* Inputs */
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  input,
+  select,
+  textarea
+) {
+  border-color: rgb(139 149 190 / 20%) !important;
+  background: var(--competition-input) !important;
+  color: var(--competition-text-soft) !important;
+  color-scheme: dark;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  input,
+  select,
+  textarea
+):hover {
+  border-color: rgb(91 140 255 / 38%) !important;
+  background: #0d1b32 !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  input,
+  select,
+  textarea
+):focus {
+  border-color: var(--competition-blue) !important;
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(91 140 255 / 14%) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  input,
+  textarea
+)::placeholder {
+  color: #5f6d89 !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) select option {
+  background: var(--competition-input);
+  color: var(--competition-text-soft);
+}
+
+/* Labels */
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  .formField label,
+  .opportunityFormGrid > label > span
+) {
+  color: #a6b0c7 !important;
+}
+
+/* BOQ table */
+
+.opportunitySetupRefresh .boqTableWrapper,
+.opportunityBoqWorkspace__form .boqTableWrapper {
+  border-color: var(--competition-border) !important;
+  background: transparent !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityBoqWorkspace__form
+) .boqTable {
+  background: transparent !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityBoqWorkspace__form
+) .boqTable thead {
+  background: rgb(20 31 58 / 88%) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityBoqWorkspace__form
+) .boqTable th {
+  border-color: var(--competition-border) !important;
+  background: rgb(20 31 58 / 88%) !important;
+  color: #9da8c0 !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityBoqWorkspace__form
+) .boqTable td {
+  border-color: rgb(139 149 190 / 9%) !important;
+  background: transparent !important;
+  color: var(--competition-text-soft) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityBoqWorkspace__form
+) .boqTable tbody tr:hover td {
+  background: rgb(91 140 255 / 5%) !important;
+}
+
+/* BOQ summary */
+
+.boqSummary {
+  border-color: var(--competition-border) !important;
+  background: rgb(7 11 24 / 40%) !important;
+}
+
+.boqSummary article {
+  border-color: var(--competition-border) !important;
+  background: rgb(18 28 52 / 64%) !important;
+}
+
+.boqSummary span {
+  color: var(--competition-muted) !important;
+}
+
+.boqSummary strong {
+  color: #72e5ba !important;
+}
+
+/* Partner cards and lists */
+
+.opportunitySetupRefresh .partnerSelectionList,
+.partnerFormRefresh .partnerSelectionList {
+  background: transparent !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .partnerFormRefresh
+) :is(
+  .partnerSelectionCard,
+  .partnerCard,
+  .supplierCard
+) {
+  border-color: var(--competition-border) !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgb(18 28 52 / 88%),
+      rgb(10 17 34 / 92%)
+    ) !important;
+  color: var(--competition-text-soft) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .partnerFormRefresh
+) :is(
+  .partnerSelectionCard,
+  .partnerCard,
+  .supplierCard
+):hover {
+  border-color: rgb(91 140 255 / 34%) !important;
+  background: rgb(20 31 58 / 94%) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .partnerFormRefresh
+) :is(
+  .partnerSelectionCard,
+  .partnerCard,
+  .supplierCard
+):has(input:checked) {
+  border-color: rgb(53 211 153 / 46%) !important;
+  background:
+    linear-gradient(
+      135deg,
+      rgb(53 211 153 / 11%),
+      rgb(15 25 47 / 94%)
+    ) !important;
+}
+
+/* Footers and actions */
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) :is(
+  .wizardFooter,
+  .opportunityFormActions
+) {
+  border-color: var(--competition-border) !important;
+  background: rgb(7 11 24 / 78%) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .secondaryButton {
+  border-color: var(--competition-border) !important;
+  background: rgb(20 31 58 / 76%) !important;
+  color: #bec7d8 !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .secondaryButton:hover {
+  border-color: rgb(91 140 255 / 36%) !important;
+  color: var(--competition-text) !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .primaryButton {
+  border-color: #5b71ed !important;
+  background:
+    linear-gradient(
+      135deg,
+      #5b8cff,
+      #6952dc
+    ) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 22px rgb(60 79 196 / 25%);
+}
+
+/* Feedback */
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .formAlertSuccess {
+  border-color: rgb(53 211 153 / 28%) !important;
+  background: rgb(53 211 153 / 10%) !important;
+  color: #72e5ba !important;
+}
+
+:is(
+  .opportunitySetupRefresh,
+  .opportunityFormRefresh,
+  .partnerFormRefresh
+) .formAlertError {
+  border-color: rgb(239 102 136 / 28%) !important;
+  background: rgb(239 102 136 / 10%) !important;
+  color: #ff9ab2 !important;
+}
+
+@media (max-width: 680px) {
+  :is(
+    .opportunitySetupRefresh,
+    .opportunityFormRefresh,
+    .partnerFormRefresh
+  ) {
+    min-height: calc(100vh - 4rem);
+  }
+}
+
+/* =========================================================
+   Competition Offers Workspace
+   ========================================================= */
+
+.opportunityOffersWorkspace {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+  color: var(--competition-text);
+}
+
+.opportunityOffersWorkspace__form {
+  min-width: 0;
+}
+
+.opportunityOffersWorkspace__form :is(
+  .platformContent,
+  .page
+) {
+  min-height: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  clip-path: none !important;
+}
+
+.opportunityOffersWorkspace__form :is(
+  .header,
+  .panel,
+  .summary article
+) {
+  border-color: var(--competition-border) !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgb(18 28 52 / 96%),
+      rgb(9 14 28 / 98%)
+    ) !important;
+  color: var(--competition-text) !important;
+  box-shadow:
+    0 15px 34px rgb(0 0 0 / 20%),
+    inset 0 1px rgb(255 255 255 / 3%) !important;
+}
+
+.opportunityOffersWorkspace__form :is(
+  .header h1,
+  .panelHeader h2
+) {
+  color: var(--competition-text) !important;
+}
+
+.opportunityOffersWorkspace__form :is(
+  .header p,
+  .panelHeader p,
+  .summary span,
+  .empty,
+  .fields label,
+  .notes label
+) {
+  color: var(--competition-muted) !important;
+}
+
+.opportunityOffersWorkspace__form .flow {
+  border-color: var(--competition-border) !important;
+  background: rgb(11 15 31 / 94%) !important;
+}
+
+.opportunityOffersWorkspace__form .flow :is(a, strong) {
+  border-color: var(--competition-border-soft) !important;
+  color: var(--competition-muted) !important;
+}
+
+.opportunityOffersWorkspace__form .flow strong {
+  background:
+    linear-gradient(
+      135deg,
+      rgb(91 140 255 / 24%),
+      rgb(139 92 246 / 20%)
+    ) !important;
+  color: #fff !important;
+}
+
+.opportunityOffersWorkspace__form .panelHeader {
+  border-color: var(--competition-border) !important;
+  background: rgb(20 31 58 / 74%) !important;
+}
+
+.opportunityOffersWorkspace__form .table th {
+  border-color: var(--competition-border) !important;
+  background: rgb(20 31 58 / 88%) !important;
+  color: #9da8c0 !important;
+}
+
+.opportunityOffersWorkspace__form .table td {
+  border-color: var(--competition-border-soft) !important;
+  background: transparent !important;
+  color: var(--competition-text-soft) !important;
+}
+
+.opportunityOffersWorkspace__form .table tbody tr:hover td {
+  background: rgb(91 140 255 / 5%) !important;
+}
+
+.opportunityOffersWorkspace__form :is(
+  .table input,
+  .fields input,
+  .fields select,
+  .notes textarea
+) {
+  border-color: rgb(139 149 190 / 20%) !important;
+  background: var(--competition-input) !important;
+  color: var(--competition-text-soft) !important;
+  color-scheme: dark;
+}
+
+.opportunityOffersWorkspace__form .notes {
+  background: rgb(7 11 24 / 38%) !important;
+}
+
+.opportunityOffersWorkspace__form .notes > div {
+  border-color: var(--competition-border) !important;
+  background: rgb(18 28 52 / 70%) !important;
+  color: var(--competition-muted) !important;
+}
+
+.opportunityOffersWorkspace__form :is(
+  .summary strong,
+  .total,
+  .notes strong
+) {
+  color: #72e5ba !important;
+}
+
+.opportunityOffersWorkspace__form .evaluationActions button {
+  border-color: var(--competition-border-strong) !important;
+  background: rgb(20 31 58 / 86%) !important;
+  color: #bfc9da !important;
+}
+
+.opportunityOffersWorkspace__form .evaluationActions button:hover {
+  border-color: rgb(91 140 255 / 42%) !important;
+  background: rgb(91 140 255 / 12%) !important;
+  color: #eef2ff !important;
+}
+
+.opportunityOffersWorkspace__form
+  .evaluationActions button[data-tone="danger"] {
+  border-color: rgb(239 102 136 / 30%) !important;
+  background: rgb(239 102 136 / 9%) !important;
+  color: #ff9ab2 !important;
+}
+
+.opportunityOffersWorkspace__form
+  .evaluationActions button[data-tone="award"] {
+  border-color: rgb(53 211 153 / 40%) !important;
+  background:
+    linear-gradient(
+      135deg,
+      rgb(53 211 153 / 82%),
+      rgb(20 151 116 / 92%)
+    ) !important;
+  color: #fff !important;
+}
+
+.opportunityOffersWorkspace__form .contractCallout {
+  border-color: rgb(53 211 153 / 24%) !important;
+  background:
+    linear-gradient(
+      135deg,
+      rgb(53 211 153 / 10%),
+      rgb(91 140 255 / 8%)
+    ) !important;
+}
+
+.opportunityOffersWorkspace__form .contractCallout strong {
+  color: #72e5ba !important;
+}
+
+.opportunityOffersWorkspace__form .contractCallout p {
+  color: var(--competition-muted) !important;
+}
+
+/* =========================================================
+   Competition Award Workspace
+   ========================================================= */
+
+.opportunityAwardWorkspace {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+  color: var(--competition-text);
+}
+
+.opportunityAwardWorkspace__grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.45fr)
+    minmax(280px, 0.75fr);
+  gap: 16px;
+}
+
+.opportunityAwardWinner,
+.opportunityAwardRecommendation {
+  border: 1px solid var(--competition-border) !important;
+  border-radius: 16px !important;
+  background:
+    radial-gradient(
+      circle at 88% 8%,
+      rgb(53 211 153 / 9%),
+      transparent 16rem
+    ),
+    linear-gradient(
+      145deg,
+      rgb(18 28 52 / 97%),
+      rgb(9 14 28 / 99%)
+    ) !important;
+  color: var(--competition-text) !important;
+  box-shadow:
+    0 18px 42px rgb(0 0 0 / 22%),
+    inset 0 1px rgb(255 255 255 / 3%) !important;
+}
+
+.opportunityAwardWinner {
+  padding: 1rem;
+}
+
+.opportunityAwardWinner header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--competition-border);
+}
+
+.opportunityAwardWinner .pageEyebrow {
+  color: #72e5ba !important;
+}
+
+.opportunityAwardWinner h2 {
+  margin: 0.2rem 0 0;
+  color: var(--competition-text) !important;
+  font-size: 1.15rem;
+}
+
+.opportunityAwardWinner__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.8rem;
+  padding-inline: 0.7rem;
+  border: 1px solid rgb(53 211 153 / 30%) !important;
+  border-radius: 999px !important;
+  background: rgb(53 211 153 / 11%) !important;
+  color: #72e5ba !important;
+  font-size: 0.62rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.opportunityAwardWinner dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 0.9rem 0 0;
+}
+
+.opportunityAwardWinner dl > div {
+  padding: 0.72rem;
+  border: 1px solid var(--competition-border) !important;
+  border-radius: 10px !important;
+  background: rgb(11 20 39 / 70%) !important;
+}
+
+.opportunityAwardWinner dt {
+  color: var(--competition-muted) !important;
+  font-size: 0.6rem;
+}
+
+.opportunityAwardWinner dd {
+  margin: 0.3rem 0 0;
+  color: var(--competition-text-soft) !important;
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.opportunityAwardRecommendation {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.opportunityAwardRecommendation .formAlert {
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--competition-border) !important;
+  border-radius: 9px !important;
+  background: rgb(91 140 255 / 8%) !important;
+  color: #b7c6ff !important;
+  font-size: 0.68rem;
+  line-height: 1.7;
+}
+
+.opportunityAwardRecommendation .primaryButton {
+  min-height: 2.5rem;
+  border-color: #5b71ed !important;
+  background:
+    linear-gradient(
+      135deg,
+      #5b8cff,
+      #6952dc
+    ) !important;
+  color: #fff !important;
+  box-shadow: 0 9px 24px rgb(60 79 196 / 28%);
+}
+
+.opportunityAwardRecommendation .primaryButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgb(60 79 196 / 34%);
+}
+
+.opportunityAwardRecommendation .primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.opportunityAwardWorkspace__permission {
+  border-color: rgb(244 183 64 / 24%) !important;
+  background:
+    linear-gradient(
+      135deg,
+      rgb(244 183 64 / 8%),
+      rgb(18 28 52 / 90%)
+    ) !important;
+}
+
+.opportunityAwardWorkspace :is(
+  .opportunityWorkspaceEmptyPanel,
+  .opportunityAwardWorkspace__permission
+) {
+  color: var(--competition-text-soft) !important;
+}
+
+.opportunityAwardWorkspace
+  .opportunityWorkspaceEmptyPanel__icon {
+  border: 1px solid rgb(139 92 246 / 24%) !important;
+  background: rgb(139 92 246 / 11%) !important;
+  color: #c3b2ff !important;
+}
+
+.opportunityAwardWorkspace
+  .opportunityWorkspaceEmptyPanel h2 {
+  color: var(--competition-text) !important;
+}
+
+.opportunityAwardWorkspace
+  .opportunityWorkspaceEmptyPanel p {
+  color: var(--competition-muted) !important;
+}
+
+.opportunityAwardWorkspace :is(
+  .primaryButton,
+  .secondaryButton
+) {
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.opportunityAwardWorkspace .secondaryButton {
+  border-color: var(--competition-border) !important;
+  background: rgb(20 31 58 / 78%) !important;
+  color: #bec8da !important;
+}
+
+.opportunityAwardWorkspace .secondaryButton:hover {
+  border-color: rgb(91 140 255 / 40%) !important;
+  background: rgb(91 140 255 / 10%) !important;
+  color: #f0f3ff !important;
+  transform: translateY(-1px);
+}
+
+.opportunityAwardWorkspace .primaryButton {
+  border-color: #5b71ed !important;
+  background:
+    linear-gradient(
+      135deg,
+      #5b8cff,
+      #6952dc
+    ) !important;
+  color: #fff !important;
+}
+
+@media (max-width: 900px) {
+  .opportunityAwardWorkspace__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .opportunityAwardWinner header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .opportunityAwardWinner dl {
+    grid-template-columns: 1fr;
+  }
+}

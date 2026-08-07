@@ -130,7 +130,11 @@ export function OpportunityOffersForm({
       );
       setFeedback({
         tone: result.success ? "success" : "error",
-        message: result.message,
+        message:
+          result.message ??
+          (result.success
+            ? "تم إنشاء مسودة العقد بنجاح."
+            : "تعذر إنشاء مسودة العقد."),
       });
       if (result.success) {
         router.push(`/platform/contracts/${result.data.contractId}`);

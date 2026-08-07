@@ -113,3 +113,49 @@ export class OpportunityCriterionImmutableError extends Error {
     this.name = "OpportunityCriterionImmutableError";
   }
 }
+
+export class OfferEvaluationNotFoundError extends Error {
+  constructor(
+    public readonly offerId: string,
+  ) {
+    super("عرض المورد المطلوب غير موجود.");
+    this.name = "OfferEvaluationNotFoundError";
+  }
+}
+
+export class OfferEvaluationCriterionNotFoundError extends Error {
+  constructor(
+    public readonly criterionId: string,
+  ) {
+    super("معيار التقييم غير موجود أو لا يتبع منافسة العرض.");
+    this.name = "OfferEvaluationCriterionNotFoundError";
+  }
+}
+
+export class OfferEvaluationInvalidValueError extends Error {
+  constructor(
+    message = "قيمة تقييم المعيار غير صالحة.",
+  ) {
+    super(message);
+    this.name = "OfferEvaluationInvalidValueError";
+  }
+}
+
+export class OfferEvaluationIncompleteError extends Error {
+  constructor(
+    public readonly completedCriteriaCount: number,
+    public readonly totalCriteriaCount: number,
+  ) {
+    super("يجب استكمال تقييم جميع المعايير النشطة قبل اعتماد النتيجة.");
+    this.name = "OfferEvaluationIncompleteError";
+  }
+}
+
+export class OfferEvaluationImmutableError extends Error {
+  constructor(
+    public readonly offerStatus: string,
+  ) {
+    super("لا يمكن تعديل تقييم العرض في حالته الحالية.");
+    this.name = "OfferEvaluationImmutableError";
+  }
+}

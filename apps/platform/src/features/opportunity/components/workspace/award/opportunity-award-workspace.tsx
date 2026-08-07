@@ -13,6 +13,12 @@ import {
   WorkspaceSectionHeader,
 } from "../shared";
 
+import {
+  EmptyState,
+  FormSection,
+} from "@oqood/design-system";
+
+
 type OpportunityAwardWorkspaceProps = {
   data: OpportunityOfferData;
   canCreateContract: boolean;
@@ -38,12 +44,12 @@ export function OpportunityAwardWorkspace({
   canCreateContract,
 }: OpportunityAwardWorkspaceProps) {
   const awardedOffer = data.offers.find(
-    (offer) => offer.status === "AWARDED",
+    (offer) => offer.status === "WINNER",
   );
 
   const financiallyEvaluated = data.offers.filter(
     (offer) =>
-      ["FINANCIALLY_EVALUATED", "AWARDED"].includes(
+      ["FINANCIALLY_EVALUATED", "WINNER"].includes(
         offer.status,
       ),
   ).length;
@@ -112,25 +118,17 @@ export function OpportunityAwardWorkspace({
 
       {awardedOffer ? (
         <section className="opportunityAwardWorkspace__grid">
-          <WorkspaceCard
-            as="article"
-            className="opportunityAwardWinner"
-          >
-            <header>
-              <div>
-                <span className="pageEyebrow">
-                  العرض الفائز
-                </span>
-
-                <h2>{awardedOffer.partnerName}</h2>
-              </div>
-
-              <span className="opportunityAwardWinner__badge">
-                تمت الترسية
-              </span>
-            </header>
-
-            <dl>
+          <FormSection
+        className="opportunityAwardWinner"
+        eyebrow="العرض الفائز"
+        title={awardedOffer.partnerName}
+        actions={
+          <span className="opportunityAwardWinner__badge">
+            تمت الترسية
+          </span>
+        }
+      >
+        <dl>
               <div>
                 <dt>رقم العرض</dt>
                 <dd>
@@ -186,16 +184,14 @@ export function OpportunityAwardWorkspace({
                 </dd>
               </div>
             </dl>
-          </WorkspaceCard>
+      </FormSection>
 
-          <WorkspaceCard>
-            <WorkspaceSectionHeader
-              eyebrow="الخطوة التالية"
-              title="إنشاء العقد"
-              description="يتم إنشاء مسودة العقد من صفحة العروض باستخدام العرض الفائز المعتمد."
-            />
-
-            {canCreateContract ? (
+          <FormSection
+        eyebrow="الخطوة التالية"
+        title="إنشاء العقد"
+        description="يتم إنشاء مسودة العقد من صفحة العروض باستخدام العرض الفائز المعتمد."
+      >
+        {canCreateContract ? (
               <Link
                 className="primaryButton compactButton"
                 href={`/platform/opportunities/${data.opportunity.id}/offers`}
@@ -203,35 +199,31 @@ export function OpportunityAwardWorkspace({
                 الانتقال لإنشاء مسودة العقد
               </Link>
             ) : (
-              <div className="opportunityWorkspaceEmptyPanel opportunityAwardWorkspace__permission">
-                <h2>لا توجد صلاحية لإنشاء العقد</h2>
-                <p>
-                  يلزم الحصول على صلاحية إنشاء العقود لإكمال هذه الخطوة.
-                </p>
-              </div>
+              <EmptyState
+            className="opportunityAwardWorkspace__permission"
+            tone="warning"
+            icon="!"
+            title="لا توجد صلاحية لإنشاء العقد"
+            description="يلزم الحصول على صلاحية إنشاء العقود لإكمال هذه الخطوة."
+          />
             )}
-          </WorkspaceCard>
+      </FormSection>
         </section>
       ) : (
         <WorkspaceCard>
-          <div className="opportunityWorkspaceEmptyPanel">
-            <span className="opportunityWorkspaceEmptyPanel__icon">
-              ♜
-            </span>
-
-            <h2>لم تتم ترسية المنافسة بعد</h2>
-
-            <p>
-              راجع التقييم الفني والمالي، ثم اعتمد العرض الفائز من صفحة العروض.
-            </p>
-
-            <Link
-              className="primaryButton compactButton"
-              href={`/platform/opportunities/${data.opportunity.id}/offers`}
-            >
-              الانتقال إلى العروض
-            </Link>
-          </div>
+          <EmptyState
+        icon="♜"
+        title="لم تتم ترسية المنافسة بعد"
+        description="راجع التقييم الفني والمالي، ثم اعتمد العرض الفائز من صفحة العروض."
+        actions={
+          <Link
+            className="primaryButton compactButton"
+            href={`/platform/opportunities/${data.opportunity.id}/offers`}
+          >
+            الانتقال إلى العروض
+          </Link>
+        }
+      />
         </WorkspaceCard>
       )}
     </main>

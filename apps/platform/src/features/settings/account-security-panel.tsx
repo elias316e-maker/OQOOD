@@ -33,7 +33,17 @@ export function AccountSecurityPanel({
   }
 
   useEffect(() => {
-    void refreshSessions();
+    let active = true;
+
+    void authClient.listSessions().then((result) => {
+      if (active && result.data) {
+        setSessions(result.data as SessionItem[]);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   async function enable(event: FormEvent) {

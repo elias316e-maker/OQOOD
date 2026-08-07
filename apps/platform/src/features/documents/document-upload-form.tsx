@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { uploadDocumentAction, type DocumentFormState } from "./actions";
@@ -19,11 +19,18 @@ function SubmitButton() {
 export function DocumentUploadForm({ entities }: { entities: EntityGroups }) {
   const [open, setOpen] = useState(false);
   const [entityType, setEntityType] = useState("WORKSPACE");
-  const [state, action] = useActionState(uploadDocumentAction, initialState);
+  const [state, action] = useActionState(
+    async (previousState: DocumentFormState, formData: FormData) => {
+      const nextState = await uploadDocumentAction(previousState, formData);
 
-  useEffect(() => {
-    if (state.status === "success") setOpen(false);
-  }, [state.status]);
+      if (nextState.status === "success") {
+        setOpen(false);
+      }
+
+      return nextState;
+    },
+    initialState,
+  );
 
   return <>
     <button className={styles.trigger} onClick={() => setOpen(true)} type="button">رفع مستند جديد</button>

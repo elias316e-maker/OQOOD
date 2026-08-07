@@ -1,23 +1,26 @@
 "use client";
 
+import styles from "./opportunity-edit-form.module.css";
+
 import {
   useActionState,
   useEffect,
-} from "react";
+  } from "react";
 
 import {
   useFormStatus,
-} from "react-dom";
+  } from "react-dom";
 
 import Link from "next/link";
 import {
   useRouter,
-} from "next/navigation";
+  } from "next/navigation";
 
 import {
   Input,
   Select,
   Textarea,
+  WorkspaceHeader,
 } from "@oqood/design-system";
 
 import {
@@ -194,7 +197,7 @@ function FieldError({
 
   return (
     <small
-      className="formFieldError"
+      className={styles.formFieldError}
       role="alert"
     >
       {message}
@@ -207,7 +210,7 @@ function SubmitButton() {
 
   return (
     <button
-      className="primaryButton compactButton"
+      className={styles.primaryButton}
       type="submit"
       disabled={pending}
       aria-disabled={pending}
@@ -246,45 +249,39 @@ export function OpportunityEditForm({
   ]);
 
   return (
-    <main className="platformContent opportunityFormRefresh">
-      <form action={formAction} className="opportunityFormShell">
+    <main className={styles.page}>
+      <form action={formAction} className={styles.container}>
         <input
           type="hidden"
           name="opportunityId"
           value={opportunity.id}
         />
 
-        <section className="listPageHeader">
-          <div>
-            <span className="pageEyebrow">
-              تعديل الفرصة
-            </span>
+        <WorkspaceHeader
+          className={styles.header}
+          eyebrow="تعديل المنافسة"
+          title={opportunity.title}
+          badge={opportunity.number}
+          description="حدّث بيانات المنافسة ومتطلبات المشاركة وإعدادات التقديم قبل حفظ التغييرات."
+          actions={
+            <>
+              <Link
+                className={styles.cancelButton}
+                href={
+                  `/platform/opportunities/` +
+                  opportunity.id
+                }
+              >
+                إلغاء
+              </Link>
 
-            <h1>{opportunity.title}</h1>
+              <SubmitButton />
+            </>
+          }
+        />
 
-            <p>
-              رقم الفرصة:{" "}
-              {opportunity.number}
-            </p>
-          </div>
-
-          <div className="commandHeaderActions">
-            <Link
-              className="secondaryButton compactButton"
-              href={
-                `/platform/opportunities/` +
-                opportunity.id
-              }
-            >
-              إلغاء
-            </Link>
-
-            <SubmitButton />
-          </div>
-        </section>
-
-        <section className="dashboardPanel opportunityVisiblePanel opportunityEditPanel">
-          <div className="formGuidance">
+        <section className={styles.panel}>
+          <div className={styles.formGuidance}>
             <span aria-hidden="true">✎</span>
             <div>
               <strong>تعديل بيانات المنافسة</strong>
@@ -293,7 +290,7 @@ export function OpportunityEditForm({
           </div>
           {state.status === "error" && (
             <div
-              className="formAlert formAlertError"
+              className={`${styles.formAlert} ${styles.formAlertError}`}
               role="alert"
               aria-live="assertive"
             >
@@ -303,7 +300,7 @@ export function OpportunityEditForm({
 
           {state.status === "success" && (
             <div
-              className="formAlert formAlertSuccess"
+              className={`${styles.formAlert} ${styles.formAlertSuccess}`}
               role="status"
               aria-live="polite"
             >
@@ -311,11 +308,11 @@ export function OpportunityEditForm({
             </div>
           )}
 
-          <div className="opportunityForm opportunityFormCompact">
-            <div className="formSectionTitle fullWidth">
+          <div className={styles.formGrid}>
+            <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>
               <span>01</span><div><strong>تعريف المنافسة</strong><small>البيانات التي تظهر في القائمة وبطاقة التفاصيل</small></div>
             </div>
-            <div className="formField fullWidth">
+            <div className={`${styles.formField} ${styles.fullWidth}`}>
               <label htmlFor="title">
                 عنوان الفرصة
               </label>
@@ -341,7 +338,7 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formField">
+            <div className={styles.formField}>
               <label htmlFor="type">
                 نوع الفرصة
               </label>
@@ -380,11 +377,11 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formSectionTitle fullWidth">
+            <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>
               <span>02</span><div><strong>القيمة والمواعيد</strong><small>الميزانية وفترة استقبال العروض</small></div>
             </div>
 
-            <div className="formField">
+            <div className={styles.formField}>
               <label htmlFor="category">
                 التصنيف
               </label>
@@ -404,7 +401,7 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formField">
+            <div className={styles.formField}>
               <label htmlFor="priority">
                 الأولوية
               </label>
@@ -434,7 +431,7 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formField">
+            <div className={styles.formField}>
               <label htmlFor="currency">
                 العملة
               </label>
@@ -464,7 +461,7 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formField">
+            <div className={styles.formField}>
               <label htmlFor="budget">
                 الميزانية التقديرية
               </label>
@@ -487,7 +484,7 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formField">
+            <div className={styles.formField}>
               <label htmlFor="issueDate">
                 تاريخ الإصدار
               </label>
@@ -511,7 +508,7 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formField">
+            <div className={styles.formField}>
               <label htmlFor="closingDate">
                 تاريخ الإغلاق
               </label>
@@ -535,7 +532,17 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formField fullWidth">
+            <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>
+              <span>03</span>
+              <div>
+                <strong>الوصف والمتطلبات</strong>
+                <small>
+                  صف الاحتياج الفني ونطاق العمل والمتطلبات الرئيسية.
+                </small>
+              </div>
+            </div>
+
+            <div className={`${styles.formField} ${styles.fullWidth}`}>
               <label htmlFor="description">
                 وصف الاحتياج
               </label>
@@ -557,16 +564,22 @@ export function OpportunityEditForm({
               />
             </div>
 
-            <div className="formSectionTitle fullWidth">
-              <span>03</span><div><strong>نطاق النشر</strong><small>تحكم في الجهات التي يمكنها الوصول إلى المنافسة</small></div>
+            <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>
+              <span>04</span>
+              <div>
+                <strong>نطاق النشر</strong>
+                <small>
+                  تحكم في الجهات التي يمكنها الوصول إلى المنافسة.
+                </small>
+              </div>
             </div>
 
-            <div className="formField fullWidth">
+            <div className={`${styles.formField} ${styles.fullWidth}`}>
               <fieldset>
                 <legend>نطاق النشر</legend>
 
-                <div className="choiceGrid">
-                  <label className="choiceCard">
+                <div className={styles.choiceGrid}>
+                  <label className={styles.choiceCard}>
                     <input
                       name="visibility"
                       type="radio"
@@ -587,7 +600,7 @@ export function OpportunityEditForm({
                     </span>
                   </label>
 
-                  <label className="choiceCard">
+                  <label className={styles.choiceCard}>
                     <input
                       name="visibility"
                       type="radio"
@@ -608,7 +621,7 @@ export function OpportunityEditForm({
                     </span>
                   </label>
 
-                  <label className="choiceCard">
+                  <label className={styles.choiceCard}>
                     <input
                       name="visibility"
                       type="radio"
@@ -640,7 +653,7 @@ export function OpportunityEditForm({
             </div>
           </div>
 
-          <div className="wizardFooter">
+          <div className={styles.footerBar}>
             <span>
               الحالة الحالية:{" "}
               {opportunity.status}

@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./opportunity-boq-form.module.css";
+
 import {
   useActionState,
   useState,
@@ -12,6 +14,8 @@ import {
 import Link from "next/link";
 
 import {
+  FormActions,
+  FormSection,
   Input,
   Select,
 } from "@oqood/design-system";
@@ -44,7 +48,7 @@ function SaveButton() {
 
   return (
     <button
-      className="primaryButton compactButton"
+      className={styles.primaryButton}
       disabled={pending}
       type="submit"
     >
@@ -133,20 +137,20 @@ export function OpportunityBoqForm({
   }
 
   return (
-    <main className="platformContent opportunitySetupRefresh">
-      <form action={formAction} className="opportunitySetupShell">
-        <section className="listPageHeader">
+    <main className={styles.page}>
+      <form action={formAction} className={styles.shell}>
+        <section className={styles.header}>
           <div>
-            <span className="pageEyebrow">
+            <span className={styles.eyebrow}>
               {opportunity.number}
             </span>
             <h1>جدول الكميات</h1>
             <p>{opportunity.title}</p>
           </div>
 
-          <div className="commandHeaderActions">
+          <div className={styles.actions}>
             <Link
-              className="secondaryButton compactButton"
+              className={styles.secondaryButton}
               href={`/platform/opportunities/${opportunity.id}`}
             >
               العودة للتفاصيل
@@ -155,15 +159,19 @@ export function OpportunityBoqForm({
           </div>
         </section>
 
-        <nav className="opportunitySetupFlow" aria-label="مراحل إعداد المنافسة">
+        <nav className={styles.flow} aria-label="مراحل إعداد المنافسة">
           <Link href={`/platform/opportunities/${opportunity.id}`}>1 <span>البيانات</span></Link>
           <strong>2 <span>جدول الكميات</span></strong>
           <Link href={`/platform/opportunities/${opportunity.id}/partners`}>3 <span>الموردون</span></Link>
           <Link href={`/platform/opportunities/${opportunity.id}/offers`}>4 <span>العروض</span></Link>
         </nav>
 
-        <section className="wizardContent opportunitySetupPanel">
-          <div className="wizardSectionHeader">
+        <FormSection
+        className={styles.panel}
+        title="بنود جدول الكميات"
+        description="إدارة عناصر المنافسة وكمياتها ووحدات القياس."
+      >
+          <div className={styles.panelHeader}>
             <div>
               <h2>بنود جدول الكميات</h2>
               <p>
@@ -173,7 +181,7 @@ export function OpportunityBoqForm({
             </div>
 
             <button
-              className="primaryButton compactButton"
+              className={styles.primaryButton}
               onClick={addItem}
               type="button"
             >
@@ -185,8 +193,8 @@ export function OpportunityBoqForm({
             <div
               className={
                 state.status === "success"
-                  ? "formAlert formAlertSuccess"
-                  : "formAlert formAlertError"
+                  ? `${styles.alert} ${styles.alertSuccess}`
+                  : `${styles.alert} ${styles.alertError}`
               }
               role={
                 state.status === "success"
@@ -198,8 +206,8 @@ export function OpportunityBoqForm({
             </div>
           )}
 
-          <div className="boqTableWrapper">
-            <table className="dataTable boqTable">
+          <div className={styles.tableViewport}>
+            <table className={styles.table}>
               <thead>
                 <tr>
                   <th>#</th>
@@ -282,7 +290,7 @@ export function OpportunityBoqForm({
                     </td>
                     <td>
                       <button
-                        className="tableActionButton dangerText"
+                        className={styles.tableAction}
                         disabled={
                           items.length === 1
                         }
@@ -300,28 +308,35 @@ export function OpportunityBoqForm({
             </table>
           </div>
 
-          <div className="boqSummary">
+          <div className={styles.summary}>
             <article><span>عدد البنود</span><strong>{items.length}</strong></article>
             <article><span>إجمالي الكميات</span><strong>{items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0).toLocaleString("ar-SA")}</strong></article>
             <article><span>البنود المكتملة</span><strong>{items.filter((item) => item.description.trim() && Number(item.quantity) > 0).length}</strong></article>
           </div>
 
-          <div className="wizardFooter">
+          <FormActions
+        className={styles.footer}
+        status={
+          <span>
+            يتم حفظ التغييرات ضمن المنافسة الحالية.
+          </span>
+        }
+      >
             <span>
               عدد البنود: {items.length}
             </span>
 
-            <div className="commandHeaderActions">
+            <div className={styles.actions}>
               <SaveButton />
               <Link
-                className="secondaryButton compactButton"
+                className={styles.secondaryButton}
                 href={`/platform/opportunities/${opportunity.id}/partners`}
               >
                 الانتقال إلى شركاء الأعمال
               </Link>
             </div>
-          </div>
-        </section>
+          </FormActions>
+        </FormSection>
       </form>
     </main>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./opportunity-create-form.module.css";
+
 import {
   useActionState,
   useEffect,
@@ -18,6 +20,7 @@ import {
   Input,
   Select,
   Textarea,
+  WorkspaceHeader,
 } from "@oqood/design-system";
 
 import {
@@ -163,7 +166,7 @@ function FieldError({
 
   return (
     <small
-      className="formFieldError"
+      className={styles.formFieldError}
       role="alert"
     >
       {message}
@@ -176,7 +179,7 @@ function SaveButton() {
 
   return (
     <button
-      className="primaryButton compactButton"
+      className={styles.primaryButton}
       type="submit"
       disabled={pending}
       aria-disabled={pending}
@@ -215,32 +218,26 @@ export function OpportunityCreateForm({
   ]);
 
   return (
-    <main className="platformContent opportunityFormRefresh">
-      <form action={formAction} className="opportunityFormShell">
-        <section className="listPageHeader">
-          <div>
-            <span className="pageEyebrow">
-              فرصة جديدة
-            </span>
+    <main className={styles.page}>
+      <form action={formAction} className={styles.container}>
+        <WorkspaceHeader
+          className={styles.header}
+          eyebrow="فرصة جديدة"
+          title="إنشاء طلب عرض سعر"
+          description={`مسودة رقم ${draftNumber}`}
+          actions={
+            <>
+              <Link
+                className={styles.cancelButton}
+                href="/platform/opportunities"
+              >
+                إلغاء
+              </Link>
 
-            <h1>إنشاء طلب عرض سعر</h1>
-
-            <p>
-              مسودة رقم {draftNumber}
-            </p>
-          </div>
-
-          <div className="commandHeaderActions">
-            <Link
-              className="secondaryButton compactButton"
-              href="/platform/opportunities"
-            >
-              إلغاء
-            </Link>
-
-            <SaveButton />
-          </div>
-        </section>
+              <SaveButton />
+            </>
+          }
+        />
 
         <input
           type="hidden"
@@ -248,18 +245,18 @@ export function OpportunityCreateForm({
           value={draftNumber}
         />
 
-        <section className="opportunityWizard">
+        <section className={styles.wizard}>
           <aside
-            className="wizardSteps"
+            className={styles.wizardSteps}
             aria-label="مراحل إنشاء الفرصة"
           >
             {steps.map((step, index) => (
               <div
                 className={
-                  index === 0
-                    ? "wizardStep active"
-                    : "wizardStep"
-                }
+              index === 0
+                ? `${styles.wizardStep} ${styles.wizardStepActive}`
+                : styles.wizardStep
+            }
                 key={step}
               >
                 <span>{index + 1}</span>
@@ -277,8 +274,8 @@ export function OpportunityCreateForm({
             ))}
           </aside>
 
-          <section className="wizardContent">
-            <div className="wizardSectionHeader">
+          <section className={styles.wizardContent}>
+            <div className={styles.wizardSectionHeader}>
               <div>
                 <h2>المعلومات الأساسية</h2>
 
@@ -287,12 +284,12 @@ export function OpportunityCreateForm({
                 </p>
               </div>
 
-              <span className="draftBadge">
+              <span className={styles.draftBadge}>
                 مسودة
               </span>
             </div>
 
-            <div className="formGuidance">
+            <div className={styles.formGuidance}>
               <span aria-hidden="true">✓</span>
               <div>
                 <strong>ابدأ بالبيانات الأساسية</strong>
@@ -302,7 +299,7 @@ export function OpportunityCreateForm({
 
             {state.status === "error" && (
               <div
-                className="formAlert formAlertError"
+                className={`${styles.formAlert} ${styles.formAlertError}`}
                 role="alert"
                 aria-live="assertive"
               >
@@ -312,7 +309,7 @@ export function OpportunityCreateForm({
 
             {state.status === "success" && (
               <div
-                className="formAlert formAlertSuccess"
+                className={`${styles.formAlert} ${styles.formAlertSuccess}`}
                 role="status"
                 aria-live="polite"
               >
@@ -320,11 +317,11 @@ export function OpportunityCreateForm({
               </div>
             )}
 
-            <div className="opportunityForm opportunityFormCompact">
-              <div className="formSectionTitle fullWidth">
+            <div className={styles.formGrid}>
+              <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>
                 <span>01</span><div><strong>تعريف المنافسة</strong><small>العنوان والنوع والتصنيف والأولوية</small></div>
               </div>
-              <div className="formField fullWidth">
+              <div className={`${styles.formField} ${styles.fullWidth}`}>
                 <label htmlFor="title">
                   عنوان الفرصة
                 </label>
@@ -348,7 +345,7 @@ export function OpportunityCreateForm({
                 />
               </div>
 
-              <div className="formField">
+              <div className={styles.formField}>
                 <label htmlFor="type">
                   نوع الفرصة
                 </label>
@@ -390,11 +387,11 @@ export function OpportunityCreateForm({
                 />
               </div>
 
-              <div className="formSectionTitle fullWidth">
+              <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>
                 <span>02</span><div><strong>القيمة والمواعيد</strong><small>الميزانية والعملة وفترة استقبال العروض</small></div>
               </div>
 
-              <div className="formField">
+              <div className={styles.formField}>
                 <label htmlFor="category">
                   التصنيف
                 </label>
@@ -428,7 +425,7 @@ export function OpportunityCreateForm({
                 />
               </div>
 
-              <div className="formField">
+              <div className={styles.formField}>
                 <label htmlFor="priority">
                   الأولوية
                 </label>
@@ -458,7 +455,7 @@ export function OpportunityCreateForm({
                 />
               </div>
 
-              <div className="formField">
+              <div className={styles.formField}>
                 <label htmlFor="currency">
                   العملة
                 </label>
@@ -488,7 +485,7 @@ export function OpportunityCreateForm({
                 />
               </div>
 
-              <div className="formField">
+              <div className={styles.formField}>
                 <label htmlFor="budget">
                   الميزانية التقديرية
                 </label>
@@ -514,7 +511,7 @@ export function OpportunityCreateForm({
                 />
               </div>
 
-              <div className="formField">
+              <div className={styles.formField}>
                 <label htmlFor="issueDate">
                   تاريخ الإصدار
                 </label>
@@ -538,7 +535,7 @@ export function OpportunityCreateForm({
                 />
               </div>
 
-              <div className="formField">
+              <div className={styles.formField}>
                 <label htmlFor="closingDate">
                   تاريخ الإغلاق
                 </label>
@@ -563,7 +560,7 @@ export function OpportunityCreateForm({
                 />
               </div>
 
-              <div className="formField fullWidth">
+              <div className={`${styles.formField} ${styles.fullWidth}`}>
                 <label htmlFor="description">
                   وصف الاحتياج
                 </label>
@@ -594,16 +591,16 @@ export function OpportunityCreateForm({
                 </small>
               </div>
 
-              <div className="formSectionTitle fullWidth">
+              <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>
                 <span>03</span><div><strong>إتاحة المنافسة</strong><small>حدد من يمكنه رؤية المنافسة والمشاركة فيها</small></div>
               </div>
 
-              <div className="formField fullWidth">
+              <div className={`${styles.formField} ${styles.fullWidth}`}>
                 <fieldset>
                   <legend>نطاق النشر</legend>
 
-                  <div className="choiceGrid">
-                    <label className="choiceCard">
+                  <div className={styles.choiceGrid}>
+                    <label className={styles.choiceCard}>
                       <input
                         defaultChecked
                         name="visibility"
@@ -623,7 +620,7 @@ export function OpportunityCreateForm({
                       </span>
                     </label>
 
-                    <label className="choiceCard">
+                    <label className={styles.choiceCard}>
                       <input
                         name="visibility"
                         type="radio"
@@ -642,7 +639,7 @@ export function OpportunityCreateForm({
                       </span>
                     </label>
 
-                    <label className="choiceCard">
+                    <label className={styles.choiceCard}>
                       <input
                         name="visibility"
                         type="radio"
@@ -672,7 +669,7 @@ export function OpportunityCreateForm({
               </div>
             </div>
 
-            <div className="wizardFooter">
+            <div className={styles.footerBar}>
               <span>
                 تُحفظ الفرصة أولًا كمسودة
               </span>

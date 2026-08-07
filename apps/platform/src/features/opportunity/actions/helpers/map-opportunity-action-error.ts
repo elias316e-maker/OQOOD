@@ -12,6 +12,11 @@ import {
 } from "../action-errors";
 
 import {
+  OfferEvaluationCriterionNotFoundError,
+  OfferEvaluationImmutableError,
+  OfferEvaluationIncompleteError,
+  OfferEvaluationInvalidValueError,
+  OfferEvaluationNotFoundError,
   OpportunityArchivedError,
   OpportunityCriteriaWeightExceededError,
   OpportunityCriterionDuplicateNameError,
@@ -107,6 +112,15 @@ export function mapOpportunityActionError(
     error instanceof OpportunityNotFoundError ||
     error instanceof
       OpportunityUpdateFieldsRequiredError ||
+    error instanceof OfferEvaluationNotFoundError ||
+    error instanceof
+      OfferEvaluationCriterionNotFoundError ||
+    error instanceof
+      OfferEvaluationInvalidValueError ||
+    error instanceof
+      OfferEvaluationIncompleteError ||
+    error instanceof
+      OfferEvaluationImmutableError ||
     error instanceof OpportunityArchivedError ||
     error instanceof
       OpportunityCriterionNotFoundError ||
