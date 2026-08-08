@@ -22,6 +22,10 @@ import type {
   OfferEvaluationResponse,
 } from "../../../dtos";
 
+import {
+  Alert,
+} from "@oqood/design-system";
+
 type OfferEvaluationManagerProps = {
   offerId: string | null;
   canEvaluate: boolean;
@@ -268,12 +272,12 @@ export function OfferEvaluationManager({
     return (
       <section className="opportunityWorkspaceCard">
         {feedback && (
-          <div
-            className="formAlert formAlertError"
+          <Alert
+             tone="danger"
             role="alert"
           >
             {feedback.message}
-          </div>
+          </Alert>
         )}
       </section>
     );
@@ -285,7 +289,7 @@ export function OfferEvaluationManager({
     <section className="opportunityWorkspaceCard offerEvaluationManager">
       <header className="offerEvaluationManager__header">
         <div>
-          <span className="pageEyebrow">
+          <span className="opportunitySectionEyebrow">
             تقييم العرض
           </span>
 
@@ -336,12 +340,13 @@ export function OfferEvaluationManager({
       </div>
 
       {feedback && (
-        <div
-          className={
+        <Alert
+          tone={
             feedback.tone === "success"
-              ? "formAlert formAlertSuccess"
-              : "formAlert formAlertError"
+              ? "success"
+              : "danger"
           }
+
           role={
             feedback.tone === "success"
               ? "status"
@@ -349,7 +354,7 @@ export function OfferEvaluationManager({
           }
         >
           {feedback.message}
-        </div>
+        </Alert>
       )}
 
       {evaluation.scores.length === 0 ? (

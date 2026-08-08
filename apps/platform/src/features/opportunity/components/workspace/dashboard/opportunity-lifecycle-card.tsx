@@ -22,7 +22,7 @@ export function OpportunityLifecycleCard({
     <article className="opportunityWorkspaceCard opportunityLifecycleCardV2">
       <header className="workspaceSectionHeader">
         <div>
-          <span className="pageEyebrow">
+          <span className="opportunityDashboardCardEyebrow">
             دورة حياة المنافسة
           </span>
 

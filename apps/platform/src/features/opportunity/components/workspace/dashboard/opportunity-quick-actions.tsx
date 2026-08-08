@@ -23,7 +23,7 @@ export function OpportunityQuickActions({
     <article className="opportunityWorkspaceCard opportunityQuickActions">
       <header className="workspaceSectionHeader">
         <div>
-          <span className="pageEyebrow">
+          <span className="opportunityDashboardCardEyebrow">
             الوصول السريع
           </span>
 

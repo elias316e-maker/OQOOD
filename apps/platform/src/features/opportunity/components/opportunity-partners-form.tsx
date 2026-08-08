@@ -1,18 +1,23 @@
 "use client";
 
+import styles from "./opportunity-partners-form.module.css";
+
 import {
   useActionState,
   useState,
-} from "react";
+  } from "react";
 
 import {
   useFormStatus,
-} from "react-dom";
+  } from "react-dom";
 
 import Link from "next/link";
 
 import {
   Textarea,
+  Alert,
+  WorkspaceHeader,
+  FormActions,
 } from "@oqood/design-system";
 
 import {
@@ -105,36 +110,22 @@ export function OpportunityPartnersForm({
   }
 
   return (
-    <main className="platformContent opportunitySetupRefresh">
+    <main className={`platformContent ${styles.setupRefresh}`}>
       <form action={formAction} className="opportunitySetupShell">
-        <section className="listPageHeader">
-          <div>
-            <span className="pageEyebrow">
-              {opportunity.number}
-            </span>
-            <h1>دعوة شركاء الأعمال</h1>
-            <p>{opportunity.title}</p>
-          </div>
+        <WorkspaceHeader
+        eyebrow="{opportunity.number}"
+        title="دعوة شركاء الأعمال"
+        description="{opportunity.title}"
+      />
 
-          <div className="commandHeaderActions">
-            <Link
-              className="secondaryButton compactButton"
-              href={`/platform/opportunities/${opportunity.id}/boq`}
-            >
-              جدول الكميات
-            </Link>
-            <SaveInvitationsButton />
-          </div>
-        </section>
-
-        <nav className="opportunitySetupFlow" aria-label="مراحل إعداد المنافسة">
+        <nav className={styles.setupFlow} aria-label="مراحل إعداد المنافسة">
           <Link href={`/platform/opportunities/${opportunity.id}`}>1 <span>البيانات</span></Link>
           <Link href={`/platform/opportunities/${opportunity.id}/boq`}>2 <span>جدول الكميات</span></Link>
           <strong>3 <span>الموردون</span></strong>
           <Link href={`/platform/opportunities/${opportunity.id}/offers`}>4 <span>العروض</span></Link>
         </nav>
 
-        <section className="wizardContent opportunitySetupPanel">
+        <section className={styles.setupPanel}>
           <div className="wizardSectionHeader">
             <div>
               <h2>شركاء الأعمال المؤهلون</h2>
@@ -149,12 +140,13 @@ export function OpportunityPartnersForm({
           </div>
 
           {state.message && (
-            <div
-              className={
-                state.status === "success"
-                  ? "formAlert formAlertSuccess"
-                  : "formAlert formAlertError"
-              }
+            <Alert
+          tone={
+            state.status === "success"
+              ? "success"
+              : "danger"
+          }
+
               role={
                 state.status === "success"
                   ? "status"
@@ -162,7 +154,7 @@ export function OpportunityPartnersForm({
               }
             >
               {state.message}
-            </div>
+            </Alert>
           )}
 
           {partners.length === 0 ? (
@@ -253,12 +245,10 @@ export function OpportunityPartnersForm({
             </div>
           </div>
 
-          <div className="wizardFooter">
-            <span>
-              ستُحفظ الدعوات بحالة معلقة حتى
-              نشر الفرصة.
-            </span>
-            <div className="commandHeaderActions">
+          <FormActions
+        status="ستُحفظ الدعوات بحالة معلقة حتى نشر الفرصة."
+      >
+        <div className="commandHeaderActions">
               <SaveInvitationsButton />
               <Link
                 className="secondaryButton compactButton"
@@ -267,7 +257,7 @@ export function OpportunityPartnersForm({
                 مراجعة الفرصة
               </Link>
             </div>
-          </div>
+      </FormActions>
         </section>
       </form>
     </main>

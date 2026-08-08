@@ -21,7 +21,7 @@ export function OpportunityHealthCard({
     <article className="opportunityWorkspaceCard opportunityHealthCardV2">
       <header className="workspaceSectionHeader">
         <div>
-          <span className="pageEyebrow">
+          <span className="opportunityDashboardCardEyebrow">
             Competition Health
           </span>
 

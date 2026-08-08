@@ -1,5 +1,13 @@
+import styles from "./page.module.css";
+
 import Link from "next/link";
-import { Input, Select } from "@oqood/design-system";
+import {
+  Input,
+  Select,
+  WorkspaceHeader,
+  FormSection,
+  FormActions,
+} from "@oqood/design-system";
 
 const boqItems = [
   {
@@ -29,26 +37,11 @@ const steps = [
 export default function BoqPage() {
   return (
     <main className="platformContent">
-      <section className="listPageHeader">
-        <div>
-          <span className="pageEyebrow">RFQ-2026-0016</span>
-          <h1>جدول الكميات</h1>
-          <p>أضف البنود والكميات والوحدات والمواصفات المطلوبة.</p>
-        </div>
-
-        <div className="commandHeaderActions">
-          <Link
-            className="secondaryButton compactButton"
-            href="/platform/opportunities/new"
-          >
-            رجوع
-          </Link>
-
-          <button className="primaryButton compactButton" type="button">
-            حفظ كمسودة
-          </button>
-        </div>
-      </section>
+      <WorkspaceHeader
+      eyebrow="RFQ-2026-0016"
+      title="جدول الكميات"
+      description="أضف البنود والكميات والوحدات والمواصفات المطلوبة."
+    />
 
       <section className="opportunityWizard">
         <aside className="wizardSteps">
@@ -72,13 +65,10 @@ export default function BoqPage() {
           ))}
         </aside>
 
-        <section className="wizardContent">
-          <div className="wizardSectionHeader">
-            <div>
-              <h2>بنود جدول الكميات</h2>
-              <p>يمكن إضافة البنود يدويًا أو رفع ملف Excel لاحقًا.</p>
-            </div>
-
+        <FormSection
+          title="بنود جدول الكميات"
+          description="يمكن إضافة البنود يدويًا أو رفع ملف Excel لاحقًا."
+          actions={
             <div className="boqHeaderActions">
               <button className="secondaryButton compactButton" type="button">
                 رفع Excel
@@ -88,10 +78,13 @@ export default function BoqPage() {
                 + إضافة بند
               </button>
             </div>
-          </div>
+          }
+        >
 
-          <div className="boqTableWrapper">
-            <table className="dataTable boqTable">
+
+
+          <div className={styles.boqTableWrapper}>
+            <table className={`dataTable ${styles.boqTable}`}>
               <thead>
                 <tr>
                   <th>#</th>
@@ -188,17 +181,17 @@ export default function BoqPage() {
             </div>
           </div>
 
-          <div className="wizardFooter">
-            <span>تم حفظ جدول الكميات تلقائيًا.</span>
-
+          <FormActions
+            status="تم حفظ جدول الكميات تلقائيًا."
+          >
             <Link
               className="primaryButton compactButton"
               href="/platform/opportunities/new/partners"
             >
               حفظ والانتقال إلى شركاء الأعمال
             </Link>
-          </div>
-        </section>
+          </FormActions>
+        </FormSection>
       </section>
     </main>
   );

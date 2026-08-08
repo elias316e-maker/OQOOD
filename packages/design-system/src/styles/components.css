@@ -1191,3 +1191,514 @@
 
 /* DS-UPDATE-001:END */
 
+
+/* =========================================================
+   Form Section
+   ========================================================= */
+
+.oqoodFormSection {
+  overflow: hidden;
+  border: 1px solid
+    var(
+      --oqood-border-subtle,
+      rgb(139 149 190 / 15%)
+    );
+  border-radius:
+    var(--oqood-radius-lg, 16px);
+  background:
+    var(
+      --oqood-surface-raised,
+      linear-gradient(
+        145deg,
+        rgb(18 28 52 / 96%),
+        rgb(9 14 28 / 98%)
+      )
+    );
+  color:
+    var(--oqood-text-primary, #f3f6ff);
+  box-shadow:
+    var(
+      --oqood-shadow-panel,
+      0 18px 42px rgb(0 0 0 / 22%)
+    );
+}
+
+.oqoodFormSection__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap:
+    var(--oqood-space-4, 1rem);
+  padding:
+    var(--oqood-space-4, 1rem);
+  border-bottom: 1px solid
+    var(
+      --oqood-border-subtle,
+      rgb(139 149 190 / 15%)
+    );
+  background:
+    var(
+      --oqood-surface-soft,
+      rgb(20 31 58 / 72%)
+    );
+}
+
+.oqoodFormSection__identity {
+  min-width: 0;
+}
+
+.oqoodFormSection__eyebrow {
+  display: block;
+  margin-bottom:
+    var(--oqood-space-1, 0.25rem);
+  color:
+    var(--oqood-accent-purple, #b9a8ff);
+  font-size:
+    var(--oqood-font-size-xs, 0.7rem);
+  font-weight: 900;
+}
+
+.oqoodFormSection__title {
+  margin: 0;
+  color:
+    var(--oqood-text-primary, #f3f6ff);
+  font-size:
+    var(--oqood-font-size-lg, 1rem);
+  line-height: 1.4;
+}
+
+.oqoodFormSection__description {
+  max-width: 760px;
+  margin:
+    var(--oqood-space-1, 0.25rem)
+    0
+    0;
+  color:
+    var(--oqood-text-muted, #8792ae);
+  font-size:
+    var(--oqood-font-size-sm, 0.75rem);
+  line-height: 1.75;
+}
+
+.oqoodFormSection__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap:
+    var(--oqood-space-2, 0.5rem);
+}
+
+.oqoodFormSection__content {
+  padding:
+    var(--oqood-space-4, 1rem);
+}
+
+/* =========================================================
+   Form Actions
+   ========================================================= */
+
+.oqoodFormActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap:
+    var(--oqood-space-4, 1rem);
+  padding:
+    var(--oqood-space-3, 0.75rem)
+    var(--oqood-space-4, 1rem);
+  border: 1px solid
+    var(
+      --oqood-border-subtle,
+      rgb(139 149 190 / 15%)
+    );
+  border-radius:
+    var(--oqood-radius-md, 12px);
+  background:
+    var(
+      --oqood-surface-overlay,
+      rgb(7 11 24 / 82%)
+    );
+  color:
+    var(--oqood-text-primary, #f3f6ff);
+}
+
+.oqoodFormActions--sticky {
+  position: sticky;
+  bottom:
+    var(--oqood-space-3, 0.75rem);
+  z-index: 20;
+  box-shadow:
+    0 -12px 30px rgb(0 0 0 / 20%);
+  backdrop-filter: blur(14px);
+}
+
+.oqoodFormActions__status {
+  min-width: 0;
+  color:
+    var(--oqood-text-muted, #8792ae);
+  font-size:
+    var(--oqood-font-size-sm, 0.75rem);
+}
+
+.oqoodFormActions__buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap:
+    var(--oqood-space-2, 0.5rem);
+}
+
+@media (max-width: 680px) {
+  .oqoodFormSection__header,
+  .oqoodFormActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .oqoodFormSection__actions,
+  .oqoodFormActions__buttons {
+    width: 100%;
+  }
+
+  .oqoodFormActions__buttons > * {
+    flex: 1;
+  }
+
+  .oqoodFormActions--sticky {
+    position: static;
+  }
+}
+
+/* =========================================================
+   Workspace Header
+   ========================================================= */
+
+.oqoodWorkspaceHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--oqood-space-5, 1.25rem);
+  padding: var(--oqood-space-4, 1rem);
+  border: 1px solid
+    var(
+      --oqood-border-subtle,
+      rgb(139 149 190 / 15%)
+    );
+  border-radius:
+    var(--oqood-radius-lg, 16px);
+  background:
+    var(
+      --oqood-surface-raised,
+      linear-gradient(
+        145deg,
+        rgb(18 28 52 / 96%),
+        rgb(9 14 28 / 98%)
+      )
+    );
+  color:
+    var(--oqood-text-primary, #f3f6ff);
+  box-shadow:
+    var(
+      --oqood-shadow-panel,
+      0 18px 42px rgb(0 0 0 / 22%)
+    );
+}
+
+.oqoodWorkspaceHeader__identity {
+  min-width: 0;
+}
+
+.oqoodWorkspaceHeader__eyebrowRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--oqood-space-2, 0.5rem);
+  margin-bottom:
+    var(--oqood-space-1, 0.25rem);
+}
+
+.oqoodWorkspaceHeader__eyebrow {
+  color:
+    var(--oqood-accent-purple, #b9a8ff);
+  font-size:
+    var(--oqood-font-size-xs, 0.7rem);
+  font-weight: 900;
+}
+
+.oqoodWorkspaceHeader__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.7rem;
+  padding-inline:
+    var(--oqood-space-2, 0.5rem);
+  border: 1px solid
+    rgb(91 140 255 / 22%);
+  border-radius: 999px;
+  background:
+    rgb(91 140 255 / 10%);
+  color: #aabaff;
+  font-size:
+    var(--oqood-font-size-xs, 0.7rem);
+  font-weight: 900;
+}
+
+.oqoodWorkspaceHeader__title {
+  margin: 0;
+  color:
+    var(--oqood-text-primary, #f3f6ff);
+  font-size:
+    clamp(1.3rem, 2vw, 1.85rem);
+  line-height: 1.35;
+}
+
+.oqoodWorkspaceHeader__description {
+  max-width: 760px;
+  margin:
+    var(--oqood-space-1, 0.25rem)
+    0
+    0;
+  color:
+    var(--oqood-text-muted, #8792ae);
+  font-size:
+    var(--oqood-font-size-sm, 0.75rem);
+  line-height: 1.75;
+}
+
+.oqoodWorkspaceHeader__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap:
+    var(--oqood-space-2, 0.5rem);
+}
+
+@media (max-width: 760px) {
+  .oqoodWorkspaceHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .oqoodWorkspaceHeader__actions {
+    width: 100%;
+  }
+
+  .oqoodWorkspaceHeader__actions > * {
+    flex: 1;
+  }
+}
+
+/* =========================================================
+   Empty State
+   ========================================================= */
+
+.oqoodEmptyState {
+  display: grid;
+  place-items: center;
+  gap: var(--oqood-space-3, 0.75rem);
+  min-height: 220px;
+  padding: var(--oqood-space-6, 1.5rem);
+  border: 1px solid
+    var(
+      --oqood-border-subtle,
+      rgb(139 149 190 / 15%)
+    );
+  border-radius:
+    var(--oqood-radius-lg, 16px);
+  background:
+    var(
+      --oqood-surface-raised,
+      linear-gradient(
+        145deg,
+        rgb(18 28 52 / 96%),
+        rgb(9 14 28 / 98%)
+      )
+    );
+  color:
+    var(--oqood-text-primary, #f3f6ff);
+  text-align: center;
+}
+
+.oqoodEmptyState__icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid rgb(91 140 255 / 22%);
+  border-radius: 14px;
+  background: rgb(91 140 255 / 10%);
+  color: #9fb4ff;
+  font-size: 1.25rem;
+}
+
+.oqoodEmptyState__content {
+  max-width: 560px;
+}
+
+.oqoodEmptyState__title {
+  margin: 0;
+  color:
+    var(--oqood-text-primary, #f3f6ff);
+  font-size:
+    var(--oqood-font-size-lg, 1rem);
+  line-height: 1.4;
+}
+
+.oqoodEmptyState__description {
+  margin:
+    var(--oqood-space-2, 0.5rem)
+    0
+    0;
+  color:
+    var(--oqood-text-muted, #8792ae);
+  font-size:
+    var(--oqood-font-size-sm, 0.75rem);
+  line-height: 1.75;
+}
+
+.oqoodEmptyState__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--oqood-space-2, 0.5rem);
+}
+
+.oqoodEmptyState--success .oqoodEmptyState__icon {
+  border-color: rgb(53 211 153 / 28%);
+  background: rgb(53 211 153 / 10%);
+  color: #72e5ba;
+}
+
+.oqoodEmptyState--warning .oqoodEmptyState__icon {
+  border-color: rgb(244 183 64 / 30%);
+  background: rgb(244 183 64 / 10%);
+  color: #ffd27a;
+}
+
+.oqoodEmptyState--danger .oqoodEmptyState__icon {
+  border-color: rgb(239 102 136 / 28%);
+  background: rgb(239 102 136 / 10%);
+  color: #ff9ab2;
+}
+
+/* =========================================================
+   Alert
+   ========================================================= */
+
+.oqoodAlert {
+  display: grid;
+  gap: var(--oqood-space-1, 0.25rem);
+  padding:
+    var(--oqood-space-3, 0.75rem)
+    var(--oqood-space-4, 1rem);
+  border: 1px solid
+    var(--oqood-border-subtle, rgb(139 149 190 / 15%));
+  border-radius:
+    var(--oqood-radius-md, 12px);
+  background:
+    var(--oqood-surface-soft, rgb(20 31 58 / 72%));
+  color:
+    var(--oqood-text-primary, #f3f6ff);
+}
+
+.oqoodAlert__title {
+  font-size:
+    var(--oqood-font-size-sm, 0.75rem);
+  font-weight: 900;
+}
+
+.oqoodAlert__content {
+  color:
+    var(--oqood-text-muted, #8792ae);
+  font-size:
+    var(--oqood-font-size-sm, 0.75rem);
+  line-height: 1.7;
+}
+
+.oqoodAlert--info {
+  border-color: rgb(91 140 255 / 26%);
+  background: rgb(91 140 255 / 9%);
+}
+
+.oqoodAlert--success {
+  border-color: rgb(53 211 153 / 28%);
+  background: rgb(53 211 153 / 10%);
+}
+
+.oqoodAlert--success .oqoodAlert__title,
+.oqoodAlert--success .oqoodAlert__content {
+  color: #72e5ba;
+}
+
+.oqoodAlert--warning {
+  border-color: rgb(244 183 64 / 30%);
+  background: rgb(244 183 64 / 10%);
+}
+
+.oqoodAlert--warning .oqoodAlert__title,
+.oqoodAlert--warning .oqoodAlert__content {
+  color: #ffd27a;
+}
+
+.oqoodAlert--danger {
+  border-color: rgb(239 102 136 / 28%);
+  background: rgb(239 102 136 / 10%);
+}
+
+.oqoodAlert--danger .oqoodAlert__title,
+.oqoodAlert--danger .oqoodAlert__content {
+  color: #ff9ab2;
+}
+
+/* =========================================================
+   Form Guidance
+   ========================================================= */
+
+.oqoodFormGuidance {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--oqood-space-3, 0.75rem);
+  padding:
+    var(--oqood-space-3, 0.75rem)
+    var(--oqood-space-4, 1rem);
+  border: 1px solid rgb(53 211 153 / 22%);
+  border-radius:
+    var(--oqood-radius-md, 12px);
+  background: rgb(53 211 153 / 9%);
+}
+
+.oqoodFormGuidance__icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 10px;
+  background: rgb(53 211 153 / 16%);
+  color: #72e5ba;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.oqoodFormGuidance__content {
+  min-width: 0;
+}
+
+.oqoodFormGuidance__title {
+  display: block;
+  color: #dff9ef;
+  font-size:
+    var(--oqood-font-size-sm, 0.75rem);
+  font-weight: 900;
+}
+
+.oqoodFormGuidance__description {
+  display: block;
+  margin-top:
+    var(--oqood-space-1, 0.25rem);
+  color:
+    var(--oqood-text-muted, #8792ae);
+  font-size:
+    var(--oqood-font-size-xs, 0.7rem);
+  line-height: 1.7;
+}

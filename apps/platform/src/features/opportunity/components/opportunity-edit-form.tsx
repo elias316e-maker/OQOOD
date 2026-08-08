@@ -21,6 +21,8 @@ import {
   Select,
   Textarea,
   WorkspaceHeader,
+  Alert,
+  FormGuidance,
 } from "@oqood/design-system";
 
 import {
@@ -281,32 +283,28 @@ export function OpportunityEditForm({
         />
 
         <section className={styles.panel}>
-          <div className={styles.formGuidance}>
-            <span aria-hidden="true">✎</span>
-            <div>
-              <strong>تعديل بيانات المنافسة</strong>
-              <small>راجع المواعيد ونطاق النشر قبل الحفظ؛ التغييرات لا تُنشر تلقائيًا للموردين.</small>
-            </div>
-          </div>
+          <FormGuidance
+          icon="✎"
+          title="تعديل بيانات المنافسة"
+          description="راجع المواعيد ونطاق النشر قبل الحفظ؛ التغييرات لا تُنشر تلقائيًا للموردين."
+        />
           {state.status === "error" && (
-            <div
-              className={`${styles.formAlert} ${styles.formAlertError}`}
-              role="alert"
-              aria-live="assertive"
-            >
-              {state.message}
-            </div>
-          )}
+          <Alert
+            tone="danger"
+            aria-live="assertive"
+          >
+            {state.message}
+          </Alert>
+        )}
 
           {state.status === "success" && (
-            <div
-              className={`${styles.formAlert} ${styles.formAlertSuccess}`}
-              role="status"
-              aria-live="polite"
-            >
-              {state.message}
-            </div>
-          )}
+          <Alert
+            tone="success"
+            aria-live="polite"
+          >
+            {state.message}
+          </Alert>
+        )}
 
           <div className={styles.formGrid}>
             <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>

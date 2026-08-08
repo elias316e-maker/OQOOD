@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { Input, Select, Textarea } from "@oqood/design-system";
+import {
+  Input,
+  Select,
+  Textarea,
+  WorkspaceHeader,
+  FormSection,
+  FormActions,
+} from "@oqood/design-system";
 
 const partners = [
   {
@@ -43,26 +50,11 @@ const steps = [
 export default function PartnersPage() {
   return (
     <main className="platformContent">
-      <section className="listPageHeader">
-        <div>
-          <span className="pageEyebrow">RFQ-2026-0016</span>
-          <h1>دعوة شركاء الأعمال</h1>
-          <p>اختر الشركات التي ستستقبل طلب عرض السعر.</p>
-        </div>
-
-        <div className="commandHeaderActions">
-          <Link
-            className="secondaryButton compactButton"
-            href="/platform/opportunities/new/boq"
-          >
-            رجوع
-          </Link>
-
-          <button className="primaryButton compactButton" type="button">
-            حفظ كمسودة
-          </button>
-        </div>
-      </section>
+      <WorkspaceHeader
+      eyebrow="RFQ-2026-0016"
+      title="دعوة شركاء الأعمال"
+      description="اختر الشركات التي ستستقبل طلب عرض السعر."
+    />
 
       <section className="opportunityWizard">
         <aside className="wizardSteps">
@@ -86,17 +78,16 @@ export default function PartnersPage() {
           ))}
         </aside>
 
-        <section className="wizardContent">
-          <div className="wizardSectionHeader">
-            <div>
-              <h2>شركاء الأعمال المؤهلون</h2>
-              <p>تم اقتراح الشركات بناءً على التصنيف والموقع.</p>
-            </div>
-
-            <span className="selectedPartnerBadge">تم اختيار 2</span>
-          </div>
-
-          <div className="partnerSearchToolbar">
+        <FormSection
+          title="شركاء الأعمال المؤهلون"
+          description="تم اقتراح الشركات بناءً على التصنيف والموقع."
+          actions={
+            <span className="selectedPartnerBadge">
+              تم اختيار 2
+            </span>
+          }
+        >
+<div className="partnerSearchToolbar">
             <Input
               type="search"
               placeholder="ابحث باسم الشركة أو النشاط..."
@@ -185,17 +176,17 @@ export default function PartnersPage() {
             </div>
           </div>
 
-          <div className="wizardFooter">
-            <span>ستتم دعوة شركتين عند نشر المنافسة.</span>
-
+          <FormActions
+            status="ستتم دعوة شركتين عند نشر المنافسة."
+          >
             <Link
               className="primaryButton compactButton"
               href="/platform/opportunities"
             >
               حفظ ومراجعة المنافسة
             </Link>
-          </div>
-        </section>
+          </FormActions>
+        </FormSection>
       </section>
     </main>
   );

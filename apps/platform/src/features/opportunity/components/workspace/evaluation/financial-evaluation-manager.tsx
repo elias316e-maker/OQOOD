@@ -14,6 +14,10 @@ import type {
   FinancialEvaluationResponse,
 } from "../../../dtos";
 
+import {
+  Alert,
+} from "@oqood/design-system";
+
 type FinancialEvaluationManagerProps = {
   evaluation: FinancialEvaluationResponse;
   canEvaluate: boolean;
@@ -121,7 +125,7 @@ export function FinancialEvaluationManager({
     <section className="opportunityWorkspaceCard offerEvaluationManager">
       <header className="offerEvaluationManager__header">
         <div>
-          <span className="pageEyebrow">
+          <span className="opportunitySectionEyebrow">
             التقييم المالي
           </span>
 
@@ -180,12 +184,13 @@ export function FinancialEvaluationManager({
       </div>
 
       {feedback && (
-        <div
-          className={
+        <Alert
+          tone={
             feedback.tone === "success"
-              ? "formAlert formAlertSuccess"
-              : "formAlert formAlertError"
+              ? "success"
+              : "danger"
           }
+
           role={
             feedback.tone === "success"
               ? "status"
@@ -193,7 +198,7 @@ export function FinancialEvaluationManager({
           }
         >
           {feedback.message}
-        </div>
+        </Alert>
       )}
 
       {evaluation.offers.length === 0 ? (
@@ -243,7 +248,7 @@ export function FinancialEvaluationManager({
                       </strong>
 
                       {offer.recommended && (
-                        <span className="pageEyebrow">
+                        <span className="opportunitySectionEyebrow">
                           موصى به
                         </span>
                       )}

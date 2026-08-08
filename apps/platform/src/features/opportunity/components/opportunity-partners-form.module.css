@@ -1,0 +1,170 @@
+.setupFlow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.setupFlow a,
+.setupFlow strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.setupFlow a {
+  border: 1px solid rgb(139 149 190 / 18%);
+  background: rgb(20 31 58 / 62%);
+  color: #9ba6c5;
+}
+
+.setupFlow a:hover {
+  border-color: rgb(91 140 255 / 34%);
+  color: #c8d4ff;
+}
+
+.setupFlow strong {
+  border: 1px solid rgb(91 140 255 / 35%);
+  background: rgb(91 140 255 / 12%);
+  color: #d8e1ff;
+}
+
+.setupFlow span {
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .setupFlow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Opportunity partners workspace scope */
+
+.setupRefresh {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.setupRefresh :global(.opportunitySetupPanel) {
+  min-width: 0;
+}
+
+.setupRefresh :global(.wizardSectionHeader) {
+  min-width: 0;
+}
+
+.setupRefresh :global(.partnerSelectionList) {
+  min-width: 0;
+}
+
+.setupRefresh :global(.partnerSelectionCard) {
+  min-width: 0;
+}
+
+.setupRefresh :global(.partnerSelectionCard.selected) {
+  position: relative;
+}
+
+.setupRefresh :global(.partnerAvatar) {
+  flex: 0 0 auto;
+}
+
+.setupRefresh :global(.invitationSettings) {
+  min-width: 0;
+}
+
+.setupRefresh :global(.invitationSettings__intro) {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .setupRefresh {
+    width: 100%;
+  }
+}
+
+/* Opportunity Partners — migrated setup refresh styles */
+
+.setupRefresh {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.setupRefresh :global(.opportunitySetupPanel) {
+  min-width: 0;
+}
+
+.setupRefresh :global(.wizardSectionHeader) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.setupRefresh :global(.partnerSelectionList) {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.setupRefresh :global(.partnerSelectionCard) {
+  min-width: 0;
+}
+
+.setupRefresh :global(.partnerSelectionCard.selected) {
+  position: relative;
+}
+
+.setupRefresh :global(.partnerAvatar) {
+  flex: 0 0 auto;
+}
+
+.setupRefresh :global(.invitationSettings) {
+  min-width: 0;
+}
+
+.setupRefresh :global(.invitationSettings__intro) {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.setupRefresh :global(textarea) {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .setupRefresh {
+    width: 100%;
+  }
+
+  .setupRefresh :global(.wizardSectionHeader) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* Opportunity Partners — setup panel */
+
+.setupPanel {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  overflow: visible;
+  border: 1px solid var(--competition-border);
+  border-radius: var(--competition-radius-lg);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(19, 24, 46, 0.95),
+      rgba(9, 13, 28, 0.97)
+    );
+  box-shadow: var(--competition-shadow);
+}

@@ -28,7 +28,7 @@ export function WorkspaceSectionHeader({
     >
       <div>
         {eyebrow && (
-          <span className="pageEyebrow">
+          <span className="opportunityWorkspaceSectionEyebrow">
             {eyebrow}
           </span>
         )}

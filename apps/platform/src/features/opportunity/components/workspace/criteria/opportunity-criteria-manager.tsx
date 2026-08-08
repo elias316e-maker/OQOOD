@@ -30,6 +30,10 @@ import type {
   OpportunityCriterionResponse,
 } from "../../../dtos";
 
+import {
+  Alert,
+} from "@oqood/design-system";
+
 type OpportunityCriteriaManagerProps = {
   opportunityId: string;
   criteria: OpportunityCriterionResponse[];
@@ -249,7 +253,7 @@ export function OpportunityCriteriaManager({
     <section className="opportunityWorkspaceCard opportunityCriteriaManager">
       <header className="opportunityCriteriaManager__header">
         <div>
-          <span className="pageEyebrow">
+          <span className="opportunitySectionEyebrow">
             مصفوفة التقييم
           </span>
 
@@ -290,21 +294,21 @@ export function OpportunityCriteriaManager({
       </div>
 
       {message && (
-        <div
-          className="formAlert formAlertSuccess"
+        <Alert
+           tone="success"
           role="status"
         >
           {message}
-        </div>
+        </Alert>
       )}
 
       {error && (
-        <div
-          className="formAlert formAlertError"
+        <Alert
+           tone="danger"
           role="alert"
         >
           {error}
-        </div>
+        </Alert>
       )}
 
       {formOpen && canManage && (
@@ -314,7 +318,7 @@ export function OpportunityCriteriaManager({
         >
           <header>
             <div>
-              <span className="pageEyebrow">
+              <span className="opportunitySectionEyebrow">
                 {editingId
                   ? "تعديل المعيار"
                   : "معيار جديد"}

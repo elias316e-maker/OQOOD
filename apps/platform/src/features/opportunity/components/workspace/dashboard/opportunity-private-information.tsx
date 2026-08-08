@@ -20,7 +20,7 @@ export function OpportunityPrivateInformation({
     <article className="opportunityWorkspaceCard opportunityPrivateInformation">
       <header className="workspaceSectionHeader">
         <div>
-          <span className="pageEyebrow">
+          <span className="opportunityDashboardCardEyebrow">
             معلومات خاصة
           </span>
 

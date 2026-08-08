@@ -21,6 +21,10 @@ import type {
   OpportunityResponse,
 } from "../dtos";
 
+import {
+  Alert,
+} from "@oqood/design-system";
+
 type OpportunityLifecycleActionsProps = {
   opportunity: Pick<
     OpportunityResponse,
@@ -238,7 +242,7 @@ export function OpportunityLifecycleActions({
           aria-describedby="archive-confirmation-description"
         >
           <div>
-            <span className="pageEyebrow">
+            <span className="opportunitySectionEyebrow">
               تأكيد الأرشفة
             </span>
 
@@ -285,12 +289,13 @@ export function OpportunityLifecycleActions({
       )}
 
       {feedback && (
-        <div
-          className={
+        <Alert
+          tone={
             feedback.type === "success"
-              ? "formAlert formAlertSuccess"
-              : "formAlert formAlertError"
+              ? "success"
+              : "danger"
           }
+
           role={
             feedback.type === "error"
               ? "alert"
@@ -303,7 +308,7 @@ export function OpportunityLifecycleActions({
           }
         >
           {feedback.message}
-        </div>
+        </Alert>
       )}
     </div>
   );

@@ -17,6 +17,10 @@ import {
   requireCurrentWorkspace,
 } from "@/lib/workspace-context";
 
+import {
+  Alert,
+} from "@oqood/design-system";
+
 type OpportunityEvaluationPageProps = {
   params: Promise<{
     opportunityId: string;
@@ -68,12 +72,12 @@ export default async function OpportunityEvaluationPage({
         />
       ) : (
         <section className="opportunityWorkspaceCard">
-          <div
-            className="formAlert formAlertError"
+          <Alert
+             tone="danger"
             role="alert"
           >
             {financialResult.message}
-          </div>
+          </Alert>
         </section>
       )}
     </>

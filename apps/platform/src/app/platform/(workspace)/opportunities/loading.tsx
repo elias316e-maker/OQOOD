@@ -1,3 +1,7 @@
+import {
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
 export default function OpportunitiesLoading() {
   return (
     <main
@@ -5,19 +9,11 @@ export default function OpportunitiesLoading() {
       aria-busy="true"
       aria-live="polite"
     >
-      <section className="listPageHeader">
-        <div>
-          <span className="pageEyebrow">
-            إدارة الفرص
-          </span>
-
-          <h1>جارٍ تحميل الفرص...</h1>
-
-          <p>
-            يتم الآن تجهيز بيانات مساحة العمل.
-          </p>
-        </div>
-      </section>
+      <WorkspaceHeader
+      eyebrow="إدارة الفرص"
+      title="جارٍ تحميل الفرص..."
+      description="يتم الآن تجهيز بيانات مساحة العمل."
+    />
 
       <section
         className="listSummaryCards"

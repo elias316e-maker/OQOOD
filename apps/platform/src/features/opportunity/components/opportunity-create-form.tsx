@@ -5,22 +5,24 @@ import styles from "./opportunity-create-form.module.css";
 import {
   useActionState,
   useEffect,
-} from "react";
+  } from "react";
 
 import {
   useFormStatus,
-} from "react-dom";
+  } from "react-dom";
 
 import Link from "next/link";
 import {
   useRouter,
-} from "next/navigation";
+  } from "next/navigation";
 
 import {
   Input,
   Select,
   Textarea,
   WorkspaceHeader,
+  Alert,
+  FormGuidance,
 } from "@oqood/design-system";
 
 import {
@@ -289,33 +291,29 @@ export function OpportunityCreateForm({
               </span>
             </div>
 
-            <div className={styles.formGuidance}>
-              <span aria-hidden="true">✓</span>
-              <div>
-                <strong>ابدأ بالبيانات الأساسية</strong>
-                <small>بعد حفظ المسودة ستتمكن من إضافة جدول الكميات والموردين ثم مراجعة المنافسة ونشرها.</small>
-              </div>
-            </div>
+            <FormGuidance
+          icon="✓"
+          title="ابدأ بالبيانات الأساسية"
+          description="بعد حفظ المسودة ستتمكن من إضافة جدول الكميات والموردين ثم مراجعة المنافسة ونشرها."
+        />
 
             {state.status === "error" && (
-              <div
-                className={`${styles.formAlert} ${styles.formAlertError}`}
-                role="alert"
-                aria-live="assertive"
-              >
-                {state.message}
-              </div>
-            )}
+          <Alert
+            tone="danger"
+            aria-live="assertive"
+          >
+            {state.message}
+          </Alert>
+        )}
 
             {state.status === "success" && (
-              <div
-                className={`${styles.formAlert} ${styles.formAlertSuccess}`}
-                role="status"
-                aria-live="polite"
-              >
-                {state.message}
-              </div>
-            )}
+          <Alert
+            tone="success"
+            aria-live="polite"
+          >
+            {state.message}
+          </Alert>
+        )}
 
             <div className={styles.formGrid}>
               <div className={`${styles.sectionTitle} ${styles.fullWidth}`}>

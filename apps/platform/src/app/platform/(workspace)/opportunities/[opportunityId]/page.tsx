@@ -256,7 +256,7 @@ export default async function OpportunityOverviewPage({
           <article className="opportunityOverviewPanel">
             <header className="opportunityOverviewPanel__header">
               <div>
-                <span className="pageEyebrow">
+                <span className="opportunityOverviewPanel__eyebrow">
                   دورة حياة المنافسة
                 </span>
                 <h2>مسار المنافسة</h2>
@@ -302,7 +302,7 @@ export default async function OpportunityOverviewPage({
           <article className="opportunityOverviewPanel">
             <header className="opportunityOverviewPanel__header">
               <div>
-                <span className="pageEyebrow">
+                <span className="opportunityOverviewPanel__eyebrow">
                   معلومات خاصة
                 </span>
                 <h2>تفاصيل المنافسة</h2>
@@ -386,7 +386,7 @@ export default async function OpportunityOverviewPage({
           <article className="opportunityOverviewPanel">
             <header className="opportunityOverviewPanel__header">
               <div>
-                <span className="pageEyebrow">
+                <span className="opportunityOverviewPanel__eyebrow">
                   نطاق المنافسة
                 </span>
                 <h2>الوصف والمتطلبات</h2>
@@ -427,7 +427,7 @@ export default async function OpportunityOverviewPage({
           <article className="opportunityOverviewPanel">
             <header className="opportunityOverviewPanel__header">
               <div>
-                <span className="pageEyebrow">
+                <span className="opportunityOverviewPanel__eyebrow">
                   معلومات داخلية
                 </span>
                 <h2>معايير القبول</h2>
@@ -493,7 +493,7 @@ export default async function OpportunityOverviewPage({
           <article className="opportunityOverviewPanel opportunityHealthCard">
             <header className="opportunityOverviewPanel__header">
               <div>
-                <span className="pageEyebrow">
+                <span className="opportunityOverviewPanel__eyebrow">
                   Competition Health
                 </span>
                 <h2>جاهزية المنافسة</h2>
@@ -540,7 +540,7 @@ export default async function OpportunityOverviewPage({
           <article className="opportunityOverviewPanel">
             <header className="opportunityOverviewPanel__header">
               <div>
-                <span className="pageEyebrow">
+                <span className="opportunityOverviewPanel__eyebrow">
                   المعلومات المالية
                 </span>
                 <h2>القيمة والميزانية</h2>
@@ -573,7 +573,7 @@ export default async function OpportunityOverviewPage({
           <article className="opportunityOverviewPanel">
             <header className="opportunityOverviewPanel__header">
               <div>
-                <span className="pageEyebrow">
+                <span className="opportunityOverviewPanel__eyebrow">
                   الوصول السريع
                 </span>
                 <h2>إجراءات المنافسة</h2>
@@ -638,7 +638,7 @@ export default async function OpportunityOverviewPage({
           <article className="opportunityOverviewPanel">
             <header className="opportunityOverviewPanel__header">
               <div>
-                <span className="pageEyebrow">
+                <span className="opportunityOverviewPanel__eyebrow">
                   النشاط الأخير
                 </span>
                 <h2>سجل المنافسة</h2>

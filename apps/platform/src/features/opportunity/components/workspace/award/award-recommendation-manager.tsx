@@ -6,6 +6,10 @@ import {
   awardOpportunityAction,
 } from "../../../actions";
 
+import {
+  Alert,
+} from "@oqood/design-system";
+
 type AwardRecommendationManagerProps = {
   opportunityId: string;
   offerId: string;
@@ -59,12 +63,12 @@ export function AwardRecommendationManager({
   return (
     <div className="opportunityAwardRecommendation">
       {message && (
-        <div
-          className="formAlert"
+        <Alert
+           tone="info"
           role="status"
         >
           {message}
-        </div>
+        </Alert>
       )}
 
       <button

@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+import {
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
+
 import { OpportunityDirectory } from "@/features/opportunity/components";
 import { listWorkspaceOpportunitiesAction } from "@/features/opportunity/actions/list-workspace-opportunities";
 import type { OpportunitySummaryResponse } from "@/features/opportunity/dtos";
@@ -58,22 +63,22 @@ export default async function OpportunitiesPage() {
 
   return (
     <main className="platformContent opportunityDirectoryRefresh approvedOpportunityDirectory">
-      <section className="opportunityDirectoryHeader approvedOpportunityHeader">
-        <div className="approvedOpportunityTitle">
-          <span className="approvedOpportunityTitleIcon" aria-hidden="true">♜</span>
-          <div>
-            <span className="pageEyebrow">إدارة المنافسات</span>
-            <h1>المنافسات</h1>
-            <p>استعرض وشارك في جميع المنافسات والفرص المتاحة من مكان واحد.</p>
-          </div>
-        </div>
-
-        {canCreate && (
-          <Link className="primaryButton compactButton" href="/platform/opportunities/new">
-            ＋ إنشاء منافسة جديدة
-          </Link>
-        )}
-      </section>
+      <WorkspaceHeader
+        className="opportunityDirectoryHeader approvedOpportunityHeader"
+        eyebrow="إدارة المنافسات"
+        title="المنافسات"
+        description="استعرض وشارك في جميع المنافسات والفرص المتاحة من مكان واحد."
+        actions={
+          canCreate ? (
+            <Link
+              className="primaryButton compactButton"
+              href="/platform/opportunities/new"
+            >
+              ＋ إنشاء منافسة جديدة
+            </Link>
+          ) : null
+        }
+      />
 
       <section className="listSummaryCards approvedOpportunityKpis" aria-label="ملخص المنافسات">
         <article><span className="approvedKpiIcon purple">◇</span><div><span>إجمالي المنافسات</span><strong>{total}</strong><small>جميع المنافسات</small></div></article>

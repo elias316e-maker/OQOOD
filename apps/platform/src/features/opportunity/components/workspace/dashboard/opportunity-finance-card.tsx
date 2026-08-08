@@ -16,7 +16,7 @@ export function OpportunityFinanceCard({
     <article className="opportunityWorkspaceCard opportunityFinanceCard">
       <header className="workspaceSectionHeader">
         <div>
-          <span className="pageEyebrow">
+          <span className="opportunityDashboardCardEyebrow">
             المعلومات المالية
           </span>
 
