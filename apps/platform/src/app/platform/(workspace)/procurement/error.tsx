@@ -6,6 +6,10 @@ import {
 
 import Link from "next/link";
 
+import {
+  EmptyState,
+} from "@oqood/design-system";
+
 import styles from "./page.module.css";
 
 type ProcurementErrorProps = {
@@ -32,39 +36,33 @@ export default function ProcurementError({
 
   return (
     <main className={styles.page}>
-      <section
+      <EmptyState
         className={styles.panel}
+        tone="danger"
+        icon="!"
+        title="تعذر عرض طلبات المشتريات"
+        description="حدث خطأ غير متوقع أثناء تحميل الصفحة. يمكنك إعادة المحاولة دون فقد البيانات المحفوظة."
         role="alert"
-      >
-        <div className={styles.error}>
-          <div>
-            <span className={styles.eyebrow}>
-              خطأ في النظام
-            </span>
-            <h1>تعذر عرض طلبات المشتريات</h1>
-            <p>
-              حدث خطأ غير متوقع أثناء تحميل الصفحة. يمكنك
-              إعادة المحاولة دون فقد البيانات المحفوظة.
-            </p>
-            <div className={styles.filterActions}>
-              <button
-                className={styles.filterButton}
-                onClick={reset}
-                type="button"
-              >
-                إعادة المحاولة
-              </button>
-              <Link
-                className={styles.resetButton}
-                href="/platform"
-              >
-                العودة للرئيسية
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+        aria-live="assertive"
+        actions={
+          <>
+            <button
+              className={styles.filterButton}
+              onClick={reset}
+              type="button"
+            >
+              إعادة المحاولة
+            </button>
+
+            <Link
+              className={styles.resetButton}
+              href="/platform"
+            >
+              العودة للرئيسية
+            </Link>
+          </>
+        }
+      />
     </main>
   );
 }
-

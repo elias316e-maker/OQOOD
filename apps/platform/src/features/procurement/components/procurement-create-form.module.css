@@ -23,12 +23,6 @@
   padding: 1rem 1.15rem;
 }
 
-.eyebrow {
-  color: #2c6ca2;
-  font-size: 0.7rem;
-  font-weight: 800;
-}
-
 .header h1,
 .section h2 {
   margin: 0.2rem 0 0;
@@ -39,14 +33,12 @@
   font-size: clamp(1.35rem, 2vw, 1.85rem);
 }
 
-.header p,
-.sectionHeader p {
+.header p {
   margin: 0.25rem 0 0;
   color: #697990;
   font-size: 0.78rem;
 }
 
-.headerActions,
 .sectionActions {
   display: flex;
   gap: 0.5rem;
@@ -94,16 +86,6 @@
 
 .section {
   overflow: hidden;
-}
-
-.sectionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.8rem 1rem;
-  border-block-end: 1px solid #e5ebf2;
-  background: #f8fafc;
 }
 
 .section h2 {
@@ -170,16 +152,6 @@
 .fieldError {
   color: #a83b3b;
   font-size: 0.66rem;
-}
-
-.alert {
-  margin: 0.8rem 1rem 0;
-  padding: 0.7rem 0.85rem;
-  border: 1px solid #edc2c2;
-  border-radius: 9px;
-  background: #fff4f4;
-  color: #8f3030;
-  font-size: 0.75rem;
 }
 
 .tableViewport {
@@ -276,15 +248,9 @@
   }
 
   .header,
-  .sectionHeader,
   .totals {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .headerActions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
   }
 
   .fields {
@@ -296,4 +262,4 @@
     grid-column: auto;
   }
 }
-.page{color:#dce7f2}.header,.section,.totals{border-color:rgb(148 163 184 / 13%);border-radius:9px;background:linear-gradient(145deg,#162b46,#102139);box-shadow:0 8px 22px rgb(4 12 25 / 13%)}.header{padding:.7rem .85rem}.header h1,.section h2{color:#eef5fa}.header p,.sectionHeader p{color:#8fa2b8}.primaryButton{border-color:#118766;background:#118766}.secondaryButton{border-color:rgb(148 163 184 / 18%);background:#172b46;color:#aebdcc}.dangerButton{border-color:rgb(244 63 94 / 22%);background:rgb(244 63 94 / 10%);color:#f59aaa}.sectionHeader{padding:.55rem .7rem;border-color:rgb(148 163 184 / 9%);background:rgb(25 48 77 / 55%)}.fields{gap:.55rem;padding:.7rem}.field label{color:#9aacc0}.field input,.field select,.field textarea,.itemTable input,.itemTable select{border-color:rgb(148 163 184 / 17%);background:#10233b;color:#dce7f2}.alert{border-color:rgb(244 63 94 / 24%);background:rgb(244 63 94 / 10%);color:#f59aaa}.itemTable th{border-color:rgb(148 163 184 / 9%);background:#1a304d;color:#9fb1c5}.itemTable td{border-color:rgb(148 163 184 / 8%)}.lineNumber,.totalCell{color:#7dd3b0}.tableHint,.totals span,.totals small,.attachmentPlaceholder{color:#8799ae}.totals strong{color:#7dd3b0}
+.page{color:#dce7f2}.header,.section,.totals{border-color:rgb(148 163 184 / 13%);border-radius:9px;background:linear-gradient(145deg,#162b46,#102139);box-shadow:0 8px 22px rgb(4 12 25 / 13%)}.header{padding:.7rem .85rem}.header h1,.section h2{color:#eef5fa}.header p{color:#8fa2b8}.primaryButton{border-color:#118766;background:#118766}.secondaryButton{border-color:rgb(148 163 184 / 18%);background:#172b46;color:#aebdcc}.dangerButton{border-color:rgb(244 63 94 / 22%);background:rgb(244 63 94 / 10%);color:#f59aaa}.fields{gap:.55rem;padding:.7rem}.field label{color:#9aacc0}.field input,.field select,.field textarea,.itemTable input,.itemTable select{border-color:rgb(148 163 184 / 17%);background:#10233b;color:#dce7f2}.itemTable th{border-color:rgb(148 163 184 / 9%);background:#1a304d;color:#9fb1c5}.itemTable td{border-color:rgb(148 163 184 / 8%)}.lineNumber,.totalCell{color:#7dd3b0}.tableHint,.totals span,.totals small,.attachmentPlaceholder{color:#8799ae}.totals strong{color:#7dd3b0}

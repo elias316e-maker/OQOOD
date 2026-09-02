@@ -14,6 +14,10 @@ import {
 } from "@/lib/workspace-context";
 import { prisma } from "@/lib/prisma";
 
+import {
+  EmptyState,
+} from "@oqood/design-system";
+
 function createDraftNumber(): string {
   const date = new Date();
   const datePart = [
@@ -42,19 +46,22 @@ export default async function NewProcurementRequestPage() {
     return (
       <main className="platformContent">
         <section className="dashboardPanel">
-          <div className="emptyState" role="alert">
-            <h1>ليس لديك صلاحية إنشاء طلب مشتريات</h1>
-            <p>
-              تواصل مع مسؤول مساحة العمل للحصول على الصلاحية
-              المطلوبة.
-            </p>
-            <Link
-              className="primaryButton compactButton"
-              href="/platform/procurement"
-            >
-              العودة إلى طلبات المشتريات
-            </Link>
-          </div>
+                    <EmptyState
+            tone="warning"
+            icon="!"
+            title="ليس لديك صلاحية إنشاء طلب مشتريات"
+            description="تواصل مع مسؤول مساحة العمل للحصول على الصلاحية المطلوبة."
+            role="alert"
+            aria-live="polite"
+            actions={
+                <Link
+                              className="primaryButton compactButton"
+                              href="/platform/procurement"
+                            >
+                              العودة إلى طلبات المشتريات
+                            </Link>
+            }
+          />
         </section>
       </main>
     );

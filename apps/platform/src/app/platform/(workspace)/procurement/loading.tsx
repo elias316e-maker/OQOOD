@@ -1,3 +1,7 @@
+import {
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
 import styles from "./page.module.css";
 
 export default function ProcurementLoading() {
@@ -7,15 +11,12 @@ export default function ProcurementLoading() {
       aria-live="polite"
       className={styles.page}
     >
-      <header className={styles.header}>
-        <div>
-          <span className={styles.eyebrow}>
-            دورة الشراء الداخلية
-          </span>
-          <h1>جاري تحميل طلبات المشتريات...</h1>
-          <p>يتم تجهيز بيانات مساحة العمل الحالية.</p>
-        </div>
-      </header>
+      <WorkspaceHeader
+        className={styles.header}
+        eyebrow="دورة الشراء الداخلية"
+        title="جاري تحميل طلبات المشتريات..."
+        description="يتم تجهيز بيانات مساحة العمل الحالية."
+      />
 
       <section
         aria-hidden="true"
@@ -44,13 +45,16 @@ export default function ProcurementLoading() {
             ),
           )}
         </div>
+
         <div style={{ padding: "1rem" }}>
           {Array.from({ length: 7 }).map(
             (_, index) => (
               <div
                 className={styles.skeleton}
                 key={index}
-                style={{ marginBlockEnd: "0.6rem" }}
+                style={{
+                  marginBlockEnd: "0.6rem",
+                }}
               />
             ),
           )}
@@ -59,4 +63,3 @@ export default function ProcurementLoading() {
     </main>
   );
 }
-

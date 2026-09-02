@@ -1,6 +1,10 @@
 import Link from "next/link";
 
 import {
+  EmptyState,
+} from "@oqood/design-system";
+
+import {
   getProcurementRequestAction,
 } from "@/features/procurement/actions";
 import {
@@ -33,13 +37,19 @@ export default async function EditProcurementRequestPage({
     return (
       <main className="platformContent">
         <section className="dashboardPanel">
-          <div className="emptyState" role="alert">
-            <h1>تعذر تحميل طلب المشتريات</h1>
-            <p>{result.message}</p>
-            <Link href="/platform/procurement">
-              العودة إلى قائمة الطلبات
-            </Link>
-          </div>
+                    <EmptyState
+            tone="danger"
+            icon="!"
+            title="تعذر تحميل طلب المشتريات"
+            description={result.message}
+            role="alert"
+            aria-live="assertive"
+            actions={
+              <Link href="/platform/procurement">
+                            العودة إلى قائمة الطلبات
+                          </Link>
+            }
+          />
         </section>
       </main>
     );
@@ -57,18 +67,21 @@ export default async function EditProcurementRequestPage({
     return (
       <main className="platformContent">
         <section className="dashboardPanel">
-          <div className="emptyState" role="alert">
-            <h1>لا يمكن تعديل هذا الطلب</h1>
-            <p>
-              التعديل متاح للمسودات والطلبات المعادة للتعديل فقط،
-              ويتطلب صلاحية تحديث المشتريات.
-            </p>
-            <Link
-              href={`/platform/procurement/${result.data.id}`}
-            >
-              العودة إلى تفاصيل الطلب
-            </Link>
-          </div>
+                    <EmptyState
+            tone="warning"
+            icon="⌁"
+            title="لا يمكن تعديل هذا الطلب"
+            description="التعديل متاح للمسودات والطلبات المعادة للتعديل فقط، ويتطلب صلاحية تحديث المشتريات."
+            role="alert"
+            aria-live="polite"
+            actions={
+              <Link
+                            href={`/platform/procurement/${result.data.id}`}
+                          >
+                            العودة إلى تفاصيل الطلب
+                          </Link>
+            }
+          />
         </section>
       </main>
     );

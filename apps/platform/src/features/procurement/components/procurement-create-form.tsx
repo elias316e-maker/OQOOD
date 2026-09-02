@@ -1,14 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import {
+  useRouter } from "next/navigation";
 import {
   useActionState,
   useEffect,
   useMemo,
   useState,
-} from "react";
+  } from "react";
 import { useFormStatus } from "react-dom";
+
+import {
+  Alert,
+  FormGuidance,
+  WorkspaceHeader,
+  FormActions,
+  FormSection,
+} from "@oqood/design-system";
 
 import {
   createProcurementRequestAction,
@@ -299,27 +308,24 @@ export function ProcurementCreateForm({
 
   return (
     <form action={formAction} className={styles.page}>
-      <header className={styles.header}>
-        <div>
-          <span className={styles.eyebrow}>
-            دورة الشراء الداخلية
-          </span>
-          <h1>إنشاء طلب مشتريات</h1>
-          <p>
-            مسودة رقم {draftNumber} — أضف الاحتياج والبنود
-            قبل إرسالها للمراجعة.
-          </p>
-        </div>
-        <div className={styles.headerActions}>
-          <Link
-            className={styles.secondaryButton}
-            href="/platform/procurement"
-          >
-            إلغاء
-          </Link>
-          <SubmitButton />
-        </div>
-      </header>
+      <WorkspaceHeader
+        className={styles.header}
+        eyebrow="دورة الشراء الداخلية"
+        title="إنشاء طلب مشتريات"
+        description={`مسودة رقم ${draftNumber} — أضف الاحتياج والبنود قبل إرسالها للمراجعة.`}
+        actions={
+          <>
+            <Link
+              className={styles.secondaryButton}
+              href="/platform/procurement"
+            >
+              إلغاء
+            </Link>
+
+            <SubmitButton />
+          </>
+        }
+      />
 
       <input name="number" type="hidden" value={draftNumber} />
       <input
@@ -329,23 +335,27 @@ export function ProcurementCreateForm({
       />
       <input name="items" type="hidden" value={serializedItems} />
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <div>
-            <h2>المعلومات الأساسية</h2>
-            <p>بيانات الطلب العامة وموعد الاحتياج.</p>
-          </div>
-          <strong>مسودة</strong>
-        </div>
+      <FormGuidance
+        icon="✦"
+        title="أكمل بيانات الطلب والبنود"
+        description="راجع موعد الاحتياج والكميات والأسعار التقديرية قبل حفظ الطلب أو إرساله للمراجعة."
+      />
 
+            <FormSection
+        className={styles.section}
+        title="المعلومات الأساسية"
+        description="بيانات الطلب العامة وموعد الاحتياج."
+        actions={
+          <strong>مسودة</strong>
+        }
+      >
         {state.status === "error" ? (
-          <div
+          <Alert
+            tone="danger"
             aria-live="assertive"
-            className={styles.alert}
-            role="alert"
           >
             {state.message}
-          </div>
+          </Alert>
         ) : null}
 
         <div className={styles.fields}>
@@ -446,28 +456,25 @@ export function ProcurementCreateForm({
             />
           </div>
         </div>
-      </section>
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <div>
-            <h2>بنود الطلب</h2>
-            <p>
-              أضف المواد أو الخدمات مع الكميات والأسعار
-              التقديرية.
-            </p>
-          </div>
+      </FormSection>
+
+            <FormSection
+        className={styles.section}
+        title="بنود الطلب"
+        description="أضف المواد أو الخدمات مع الكميات والأسعار التقديرية."
+        actions={
           <div className={styles.sectionActions}>
-            <button
-              className={styles.secondaryButton}
-              onClick={addItem}
-              type="button"
-            >
-              ＋ إضافة بند
-            </button>
-          </div>
-        </div>
-
+                      <button
+                        className={styles.secondaryButton}
+                        onClick={addItem}
+                        type="button"
+                      >
+                        ＋ إضافة بند
+                      </button>
+                    </div>
+        }
+      >
         <div className={styles.tableViewport}>
           <table className={styles.itemTable}>
             <thead>
@@ -630,37 +637,39 @@ export function ProcurementCreateForm({
           يجب أن يحتوي الطلب على بند واحد على الأقل قبل
           إرساله للمراجعة.
         </div>
-      </section>
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <div>
-            <h2>المرفقات</h2>
-            <p>المواصفات الفنية والمخططات وعروض الأسعار.</p>
-          </div>
-        </div>
+      </FormSection>
+
+            <FormSection
+        className={styles.section}
+        title="المرفقات"
+        description="المواصفات الفنية والمخططات وعروض الأسعار."
+      >
         <div className={styles.attachmentPlaceholder}>
           يمكن إضافة المرفقات بعد حفظ المسودة من صفحة تفاصيل
           الطلب، فور تفعيل مستودع مستندات المشتريات.
         </div>
-      </section>
 
-      <footer className={styles.totals}>
-        <div>
-          <span>الإجمالي التقديري</span>
-          <strong>{formatMoney(total)}</strong>
-          <small>{items.length} بند</small>
-        </div>
-        <div className={styles.headerActions}>
-          <Link
-            className={styles.secondaryButton}
-            href="/platform/procurement"
-          >
-            إلغاء
-          </Link>
-          <SubmitButton />
-        </div>
-      </footer>
+      </FormSection>
+
+            <FormActions
+        className={styles.totals}
+        status={
+          <div>
+                    <span>الإجمالي التقديري</span>
+                    <strong>{formatMoney(total)}</strong>
+                    <small>{items.length} بند</small>
+                  </div>
+        }
+      >
+        <Link
+                    className={styles.secondaryButton}
+                    href="/platform/procurement"
+                  >
+                    إلغاء
+                  </Link>
+                  <SubmitButton />
+      </FormActions>
     </form>
   );
 }

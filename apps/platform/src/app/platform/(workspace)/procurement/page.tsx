@@ -1,6 +1,13 @@
 import Link from "next/link";
 
 import {
+  Alert,
+  EmptyState,
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
+
+import {
   listProcurementRequestsAction,
 } from "@/features/procurement/actions";
 
@@ -202,20 +209,20 @@ export default async function ProcurementPage({
   if (!result.success) {
     return (
       <main className={styles.page}>
-        <section className={styles.panel} role="alert">
-          <div className={styles.error}>
-            <div>
-              <h1>تعذر تحميل طلبات المشتريات</h1>
-              <p>{result.message}</p>
-              <Link
-                className={styles.resetButton}
-                href="/platform/procurement"
-              >
-                إعادة المحاولة
-              </Link>
-            </div>
+        <Alert
+          tone="danger"
+          title="تعذر تحميل طلبات المشتريات"
+        >
+          <div>
+            <p>{result.message}</p>
+            <Link
+              className={styles.resetButton}
+              href="/platform/procurement"
+            >
+              إعادة المحاولة
+            </Link>
           </div>
-        </section>
+        </Alert>
       </main>
     );
   }
@@ -240,27 +247,22 @@ export default async function ProcurementPage({
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <div>
-          <span className={styles.eyebrow}>
-            دورة الشراء الداخلية
-          </span>
-          <h1>طلبات المشتريات</h1>
-          <p>
-            متابعة الاحتياجات والبنود والمراجعات والاعتمادات
-            داخل مساحة العمل الحالية.
-          </p>
-        </div>
-
-        {canCreate && (
-          <Link
-            className={styles.createButton}
-            href="/platform/procurement/new"
-          >
-            ＋ طلب مشتريات جديد
-          </Link>
-        )}
-      </header>
+      <WorkspaceHeader
+        className={styles.header}
+        eyebrow="دورة الشراء الداخلية"
+        title="طلبات المشتريات"
+        description="متابعة الاحتياجات والبنود والمراجعات والاعتمادات داخل مساحة العمل الحالية."
+        actions={
+          canCreate ? (
+            <Link
+              className={styles.createButton}
+              href="/platform/procurement/new"
+            >
+              ＋ طلب مشتريات جديد
+            </Link>
+          ) : null
+        }
+      />
 
       <section
         className={styles.summary}
@@ -365,15 +367,21 @@ export default async function ProcurementPage({
         </div>
 
         {items.length === 0 ? (
-          <div className={styles.empty} role="status">
-            <div>
-              <h2>لا توجد طلبات مطابقة</h2>
-              <p>
-                غيّر معايير البحث أو ابدأ بإنشاء أول طلب
-                مشتريات في مساحة العمل.
-              </p>
-            </div>
-          </div>
+          <EmptyState
+            title="لا توجد طلبات مطابقة"
+            description="غيّر معايير البحث أو ابدأ بإنشاء أول طلب مشتريات في مساحة العمل."
+            icon="⌕"
+            actions={
+              canCreate ? (
+                <Link
+                  className={styles.createButton}
+                  href="/platform/procurement/new"
+                >
+                  ＋ طلب مشتريات جديد
+                </Link>
+              ) : null
+            }
+          />
         ) : (
           <div className={styles.tableViewport}>
             <table className={styles.table}>

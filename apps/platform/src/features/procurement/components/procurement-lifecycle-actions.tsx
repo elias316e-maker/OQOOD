@@ -1,6 +1,10 @@
 "use client";
 
 import {
+  Alert,
+} from "@oqood/design-system";
+
+import {
   useState,
   useTransition,
 } from "react";
@@ -172,7 +176,7 @@ export function ProcurementLifecycleActions({
       </div>
 
       {selected && (
-        <div className={styles.confirmation}>
+        <Alert className={styles.confirmation} tone="warning">
           <strong>{commandLabels[selected]}</strong>
           <p>هل تريد تنفيذ هذا الإجراء على الطلب الحالي؟</p>
 
@@ -213,17 +217,17 @@ export function ProcurementLifecycleActions({
               تراجع
             </button>
           </div>
-        </div>
+        </Alert>
       )}
 
       {feedback && (
-        <p
+        <Alert
           className={styles.feedback}
           data-tone={feedback.tone}
           role="status"
-        >
+         tone="info">
           {feedback.message}
-        </p>
+        </Alert>
       )}
     </div>
   );

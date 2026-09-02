@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  Alert,
+} from "@oqood/design-system";
+
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
@@ -51,7 +55,14 @@ export function ProcurementRfqAction({
           ? "جارٍ إنشاء طلب عرض السعر..."
           : "إنشاء طلب عرض سعر RFQ"}
       </button>
-      {feedback && <p role="alert">{feedback}</p>}
+      {feedback ? (
+        <Alert
+          tone="danger"
+          aria-live="assertive"
+        >
+          {feedback}
+        </Alert>
+      ) : null}
     </div>
   );
 }
