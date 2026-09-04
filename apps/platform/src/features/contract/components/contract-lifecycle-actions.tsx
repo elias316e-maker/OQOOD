@@ -3,6 +3,10 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+import {
+  Alert,
+} from "@oqood/design-system";
+
 import type { ContractStatus } from "@/generated/prisma/client";
 
 import {
@@ -102,9 +106,12 @@ export function ContractLifecycleActions({
       </div>
 
       {selected && (
-        <div className={styles.confirmation}>
-          <strong>{labels[selected]}</strong>
-          <p>سيتم نقل العقد إلى المرحلة التالية وتسجيل الإجراء في سجل النشاط.</p>
+        <Alert
+          className={styles.confirmation}
+          tone="warning"
+          title={labels[selected]}
+        >
+<p>سيتم نقل العقد إلى المرحلة التالية وتسجيل الإجراء في سجل النشاط.</p>
           {["SUSPEND", "TERMINATE"].includes(selected) && (
             <label>
               سبب الإجراء
@@ -117,7 +124,7 @@ export function ContractLifecycleActions({
               />
             </label>
           )}
-          <div>
+          <div className={styles.confirmationActions}>
             <button
               disabled={
                 pending ||
@@ -138,13 +145,25 @@ export function ContractLifecycleActions({
               تراجع
             </button>
           </div>
-        </div>
+        </Alert>
       )}
 
       {feedback && (
-        <p className={styles.feedback} data-tone={feedback.tone} role="status">
+        <Alert
+          className={styles.feedback}
+          tone={
+            feedback.tone === "success"
+              ? "success"
+              : "danger"
+          }
+          aria-live={
+            feedback.tone === "success"
+              ? "polite"
+              : "assertive"
+          }
+        >
           {feedback.message}
-        </p>
+        </Alert>
       )}
     </div>
   );

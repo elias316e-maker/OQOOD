@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+import {
+  EmptyState,
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
 import { PrismaOpportunityAuthorizationGateway } from "@/features/opportunity/authorization";
 import {
   resolveOpportunityActionContext,
@@ -30,7 +35,6 @@ export default async function ContractsPage() {
   });
 
   // The request time is intentionally captured for operational overdue indicators.
-  // eslint-disable-next-line react-hooks/purity
   const now = new Date();
   const milestones = contracts.flatMap((contract) => contract.milestones);
   const totalValue = contracts.reduce((sum, contract) => sum + Number(contract.totalAmount), 0);
@@ -49,10 +53,20 @@ export default async function ContractsPage() {
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <div><span>إدارة دورة التعاقد والتنفيذ</span><h1>العقود</h1><p>متابعة العقود والمراحل والتسليمات والموقف المالي.</p></div>
-        <Link className={styles.editLink} href="/platform/contracts/alerts">مركز التنبيهات</Link>
-      </header>
+      <WorkspaceHeader
+        className={styles.header}
+        eyebrow="إدارة دورة التعاقد والتنفيذ"
+        title="العقود"
+        description="متابعة العقود والمراحل والتسليمات والموقف المالي."
+        actions={
+          <Link
+            className={styles.editLink}
+            href="/platform/contracts/alerts"
+          >
+            مركز التنبيهات
+          </Link>
+        }
+      />
 
       <section className={styles.kpis}>
         <article><span>قيمة العقود</span><strong>{money(totalValue)}</strong></article>
@@ -64,7 +78,14 @@ export default async function ContractsPage() {
       </section>
 
       <section className={styles.panel}>
-        {contracts.length === 0 ? <p className={styles.empty}>لا توجد عقود بعد.</p> : (
+        {contracts.length === 0 ? (
+          <EmptyState
+            className={styles.empty}
+            icon="▤"
+            title="لا توجد عقود حتى الآن"
+            description="ستظهر العقود هنا بعد إتمام ترسية المنافسات وإنشاء مسودات العقود."
+          />
+        ) : (
           <table className={styles.table}>
             <thead><tr><th>رقم العقد</th><th>العنوان</th><th>المورد</th><th>الحالة</th><th>القيمة</th><th>الإنجاز</th><th>المتأخر</th></tr></thead>
             <tbody>{contracts.map((contract) => {

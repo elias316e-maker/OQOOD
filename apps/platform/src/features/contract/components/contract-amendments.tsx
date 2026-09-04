@@ -4,6 +4,11 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import {
+  Alert,
+  EmptyState,
+} from "@oqood/design-system";
+
+import {
   createContractAmendmentAction,
   transitionContractAmendmentAction,
 } from "../actions";
@@ -90,10 +95,34 @@ export function ContractAmendments({
         </form>
       )}
 
-      {feedback && <p className={styles.feedback} data-tone={feedback.tone}>{feedback.message}</p>}
+      {feedback ? (
+        <Alert
+          className={styles.feedback}
+          tone={
+            feedback.tone === "success"
+              ? "success"
+              : "danger"
+          }
+          aria-live={
+            feedback.tone === "success"
+              ? "polite"
+              : "assertive"
+          }
+        >
+          {feedback.message}
+        </Alert>
+      ) : null}
 
       <div className={styles.list}>
-        {amendments.length === 0 && <p className={styles.empty}>لا توجد ملاحق لهذا العقد.</p>}
+        {amendments.length === 0 ? (
+          <EmptyState
+            className={styles.empty}
+            icon="▤"
+            title="لا توجد ملاحق للعقد"
+            description="لم تتم إضافة أي ملاحق أو تعديلات إلى هذا العقد حتى الآن."
+            role="status"
+          />
+        ) : null}
         {amendments.map((amendment) => (
           <article key={amendment.id}>
             <header>
@@ -118,10 +147,15 @@ export function ContractAmendments({
               )}
             </footer>
             {rejecting === amendment.id && (
-              <div className={styles.reject}>
+              <Alert
+                className={styles.reject}
+                tone="warning"
+                title="تأكيد رفض الملحق"
+                aria-live="polite"
+              >
                 <textarea onChange={(event) => setReason(event.target.value)} placeholder="سبب الرفض" rows={2} value={reason} />
                 <button disabled={pending || !reason.trim()} onClick={() => transition(amendment.id, "REJECT")} type="button">تأكيد الرفض</button>
-              </div>
+              </Alert>
             )}
           </article>
         ))}

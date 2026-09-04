@@ -2,6 +2,11 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+
+import {
+  Alert,
+  EmptyState,
+} from "@oqood/design-system";
 import { createContractMilestoneAction, updateContractMilestoneAction } from "../actions";
 import styles from "./contract-execution.module.css";
 
@@ -35,18 +40,44 @@ export function ContractExecution({contractId,currency,milestones,canUpdate,canA
       <input name="dueDate" type="date"/><input min="0" name="amount" placeholder="قيمة المرحلة" step=".01" type="number"/>
       <textarea name="description" placeholder="وصف التسليم" rows={2}/><button disabled={pending}>إضافة المرحلة</button>
     </form>}
-    {feedback&&<p className={styles.feedback} data-tone={feedback.tone}>{feedback.message}</p>}
-    <div className={styles.cards}>{milestones.map(m=><article key={m.id}>
-      <header><div><span>المرحلة {m.number}</span><strong>{m.title}</strong></div><b data-status={m.status}>{statusLabels[m.status]??m.status}</b></header>
-      <p>{m.description??"—"}</p><div className={styles.progress}><i style={{width:`${m.progress}%`}}/><span>{m.progress}%</span></div>
-      <dl><div><dt>القيمة</dt><dd>{money(m.amount)}</dd></div><div><dt>الاستحقاق</dt><dd>{m.dueDate?new Intl.DateTimeFormat("ar-SA").format(new Date(m.dueDate)):"غير محدد"}</dd></div><div><dt>الدفع</dt><dd>{paymentLabels[m.paymentStatus]??m.paymentStatus}</dd></div></dl>
-      <footer>
-        {canUpdate&&m.status==="PLANNED"&&<button onClick={()=>run(m.id,"START")}>بدء</button>}
-        {canUpdate&&m.status==="IN_PROGRESS"&&<><input max="100" min="0" onChange={e=>setProgress({...progress,[m.id]:e.target.value})} placeholder="نسبة %" type="number"/><button onClick={()=>run(m.id,"PROGRESS")}>تحديث</button>{m.progress===100&&<button onClick={()=>run(m.id,"SUBMIT")}>تقديم التسليم</button>}</>}
-        {canApprove&&m.status==="SUBMITTED"&&<><button onClick={()=>run(m.id,"ACCEPT")}>قبول</button><input onChange={e=>setReason({...reason,[m.id]:e.target.value})} placeholder="سبب الرفض"/><button data-danger onClick={()=>run(m.id,"REJECT")}>رفض</button></>}
-        {canUpdate&&m.status==="ACCEPTED"&&m.paymentStatus==="NOT_CLAIMED"&&<button onClick={()=>run(m.id,"CLAIM")}>تسجيل مطالبة</button>}
-        {canUpdate&&m.paymentStatus==="CLAIMED"&&<button onClick={()=>run(m.id,"PAY")}>تسجيل السداد</button>}
-      </footer>{m.rejectionReason&&<small>آخر ملاحظة: {m.rejectionReason}</small>}
-    </article>)}</div>
+    {feedback ? (
+      <Alert
+        className={styles.feedback}
+        tone={
+          feedback.tone === "success"
+            ? "success"
+            : "danger"
+        }
+        aria-live={
+          feedback.tone === "success"
+            ? "polite"
+            : "assertive"
+        }
+      >
+        {feedback.message}
+      </Alert>
+    ) : null}
+    {milestones.length === 0 ? (
+      <EmptyState
+        className={styles.emptyState}
+        icon="▤"
+        title="لا توجد مراحل تنفيذ"
+        description="لم تتم إضافة مراحل أو تسليمات إلى هذا العقد حتى الآن."
+        role="status"
+      />
+    ) : (
+      <div className={styles.cards}>{milestones.map(m=><article key={m.id}>
+            <header><div><span>المرحلة {m.number}</span><strong>{m.title}</strong></div><b data-status={m.status}>{statusLabels[m.status]??m.status}</b></header>
+            <p>{m.description??"—"}</p><div className={styles.progress}><i style={{width:`${m.progress}%`}}/><span>{m.progress}%</span></div>
+            <dl><div><dt>القيمة</dt><dd>{money(m.amount)}</dd></div><div><dt>الاستحقاق</dt><dd>{m.dueDate?new Intl.DateTimeFormat("ar-SA").format(new Date(m.dueDate)):"غير محدد"}</dd></div><div><dt>الدفع</dt><dd>{paymentLabels[m.paymentStatus]??m.paymentStatus}</dd></div></dl>
+            <footer>
+              {canUpdate&&m.status==="PLANNED"&&<button onClick={()=>run(m.id,"START")}>بدء</button>}
+              {canUpdate&&m.status==="IN_PROGRESS"&&<><input max="100" min="0" onChange={e=>setProgress({...progress,[m.id]:e.target.value})} placeholder="نسبة %" type="number"/><button onClick={()=>run(m.id,"PROGRESS")}>تحديث</button>{m.progress===100&&<button onClick={()=>run(m.id,"SUBMIT")}>تقديم التسليم</button>}</>}
+              {canApprove&&m.status==="SUBMITTED"&&<><button onClick={()=>run(m.id,"ACCEPT")}>قبول</button><input onChange={e=>setReason({...reason,[m.id]:e.target.value})} placeholder="سبب الرفض"/><button data-danger onClick={()=>run(m.id,"REJECT")}>رفض</button></>}
+              {canUpdate&&m.status==="ACCEPTED"&&m.paymentStatus==="NOT_CLAIMED"&&<button onClick={()=>run(m.id,"CLAIM")}>تسجيل مطالبة</button>}
+              {canUpdate&&m.paymentStatus==="CLAIMED"&&<button onClick={()=>run(m.id,"PAY")}>تسجيل السداد</button>}
+            </footer>{m.rejectionReason&&<small>آخر ملاحظة: {m.rejectionReason}</small>}
+          </article>)}</div>
+    )}
   </div>;
 }

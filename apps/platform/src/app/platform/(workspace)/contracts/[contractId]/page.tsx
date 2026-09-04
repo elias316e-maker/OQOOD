@@ -1,4 +1,12 @@
 import Link from "next/link";
+
+import {
+  Alert,
+  WorkspaceHeader,
+  EmptyState,
+  FormSection,
+  FormActions,
+} from "@oqood/design-system";
 import { notFound } from "next/navigation";
 
 import {
@@ -135,14 +143,20 @@ export default async function ContractDetailsPage({ params }: Props) {
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <div>
-          <span>{contract.number}</span>
-          <h1>{contract.title}</h1>
-          <p>عقد منشأ من العرض الفائز في المنافسة {contract.opportunity.number}.</p>
-        </div>
-        <Link className={styles.back} href="/platform/contracts">العودة إلى العقود</Link>
-      </header>
+      <WorkspaceHeader
+        className={styles.header}
+        eyebrow={contract.number}
+        title={contract.title}
+        description={`عقد منشأ من العرض الفائز في المنافسة ${contract.opportunity.number}.`}
+        actions={
+          <Link
+            className={styles.back}
+            href="/platform/contracts"
+          >
+            العودة إلى العقود
+          </Link>
+        }
+      />
 
       <nav className={styles.detailNav} aria-label="أقسام العقد">
         <a href="#overview">نظرة عامة</a>
@@ -150,38 +164,53 @@ export default async function ContractDetailsPage({ params }: Props) {
         <a href="#execution">التنفيذ والمطالبات</a>
         <a href="#amendments">الملاحق</a>
         <a href="#activity">سجل النشاط</a>
+        <a href="#documents">المستندات</a>
       </nav>
 
-      <section className={styles.actionBar}>
-        <div>
-          <strong>إجراءات دورة العقد</strong>
-          <span>الحالة الحالية: {statusLabels[contract.status]}</span>
-        </div>
+            <FormActions
+        className={styles.actionBar}
+        status={
+          <>
+            <strong>إجراءات دورة العقد</strong>
+            <span>الحالة الحالية: {statusLabels[contract.status]}</span>
+          </>
+        }
+      >
         <div className={styles.actionGroup}>
-          {contract.status === "DRAFT" &&
-            hasPermission(workspaceContext, Permissions.contracts.update) && (
-              <Link className={styles.editLink} href={`/platform/contracts/${contract.id}/edit`}>تحرير المسودة</Link>
-            )}
-          <ContractLifecycleActions
-            canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
-            canSign={hasPermission(workspaceContext, Permissions.contracts.sign)}
-            canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
-            contractId={contract.id}
-            status={contract.status}
-          />
-        </div>
-      </section>
+                  {contract.status === "DRAFT" &&
+                    hasPermission(workspaceContext, Permissions.contracts.update) && (
+                      <Link className={styles.editLink} href={`/platform/contracts/${contract.id}/edit`}>تحرير المسودة</Link>
+                    )}
+                  <ContractLifecycleActions
+                    canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
+                    canSign={hasPermission(workspaceContext, Permissions.contracts.sign)}
+                    canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
+                    contractId={contract.id}
+                    status={contract.status}
+                  />
+                </div>
+      </FormActions>
 
       {daysUntilEnd !== null && daysUntilEnd <= 30 && (
-        <div
+        <Alert
           className={styles.expiryAlert}
-          data-tone={daysUntilEnd < 0 ? "danger" : "warning"}
+          data-tone={
+            daysUntilEnd < 0
+              ? "danger"
+              : "warning"
+          }
+          tone={
+            daysUntilEnd < 0
+              ? "danger"
+              : "warning"
+          }
           role="alert"
+          aria-live="polite"
         >
           {daysUntilEnd < 0
             ? `تجاوز العقد تاريخ انتهائه منذ ${Math.abs(daysUntilEnd)} يوم.`
             : `متبقي ${daysUntilEnd} يوم على تاريخ انتهاء العقد.`}
-        </div>
+        </Alert>
       )}
 
       <section className={styles.executionKpis} id="overview">
@@ -191,7 +220,12 @@ export default async function ContractDetailsPage({ params }: Props) {
         <article><span>المبالغ المسددة</span><strong>{money(paidAmount)}</strong><small>{Number(contract.totalAmount) ? Math.round(paidAmount / Number(contract.totalAmount) * 100) : 0}% من قيمة العقد</small></article>
       </section>
 
-      <section className={styles.panel}>
+            <FormSection
+        className={styles.panel}
+        eyebrow="بيانات العقد"
+        title="المعلومات الأساسية"
+        description="بيانات المورد والقيمة والمواعيد والشروط التجارية للعقد."
+      >
         <div className={styles.summary}>
           <article><span>الحالة</span><strong>{statusLabels[contract.status]}</strong></article>
           <article><span>المورد</span><strong><Link href={`/platform/partners/${contract.businessPartner.id}`}>{contract.businessPartner.nameAr}</Link></strong></article>
@@ -206,111 +240,155 @@ export default async function ContractDetailsPage({ params }: Props) {
           {contract.suspensionReason && <article><span>سبب آخر إيقاف</span><strong>{contract.suspensionReason}</strong></article>}
           {contract.terminationReason && <article><span>سبب الإنهاء</span><strong>{contract.terminationReason}</strong></article>}
         </div>
-      </section>
+      </FormSection>
 
-      <section className={styles.panel} id="items">
-        <h2 className={styles.sectionTitle}>بنود العقد</h2>
-        <table className={styles.table}>
-          <thead><tr><th>#</th><th>الوصف</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead>
-          <tbody>{contract.items.map((item) => (
-            <tr key={item.id}>
-              <td>{item.lineNumber}</td>
-              <td>{item.description}</td>
-              <td>{item.quantity.toString()} {item.unit}</td>
-              <td>{money(item.unitPrice)}</td>
-              <td>{money(item.totalPrice)}</td>
-            </tr>
-          ))}</tbody>
-        </table>
-      </section>
+            <FormSection
+        className={styles.panel}
+        id="items"
+        eyebrow="النطاق التجاري"
+        title="بنود العقد"
+        actions={
+          <strong>
+            {contract.items.length} بنود
+          </strong>
+        }
+      >
+        {contract.items.length === 0 ? (
+          <EmptyState
+            className={styles.empty}
+            icon="▤"
+            title="لا توجد بنود في العقد"
+            description="لم تتم إضافة أي بنود إلى هذا العقد."
+            role="status"
+          />
+        ) : (
+          <table className={styles.table}>
+                    <thead><tr><th>#</th><th>الوصف</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead>
+                    <tbody>{contract.items.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.lineNumber}</td>
+                        <td>{item.description}</td>
+                        <td>{item.quantity.toString()} {item.unit}</td>
+                        <td>{money(item.unitPrice)}</td>
+                        <td>{money(item.totalPrice)}</td>
+                      </tr>
+                    ))}</tbody>
+                  </table>
+        )}
+      </FormSection>
 
-      <section className={styles.panel} id="activity">
-        <h2 className={styles.sectionTitle}>سجل نشاط العقد</h2>
-        <div className={styles.timeline}>
-          {activity.map((entry) => (
-            <article key={entry.id}>
-              <span aria-hidden="true" />
-              <div>
-                <strong>{activityLabels[entry.action] ?? entry.action}</strong>
-                <p>
-                  {entry.user?.name ?? "النظام"} ·{" "}
-                  {new Intl.DateTimeFormat("ar-SA", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  }).format(entry.createdAt)}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+            <FormSection
+        className={styles.panel}
+        id="activity"
+        eyebrow="سجل التدقيق"
+        title="سجل نشاط العقد"
+      >
+        {activity.length === 0 ? (
+          <EmptyState
+            className={styles.empty}
+            icon="⌁"
+            title="لا يوجد نشاط مسجل"
+            description="لم تُسجل أي عمليات على هذا العقد حتى الآن."
+            role="status"
+          />
+        ) : (
+          <div className={styles.timeline}>
+                    {activity.map((entry) => (
+                      <article key={entry.id}>
+                        <span aria-hidden="true" />
+                        <div>
+                          <strong>{activityLabels[entry.action] ?? entry.action}</strong>
+                          <p>
+                            {entry.user?.name ?? "النظام"} ·{" "}
+                            {new Intl.DateTimeFormat("ar-SA", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            }).format(entry.createdAt)}
+                          </p>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+        )}
+      </FormSection>
 
       {["ACTIVE", "SUSPENDED"].includes(contract.status) && (
-        <section className={styles.panel} id="amendments">
-          <h2 className={styles.sectionTitle}>ملاحق وتعديلات العقد</h2>
+                <FormSection
+          className={styles.panel}
+          id="amendments"
+          eyebrow="إدارة التغييرات"
+          title="ملاحق وتعديلات العقد"
+        >
           <ContractAmendments
-            amendments={contract.amendments.map((amendment) => ({
-              id: amendment.id,
-              number: amendment.number,
-              title: amendment.title,
-              reason: amendment.reason,
-              status: amendment.status,
-              valueChange: amendment.valueChange.toString(),
-              resultingTotal: amendment.resultingTotal.toString(),
-              newEndDate: amendment.newEndDate?.toISOString() ?? null,
-              createdAt: amendment.createdAt.toISOString(),
-            }))}
-            canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
-            canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
-            contractId={contract.id}
-            currency={contract.currency}
-          />
-        </section>
+                      amendments={contract.amendments.map((amendment) => ({
+                        id: amendment.id,
+                        number: amendment.number,
+                        title: amendment.title,
+                        reason: amendment.reason,
+                        status: amendment.status,
+                        valueChange: amendment.valueChange.toString(),
+                        resultingTotal: amendment.resultingTotal.toString(),
+                        newEndDate: amendment.newEndDate?.toISOString() ?? null,
+                        createdAt: amendment.createdAt.toISOString(),
+                      }))}
+                      canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
+                      canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
+                      contractId={contract.id}
+                      currency={contract.currency}
+                    />
+        </FormSection>
       )}
 
       {contract.status === "ACTIVE" && (
-        <section className={styles.panel} id="execution">
-          <h2 className={styles.sectionTitle}>تنفيذ العقد والتسليمات</h2>
+                <FormSection
+          className={styles.panel}
+          id="execution"
+          eyebrow="التنفيذ والمطالبات"
+          title="تنفيذ العقد والتسليمات"
+        >
           <ContractExecution
-            canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
-            canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
-            contractId={contract.id}
-            currency={contract.currency}
-            milestones={contract.milestones.map((milestone) => ({
-              id: milestone.id,
-              number: milestone.number,
-              title: milestone.title,
-              description: milestone.description,
-              dueDate: milestone.dueDate?.toISOString() ?? null,
-              amount: milestone.amount.toString(),
-              progress: milestone.progress,
-              status: milestone.status,
-              paymentStatus: milestone.paymentStatus,
-              rejectionReason: milestone.rejectionReason,
-            }))}
-          />
-        </section>
+                      canApprove={hasPermission(workspaceContext, Permissions.contracts.approve)}
+                      canUpdate={hasPermission(workspaceContext, Permissions.contracts.update)}
+                      contractId={contract.id}
+                      currency={contract.currency}
+                      milestones={contract.milestones.map((milestone) => ({
+                        id: milestone.id,
+                        number: milestone.number,
+                        title: milestone.title,
+                        description: milestone.description,
+                        dueDate: milestone.dueDate?.toISOString() ?? null,
+                        amount: milestone.amount.toString(),
+                        progress: milestone.progress,
+                        status: milestone.status,
+                        paymentStatus: milestone.paymentStatus,
+                        rejectionReason: milestone.rejectionReason,
+                      }))}
+                    />
+        </FormSection>
       )}
 
       {["ACTIVE", "COMPLETED"].includes(contract.status) && (
-        <section className={styles.panel}>
-          <h2 className={styles.sectionTitle}>تقييم أداء المورد</h2>
+                <FormSection
+          className={styles.panel}
+          eyebrow="قياس الأداء"
+          title="تقييم أداء المورد"
+        >
           <PartnerEvaluation
-            canEvaluate={hasPermission(workspaceContext, Permissions.vendors.evaluate)}
-            contractId={contract.id}
-            evaluations={contract.partnerEvaluations.map((evaluation) => ({
-              id: evaluation.id,
-              overallScore: evaluation.overallScore.toString(),
-              timelinessScore: evaluation.timelinessScore,
-              qualityScore: evaluation.qualityScore,
-              responsivenessScore: evaluation.responsivenessScore,
-              financialScore: evaluation.financialScore,
-              notes: evaluation.notes,
-              createdAt: evaluation.createdAt.toISOString(),
-              createdBy: evaluation.createdBy.name,
-            }))}
-          />
-        </section>
+                      canEvaluate={hasPermission(workspaceContext, Permissions.vendors.evaluate)}
+                      contractId={contract.id}
+                      evaluations={contract.partnerEvaluations.map((evaluation) => ({
+                        id: evaluation.id,
+                        overallScore: evaluation.overallScore.toString(),
+                        timelinessScore: evaluation.timelinessScore,
+                        qualityScore: evaluation.qualityScore,
+                        responsivenessScore: evaluation.responsivenessScore,
+                        financialScore: evaluation.financialScore,
+                        notes: evaluation.notes,
+                        createdAt: evaluation.createdAt.toISOString(),
+                        createdBy: evaluation.createdBy.name,
+                      }))}
+                    />
+        </FormSection>
       )}
       <LinkedDocuments
         canManage={hasPermission(workspaceContext, Permissions.contracts.update)}
