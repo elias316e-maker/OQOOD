@@ -1,6 +1,12 @@
 import Link from "next/link";
 
 import {
+  EmptyState,
+  FormSection,
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
+import {
   archiveDocumentAction,
   reviewDocumentAction,
   softDeleteDocumentAction,
@@ -53,7 +59,19 @@ export default async function DocumentsPage() {
     hasPermission(context, Permissions.vendors.read);
 
   if (!canRead) {
-    return <main className={styles.page}><section className={styles.empty}>لا تملك صلاحية الاطلاع على المستندات.</section></main>;
+    return (
+      <main className={styles.page}>
+        <EmptyState
+          className={styles.panel}
+          tone="warning"
+          icon="!"
+          title="لا تملك صلاحية الاطلاع على المستندات"
+          description="تواصل مع مسؤول مساحة العمل للحصول على صلاحية الوصول إلى مركز المستندات."
+          role="alert"
+          aria-live="polite"
+        />
+      </main>
+    );
   }
 
   const canReview =
@@ -100,7 +118,6 @@ export default async function DocumentsPage() {
   };
 
   // Request time is required for live expiry indicators.
-  // eslint-disable-next-line react-hooks/purity
   const now = new Date();
   const inThirtyDays = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   const totalSize = documents.reduce((sum, item) => sum + Number(item.sizeBytes), 0);
@@ -113,14 +130,19 @@ export default async function DocumentsPage() {
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <div>
-          <span>مستودع موحّد وآمن</span>
-          <h1>مركز المستندات</h1>
-          <p>الوصول إلى ملفات المشتريات والمنافسات والعقود والموردين من مكان واحد.</p>
-        </div>
-        {canUpload && <DocumentUploadForm entities={entityOptions} />}
-      </header>
+      <WorkspaceHeader
+        className={styles.header}
+        eyebrow="مستودع موحّد وآمن"
+        title="مركز المستندات"
+        description="الوصول إلى ملفات المشتريات والمنافسات والعقود والموردين والمشاريع من مكان واحد."
+        actions={
+          canUpload ? (
+            <DocumentUploadForm
+              entities={entityOptions}
+            />
+          ) : null
+        }
+      />
 
       <section className={styles.kpis}>
         <article><span>إجمالي المستندات</span><strong>{documents.length}</strong><small>{formatSize(totalSize)}</small></article>
@@ -137,8 +159,17 @@ export default async function DocumentsPage() {
         <label><span>التصنيف</span><select defaultValue=""><option value="">جميع التصنيفات</option>{[...new Set(documents.map((item) => item.category))].map((category) => <option key={category}>{category}</option>)}</select></label>
       </section>
 
-      <section className={styles.panel}>
-        <div className={styles.panelHead}><div><span>سجل الملفات</span><h2>آخر المستندات تحديثًا</h2></div><small>{documents.length} مستند</small></div>
+      <FormSection
+        className={`${styles.panel} ${styles.documentsPanel}`}
+        eyebrow="سجل الملفات"
+        title="آخر المستندات تحديثًا"
+        description="الملفات المحفوظة مع حالتها ونسختها والكيان المرتبط بها."
+        actions={
+          <small>
+            {documents.length} مستند
+          </small>
+        }
+      >
         {documents.length ? (
           <div className={styles.tableWrap}><table>
             <thead><tr><th>المستند</th><th>التصنيف</th><th>مرتبط بـ</th><th>النسخة</th><th>الحالة</th><th>الحجم</th><th>آخر تحديث</th><th>الإجراء</th></tr></thead>
@@ -172,9 +203,16 @@ export default async function DocumentsPage() {
             })}</tbody>
           </table></div>
         ) : (
-          <div className={styles.emptyState}><i>⌁</i><h3>مستودع المستندات جاهز</h3><p>لم تتم إضافة ملفات بعد. ارفع أول مستند ليظهر هنا مع نسخته وحالته والكيان المرتبط به.</p></div>
+          <EmptyState
+            className={styles.emptyState}
+            tone="info"
+            icon="⌁"
+            title="مستودع المستندات جاهز"
+            description="لم تتم إضافة ملفات بعد. ارفع أول مستند ليظهر هنا مع نسخته وحالته والكيان المرتبط به."
+            role="status"
+          />
         )}
-      </section>
+      </FormSection>
     </main>
   );
 }
