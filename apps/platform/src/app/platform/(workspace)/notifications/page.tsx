@@ -1,6 +1,14 @@
 import Link from "next/link";
 
 import {
+  EmptyState,
+  FormActions,
+  FormGuidance,
+  FormSection,
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
+import {
   dismissNotificationAction,
   markAllNotificationsReadAction,
   markNotificationReadAction,
@@ -36,13 +44,29 @@ export default async function NotificationsPage() {
   const warning = notifications.filter((item) => item.severity === "warning");
 
   return <main className={styles.page}>
-    <header className={styles.header}>
-      <div><span>متابعة استباقية موحّدة</span><h1>مركز الإشعارات</h1><p>التنبيهات الحرجة والمواعيد والقرارات المعلّقة عبر جميع أعمال المنصة.</p></div>
-      {unread.length > 0 && <form action={markAllNotificationsReadAction}>
-        {unread.map((item) => <input key={item.fingerprint} name="fingerprint" type="hidden" value={item.fingerprint} />)}
-        <button type="submit">تحديد الكل كمقروء</button>
-      </form>}
-    </header>
+    <WorkspaceHeader
+      className={styles.header}
+      eyebrow="متابعة استباقية موحّدة"
+      title="مركز الإشعارات"
+      description="التنبيهات الحرجة والمواعيد والقرارات المعلّقة عبر جميع أعمال المنصة."
+      actions={
+        unread.length > 0 ? (
+          <form action={markAllNotificationsReadAction}>
+            {unread.map((item) => (
+              <input
+                key={item.fingerprint}
+                name="fingerprint"
+                type="hidden"
+                value={item.fingerprint}
+              />
+            ))}
+            <button type="submit">
+              تحديد الكل كمقروء
+            </button>
+          </form>
+        ) : null
+      }
+    />
 
     <section className={styles.summary}>
       <article><span>غير مقروء</span><strong>{unread.length}</strong><small>من أصل {notifications.length} إشعار</small></article>
@@ -51,9 +75,22 @@ export default async function NotificationsPage() {
       <article><span>قرارات معلّقة</span><strong>{notifications.filter((item) => item.kind === "approval").length}</strong><small><Link href="/platform/approvals">فتح مركز الموافقات</Link></small></article>
     </section>
 
-    <section className={styles.panel}>
-      <div className={styles.panelHead}><div><span>صندوق المتابعة</span><h2>جميع الإشعارات النشطة</h2></div><small>مرتبة حسب الأهمية والاستحقاق</small></div>
-      {notifications.length === 0 ? <div className={styles.empty}><strong>لا توجد إشعارات نشطة</strong><p>جميع المواعيد والقرارات التشغيلية تحت السيطرة.</p></div> :
+    <FormSection
+      className={`${styles.panel} ${styles.notificationsPanel}`}
+      eyebrow="صندوق المتابعة"
+      title="جميع الإشعارات النشطة"
+      description="مرتبة حسب الأهمية والاستحقاق."
+    >
+      {notifications.length === 0 ? (
+        <EmptyState
+          className={styles.empty}
+          tone="success"
+          icon="✓"
+          title="لا توجد إشعارات نشطة"
+          description="جميع المواعيد والقرارات التشغيلية تحت السيطرة."
+          role="status"
+        />
+      ) :
         <div className={styles.list}>{notifications.map((item) => <article data-read={item.read} data-severity={item.severity} key={item.fingerprint}>
           <span className={styles.kind}>{kindLabels[item.kind]}</span>
           <div className={styles.content}><strong>{item.title}</strong><p>{item.description}</p>{item.dueAt && <time dateTime={item.dueAt.toISOString()}>الاستحقاق: {new Intl.DateTimeFormat("ar-SA", { dateStyle: "medium" }).format(item.dueAt)}</time>}</div>
@@ -61,35 +98,129 @@ export default async function NotificationsPage() {
           {!item.read && <form action={markNotificationReadAction}><input name="fingerprint" type="hidden" value={item.fingerprint} /><button type="submit">مقروء</button></form>}
           <form action={dismissNotificationAction}><input name="fingerprint" type="hidden" value={item.fingerprint} /><button data-dismiss type="submit">إخفاء</button></form>
         </article>)}</div>}
-    </section>
-    <section className={styles.panel}>
-      <div className={styles.panelHead}>
-        <div><span>قنوات التواصل</span><h2>تفضيلات الإشعارات</h2></div>
-        <small>يمكن تخصيص الإشعارات داخل المنصة والبريد لكل فئة.</small>
-      </div>
-      <form action={updateNotificationPreferencesAction}>
-        {[
-          ["TEAM_INVITATIONS", "دعوات الفريق"],
-          ["OPPORTUNITIES", "المنافسات والمواعيد"],
-          ["CONTRACTS", "العقود ومراحل التنفيذ"],
-          ["APPROVALS", "الموافقات والقرارات"],
-        ].map(([category, label]) => {
-          const preference = preferenceMap.get(category);
-          return <div key={category}>
-            <strong>{label}</strong>
-            <label><input defaultChecked={preference?.inAppEnabled ?? true} name={`inApp:${category}`} type="checkbox" /> داخل المنصة</label>
-            <label><input defaultChecked={preference?.emailEnabled ?? true} name={`email:${category}`} type="checkbox" /> البريد الإلكتروني</label>
-          </div>;
-        })}
-        <label>تجميع رسائل البريد
-          <select defaultValue={preferences[0]?.digest ?? "IMMEDIATE"} name="digest">
-            <option value="IMMEDIATE">فوري</option>
-            <option value="DAILY">ملخص يومي</option>
-            <option value="WEEKLY">ملخص أسبوعي</option>
+    </FormSection>
+    <FormSection
+      className={`${styles.panel} ${styles.preferencesPanel}`}
+      eyebrow="قنوات التواصل"
+      title="تفضيلات الإشعارات"
+      description="يمكن تخصيص الإشعارات داخل المنصة والبريد لكل فئة."
+    >
+      <form
+        action={updateNotificationPreferencesAction}
+        className={styles.preferencesForm}
+      >
+        <FormGuidance
+          className={styles.preferencesGuidance}
+          icon="✦"
+          title="خصص طريقة استلام الإشعارات"
+          description="حدد لكل فئة ما إذا كنت تريد إشعارات داخل المنصة أو عبر البريد الإلكتروني."
+        />
+
+        <div className={styles.preferenceRows}>
+          {[
+            [
+              "TEAM_INVITATIONS",
+              "دعوات الفريق",
+            ],
+            [
+              "OPPORTUNITIES",
+              "المنافسات والمواعيد",
+            ],
+            [
+              "CONTRACTS",
+              "العقود ومراحل التنفيذ",
+            ],
+            [
+              "APPROVALS",
+              "الموافقات والقرارات",
+            ],
+          ].map(([category, label]) => {
+            const preference =
+              preferenceMap.get(category);
+
+            return (
+              <div
+                className={styles.preferenceRow}
+                key={category}
+              >
+                <strong>
+                  {label}
+                </strong>
+
+                <label>
+                  <input
+                    defaultChecked={
+                      preference
+                        ?.inAppEnabled ?? true
+                    }
+                    name={`inApp:${category}`}
+                    type="checkbox"
+                  />
+                  <span>
+                    داخل المنصة
+                  </span>
+                </label>
+
+                <label>
+                  <input
+                    defaultChecked={
+                      preference
+                        ?.emailEnabled ?? true
+                    }
+                    name={`email:${category}`}
+                    type="checkbox"
+                  />
+                  <span>
+                    البريد الإلكتروني
+                  </span>
+                </label>
+              </div>
+            );
+          })}
+        </div>
+
+        <label
+          className={styles.digestField}
+          htmlFor="notification-digest"
+        >
+          <span>
+            تجميع رسائل البريد
+          </span>
+
+          <select
+            defaultValue={
+              preferences[0]?.digest ??
+              "IMMEDIATE"
+            }
+            id="notification-digest"
+            name="digest"
+          >
+            <option value="IMMEDIATE">
+              فوري
+            </option>
+
+            <option value="DAILY">
+              ملخص يومي
+            </option>
+
+            <option value="WEEKLY">
+              ملخص أسبوعي
+            </option>
           </select>
         </label>
-        <button type="submit">حفظ التفضيلات</button>
+
+        <FormActions
+          className={styles.preferenceActions}
+          status="سيتم تطبيق التفضيلات على الإشعارات الجديدة."
+        >
+          <button
+            className={styles.savePreferences}
+            type="submit"
+          >
+            حفظ التفضيلات
+          </button>
+        </FormActions>
       </form>
-    </section>
+    </FormSection>
   </main>;
 }
