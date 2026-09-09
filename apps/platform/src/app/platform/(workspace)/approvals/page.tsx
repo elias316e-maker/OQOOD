@@ -1,5 +1,11 @@
 import Link from "next/link";
 
+import {
+  EmptyState,
+  FormSection,
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
@@ -115,7 +121,6 @@ export default async function ApprovalsPage() {
   ].sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime());
 
   // Request time is used to calculate the live waiting age.
-  // eslint-disable-next-line react-hooks/purity
   const now = new Date();
   const waitingDays = (date: Date) => Math.max(0, Math.floor((now.getTime() - date.getTime()) / 86_400_000));
   const oldCount = items.filter((item) => waitingDays(item.updatedAt) >= 3).length;
@@ -123,20 +128,51 @@ export default async function ApprovalsPage() {
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <div><span>صندوق القرارات</span><h1>الموافقات</h1><p>الطلبات والمنافسات والعقود التي تنتظر مراجعة أو قرارًا.</p></div>
-        <Link href="/platform">العودة للرئيسية</Link>
-      </header>
+      <WorkspaceHeader
+        className={styles.header}
+        eyebrow="صندوق القرارات"
+        title="الموافقات"
+        description="الطلبات والمنافسات والعقود التي تنتظر مراجعة أو قرارًا."
+        actions={
+          <Link
+            className={styles.backButton}
+            href="/platform"
+          >
+            العودة إلى الرئيسية
+          </Link>
+        }
+      />
 
-      <section className={styles.summary}>
+      <section
+        aria-label="ملخص الموافقات المعلّقة"
+        className={styles.summary}
+      >
         <article><span>إجمالي المعلّق</span><strong>{items.length}</strong><small>عبر جميع المسارات</small></article>
         <article><span>يمكنك اتخاذ قرار</span><strong>{actionableCount}</strong><small>وفق صلاحياتك الحالية</small></article>
         <article data-tone={oldCount ? "danger" : "normal"}><span>متأخرة 3 أيام أو أكثر</span><strong>{oldCount}</strong><small>تحتاج أولوية في المعالجة</small></article>
       </section>
 
-      <section className={styles.panel}>
-        <div className={styles.panelHead}><div><span>قائمة العمل</span><h2>القرارات المعلّقة</h2></div><small>مرتبة حسب الأقدم</small></div>
-        {items.length === 0 ? <div className={styles.empty}><strong>لا توجد موافقات معلّقة</strong><p>جميع مسارات العمل الحالية محدثة.</p></div> : (
+      <FormSection
+        className={`${styles.panel} ${styles.approvalsPanel}`}
+        eyebrow="قائمة العمل"
+        title="القرارات المعلّقة"
+        description="العناصر التي تنتظر مراجعة أو اعتمادًا، مرتبة من الأقدم إلى الأحدث."
+        actions={
+          <small>
+            {items.length} عنصر
+          </small>
+        }
+      >
+        {items.length === 0 ? (
+          <EmptyState
+            className={styles.empty}
+            tone="success"
+            icon="✓"
+            title="لا توجد موافقات معلّقة"
+            description="جميع مسارات العمل الحالية محدثة ولا توجد قرارات تنتظر المعالجة."
+            role="status"
+          />
+        ) : (
           <div className={styles.list}>{items.map((item) => {
             const age = waitingDays(item.updatedAt);
             return <Link data-priority={item.priority} href={item.href} key={`${item.kind}-${item.id}`}>
@@ -147,7 +183,7 @@ export default async function ApprovalsPage() {
             </Link>;
           })}</div>
         )}
-      </section>
+      </FormSection>
     </main>
   );
 }
