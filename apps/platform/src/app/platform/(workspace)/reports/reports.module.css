@@ -1,1 +1,599 @@
 .page{color:#233850;display:grid;gap:1rem;padding:1rem}.header{align-items:end;display:flex;justify-content:space-between}.header span,.panelHead span{color:#168260;font-size:.7rem;font-weight:800}.header h1{color:#173b65;font-size:1.65rem;margin:.2rem 0}.header p{color:#718096;margin:0}.updated{background:#e9f7f2;border:1px solid #b8dfd1;border-radius:999px;color:#087f5b;font-size:.7rem;font-weight:800;padding:.45rem .75rem}.kpis{display:grid;gap:.65rem;grid-template-columns:repeat(5,minmax(0,1fr))}.kpis article,.panel,.finance{background:#fff;border:1px solid #dce5ef;border-radius:13px}.kpis article{padding:.85rem}.kpis article[data-tone=danger]{border-color:#e5b3b3;background:#fff9f9}.kpis span{color:#748399;display:block;font-size:.66rem}.kpis strong{color:#174f7c;display:block;font-size:1.05rem;margin:.25rem 0}.kpis small{color:#8995a5;font-size:.62rem}.grid{display:grid;gap:1rem;grid-template-columns:1fr 1fr}.panel{overflow:hidden}.panelHead{align-items:center;border-bottom:1px solid #e7edf3;display:flex;justify-content:space-between;padding:.8rem 1rem}.panelHead h2{color:#24415f;font-size:1rem;margin:.15rem 0 0}.panelHead a,.tableWrap a{color:#087f5b;font-size:.68rem;font-weight:800;text-decoration:none}.distribution{display:grid;gap:.75rem;padding:1rem}.distribution>div>div{align-items:center;display:flex;font-size:.7rem;justify-content:space-between;margin-bottom:.3rem}.distribution i,.finance i,.share i{background:#e8edf2;border-radius:9px;display:block;height:.55rem;overflow:hidden}.distribution b,.finance b,.share b{background:linear-gradient(90deg,#15956e,#1b7698);display:block;height:100%}.finance{display:grid;gap:1.2rem;grid-template-columns:repeat(3,1fr);padding:1rem}.finance span{color:#75859a;display:block;font-size:.68rem}.finance strong{color:#194d79;display:block;margin:.25rem 0 .55rem}.tableWrap{overflow-x:auto}.tableWrap table{border-collapse:collapse;width:100%}.tableWrap th,.tableWrap td{border-bottom:1px solid #e9eef3;font-size:.7rem;padding:.75rem;text-align:start}.tableWrap th{background:#f5f7fa;color:#6b7b8f}.share{align-items:center;display:flex;gap:.5rem;min-width:150px}.share i{flex:1}.share span{color:#617187;font-size:.65rem}.empty{color:#7d8b9d;margin:0;padding:1.5rem;text-align:center}@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}@media(max-width:760px){.grid,.finance{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.header{align-items:start;gap:.75rem;flex-direction:column}}
+
+/* Reports Design System integration */
+
+.workspaceHeader {
+  min-width: 0;
+}
+
+.updated {
+  border-color:
+    rgb(110 231 183 / 22%);
+  background:
+    rgb(16 185 129 / 11%);
+  color: #75deb9;
+}
+
+.routeState {
+  min-height: 15rem;
+}
+
+.backButton {
+  display: inline-flex;
+  min-height: 2.2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.48rem 0.72rem;
+  border: 1px solid
+    rgb(148 163 184 / 18%);
+  border-radius: 7px;
+  background: #172b46;
+  color: #a8d9c8;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.backButton:hover {
+  border-color:
+    rgb(110 231 183 / 35%);
+  color: #d9fff2;
+}
+
+.backButton:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+.reportPanel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.reportPanel :global(.oqoodFormSection__content) {
+  padding: 0;
+}
+
+.reportPanel :global(.oqoodFormSection__actions) a {
+  color: #7dd3b0;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.reportPanel :global(.oqoodFormSection__actions) a:hover {
+  color: #a7f3d0;
+}
+
+.reportPanel :global(.oqoodFormSection__actions) a:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+.compactEmpty {
+  min-height: 8rem;
+}
+
+/* Reports financial, dark and responsive refinement */
+
+.page {
+  gap: 0.7rem;
+  padding: 14px 18px 26px;
+  color: #dce7f2;
+}
+
+.kpis {
+  gap: 0.5rem;
+}
+
+.kpis article {
+  border-color:
+    rgb(148 163 184 / 13%);
+  border-radius: 9px;
+  background:
+    linear-gradient(
+      145deg,
+      #162b46,
+      #102139
+    );
+  box-shadow:
+    0 8px 22px
+    rgb(4 12 25 / 13%);
+}
+
+.kpis article[data-tone="danger"] {
+  border-color:
+    rgb(244 63 94 / 24%);
+  background:
+    rgb(244 63 94 / 9%);
+}
+
+.kpis span,
+.kpis small {
+  color: #8da0b6;
+}
+
+.kpis strong {
+  color: #7dd3b0;
+}
+
+.kpis article[data-tone="danger"] strong {
+  color: #f59aaa;
+}
+
+.financePanel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.financePanel :global(.oqoodFormSection__content) {
+  padding: 0.8rem;
+}
+
+.financePanel :global(.oqoodFormSection__actions) a {
+  color: #7dd3b0;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.financePanel :global(.oqoodFormSection__actions) a:hover {
+  color: #a7f3d0;
+}
+
+.financePanel :global(.oqoodFormSection__actions) a:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+.finance {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.financeMetric {
+  display: grid;
+  min-width: 0;
+  gap: 0.38rem;
+  padding: 0.72rem;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
+  border-radius: 8px;
+  background:
+    rgb(18 39 65 / 48%);
+}
+
+.financeMetric > span {
+  color: #8da0b6;
+  font-size: 0.64rem;
+}
+
+.financeMetric > strong {
+  margin: 0;
+  color: #dce7f2;
+  font-size: 0.9rem;
+}
+
+.financeMetric > small {
+  color: #8799ae;
+  font-size: 0.57rem;
+}
+
+.progressTrack,
+.shareTrack {
+  display: block;
+  width: 100%;
+  height: 0.48rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #23364d;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      90deg,
+      #15956e,
+      #1b7698
+    );
+}
+
+.distribution {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.8rem;
+}
+
+.distributionRow {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.distribution .distributionLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  color: #9aacc0;
+  font-size: 0.66rem;
+}
+
+.distribution .distributionLabel strong {
+  color: #dce7f2;
+}
+
+.distribution .progressTrack {
+  display: block;
+  margin: 0;
+}
+
+.distributionRow > small {
+  color: #8799ae;
+  font-size: 0.55rem;
+  text-align: end;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.tableWrap table {
+  min-width: 680px;
+}
+
+.tableWrap th {
+  border-color:
+    rgb(148 163 184 / 9%);
+  background:
+    rgb(25 48 77 / 58%);
+  color: #8fa2b8;
+}
+
+.tableWrap td {
+  border-color:
+    rgb(148 163 184 / 8%);
+  color: #bdcad8;
+}
+
+.tableWrap tbody tr:nth-child(even) {
+  background:
+    rgb(31 54 84 / 22%);
+}
+
+.tableWrap tbody tr:hover {
+  background:
+    rgb(27 92 91 / 20%);
+}
+
+.tableWrap a {
+  color: #7dd3b0;
+}
+
+.share i {
+  background: #23364d;
+}
+
+.share span {
+  color: #8799ae;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.reportPanel,
+.financePanel {
+  scroll-margin-top: 1rem;
+}
+
+@media (max-width: 1100px) {
+  .kpis {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .grid,
+  .finance {
+    grid-template-columns: 1fr;
+  }
+
+  .kpis {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .financePanel :global(.oqoodFormSection__content) {
+    padding: 0.65rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .page {
+    padding-inline: 10px;
+  }
+
+  .kpis {
+    grid-template-columns: 1fr;
+  }
+
+  .updated {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Reports route states and skeleton */
+
+.stateAction {
+  display: inline-flex;
+  min-height: 2.2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.48rem 0.72rem;
+  border: 1px solid
+    rgb(148 163 184 / 18%);
+  border-radius: 7px;
+  background: #172b46;
+  color: #a8d9c8;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.stateAction:hover {
+  border-color:
+    rgb(110 231 183 / 35%);
+  color: #d9fff2;
+}
+
+.stateAction:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+.stateActionPrimary {
+  border-color:
+    rgb(110 231 183 / 24%);
+  background:
+    linear-gradient(
+      135deg,
+      #118766,
+      #176e70
+    );
+  color: #fff;
+}
+
+.loadingGrid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.loadingPanel,
+.loadingFinancePanel,
+.loadingTablePanel {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid
+    rgb(148 163 184 / 13%);
+  border-radius: 9px;
+  background:
+    linear-gradient(
+      145deg,
+      #162b46,
+      #102139
+    );
+  box-shadow:
+    0 8px 22px
+    rgb(4 12 25 / 13%);
+}
+
+.loadingPanelHeader {
+  display: flex;
+  min-height: 3.4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.65rem 0.8rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 9%);
+  background:
+    rgb(25 48 77 / 55%);
+}
+
+.loadingPanelHeader > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.loadingDistribution {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.8rem;
+}
+
+.loadingDistributionRow {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.loadingDistributionRow > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.loadingFinanceGrid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding: 0.8rem;
+}
+
+.loadingFinanceGrid article {
+  display: grid;
+  gap: 0.42rem;
+  padding: 0.7rem;
+  border: 1px solid
+    rgb(148 163 184 / 9%);
+  border-radius: 8px;
+  background:
+    rgb(18 39 65 / 48%);
+}
+
+.loadingTable {
+  display: grid;
+  min-width: 680px;
+}
+
+.loadingTableRow {
+  display: grid;
+  grid-template-columns:
+    1.4fr
+    0.7fr
+    1fr
+    1.2fr;
+  gap: 0.7rem;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.65rem 0.75rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 8%);
+}
+
+.loadingTableRow:last-child {
+  border-block-end: 0;
+}
+
+.skeleton {
+  display: block;
+  border-radius: 6px;
+  background:
+    linear-gradient(
+      90deg,
+      #182b45 25%,
+      #244362 50%,
+      #182b45 75%
+    );
+  background-size: 200% 100%;
+  animation:
+    reportsSkeletonPulse
+    1.45s linear infinite;
+}
+
+.skeletonLabel {
+  width: 58%;
+  height: 0.48rem;
+}
+
+.skeletonValue {
+  width: 72%;
+  height: 0.92rem;
+  margin-block: 0.28rem;
+}
+
+.skeletonNote {
+  width: 50%;
+  height: 0.42rem;
+}
+
+.skeletonEyebrow {
+  width: 5.5rem;
+  height: 0.42rem;
+}
+
+.skeletonPanelTitle {
+  width: 10rem;
+  max-width: 70%;
+  height: 0.7rem;
+}
+
+.skeletonLink {
+  width: 5rem;
+  height: 1.5rem;
+}
+
+.skeletonDistributionLabel {
+  width: 7rem;
+  max-width: 60%;
+  height: 0.5rem;
+}
+
+.skeletonCount {
+  width: 1.5rem;
+  height: 0.55rem;
+}
+
+.skeletonProgress {
+  width: 100%;
+  height: 0.48rem;
+  border-radius: 999px;
+}
+
+.skeletonFinanceLabel {
+  width: 60%;
+  height: 0.45rem;
+}
+
+.skeletonFinanceValue {
+  width: 75%;
+  height: 0.75rem;
+}
+
+.skeletonFinanceNote {
+  width: 52%;
+  height: 0.4rem;
+}
+
+.skeletonTableCell {
+  width: 76%;
+  height: 0.58rem;
+}
+
+@keyframes reportsSkeletonPulse {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .loadingGrid,
+  .loadingFinanceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .loadingTablePanel {
+    overflow-x: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

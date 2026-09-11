@@ -1,5 +1,11 @@
 import Link from "next/link";
 
+import {
+  EmptyState,
+  FormSection,
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentWorkspace } from "@/lib/workspace-context";
@@ -34,7 +40,27 @@ export default async function ReportsPage() {
   const canReadVendors = hasPermission(context, Permissions.vendors.read);
 
   if (!canReadProcurement && !canReadOpportunities && !canReadContracts && !canReadVendors) {
-    return <main className={styles.page}><section className={styles.empty}>لا تملك صلاحية الاطلاع على التقارير.</section></main>;
+    return (
+      <main className={styles.page}>
+        <EmptyState
+          className={styles.routeState}
+          tone="warning"
+          icon="!"
+          title="لا تملك صلاحية الاطلاع على التقارير"
+          description="تواصل مع مسؤول مساحة العمل للحصول على صلاحية الوصول إلى التقارير والتحليلات."
+          role="alert"
+          aria-live="polite"
+          actions={
+            <Link
+              className={styles.backButton}
+              href="/platform"
+            >
+              العودة إلى لوحة التحكم
+            </Link>
+          }
+        />
+      </main>
+    );
   }
 
   const [procurement, opportunities, contracts, partners] = await Promise.all([
@@ -74,7 +100,6 @@ export default async function ReportsPage() {
   ]);
 
   // Request time is required for live deadline and delay indicators.
-  // eslint-disable-next-line react-hooks/purity
   const now = new Date();
   const currency = context.workspace.defaultCurrency;
   const money = (value: number) =>
@@ -133,14 +158,71 @@ export default async function ReportsPage() {
       / partners.filter((item) => item.trustScore !== null).length
     : 0;
 
+  const remainingContractValue =
+    Math.max(
+      0,
+      contractValue - paid,
+    );
+
+  const paidPercentage =
+    contractValue > 0
+      ? Math.min(
+          100,
+          Math.max(
+            0,
+            (paid / contractValue) *
+              100,
+          ),
+        )
+      : 0;
+
+  const claimedPercentage =
+    contractValue > 0
+      ? Math.min(
+          100,
+          Math.max(
+            0,
+            (claimed / contractValue) *
+              100,
+          ),
+        )
+      : 0;
+
+  const remainingPercentage =
+    contractValue > 0
+      ? Math.min(
+          100,
+          Math.max(
+            0,
+            (
+              remainingContractValue /
+              contractValue
+            ) * 100,
+          ),
+        )
+      : 0;
+
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <div><span>ذكاء الأعمال التشغيلي</span><h1>التقارير والتحليلات</h1><p>صورة موحّدة للأداء المالي والتشغيلي عبر دورة الشراء والتعاقد.</p></div>
-        <div className={styles.updated}>محدّث الآن</div>
-      </header>
+      <WorkspaceHeader
+        className={styles.workspaceHeader}
+        eyebrow="ذكاء الأعمال التشغيلي"
+        title="التقارير والتحليلات"
+        description="صورة موحّدة للأداء المالي والتشغيلي عبر دورة الشراء والتعاقد."
+        actions={
+          <span
+            className={styles.updated}
+            role="status"
+          >
+            محدّث الآن
+          </span>
+        }
+      />
 
-      <section className={styles.kpis}>
+      <section
+        aria-label="مؤشرات التقارير الرئيسية"
+        className={styles.kpis}
+      >
         {canReadProcurement && <article><span>القيمة التقديرية للمشتريات</span><strong>{money(estimatedProcurement)}</strong><small>{procurement.length} طلب مشتريات</small></article>}
         {canReadOpportunities && <article><span>المنافسات النشطة</span><strong>{opportunities.filter((item) => item.status === "PUBLISHED").length}</strong><small>{closingSoon} تغلق خلال 7 أيام</small></article>}
         {canReadContracts && <article><span>قيمة العقود</span><strong>{money(contractValue)}</strong><small>{contracts.length} عقد</small></article>}
@@ -148,29 +230,324 @@ export default async function ReportsPage() {
         {canReadVendors && <article><span>الموردون الموثقون</span><strong>{verifiedPartners} / {partners.length}</strong><small>متوسط الثقة {averageTrust.toFixed(0)}%</small></article>}
       </section>
 
-      <section className={styles.grid}>
-        {canReadProcurement && <article className={styles.panel}>
-          <div className={styles.panelHead}><div><span>مسار الطلبات</span><h2>حالات المشتريات</h2></div><Link href="/platform/procurement">فتح المشتريات</Link></div>
-          <Distribution rows={procurementDistribution} labels={procurementLabels} total={procurement.length} />
-        </article>}
-        {canReadOpportunities && <article className={styles.panel}>
-          <div className={styles.panelHead}><div><span>خط المنافسات</span><h2>حالات المنافسات</h2></div><Link href="/platform/opportunities">فتح المنافسات</Link></div>
-          <Distribution rows={opportunityDistribution} labels={opportunityLabels} total={opportunities.length} />
-        </article>}
+      <section
+        aria-label="توزيع حالات العمليات"
+        className={styles.grid}
+      >
+        {canReadProcurement ? (
+          <FormSection
+            className={styles.reportPanel}
+            eyebrow="مسار الطلبات"
+            title="حالات المشتريات"
+            description="توزيع طلبات المشتريات حسب حالتها الحالية."
+            actions={
+              <Link href="/platform/procurement">
+                فتح المشتريات
+              </Link>
+            }
+          >
+            <Distribution
+              rows={procurementDistribution}
+              labels={procurementLabels}
+              total={procurement.length}
+            />
+          </FormSection>
+        ) : null}
+
+        {canReadOpportunities ? (
+          <FormSection
+            className={styles.reportPanel}
+            eyebrow="خط المنافسات"
+            title="حالات المنافسات"
+            description="توزيع المنافسات حسب المرحلة التشغيلية الحالية."
+            actions={
+              <Link href="/platform/opportunities">
+                فتح المنافسات
+              </Link>
+            }
+          >
+            <Distribution
+              rows={opportunityDistribution}
+              labels={opportunityLabels}
+              total={opportunities.length}
+            />
+          </FormSection>
+        ) : null}
       </section>
 
-      {canReadContracts && <section className={styles.finance}>
-        <div><span>المدفوع</span><strong>{money(paid)}</strong><i><b style={{ width: `${contractValue ? Math.min(100, paid / contractValue * 100) : 0}%` }} /></i></div>
-        <div><span>مطالبات قيد السداد</span><strong>{money(claimed)}</strong><i><b style={{ width: `${contractValue ? Math.min(100, claimed / contractValue * 100) : 0}%` }} /></i></div>
-        <div><span>المتبقي من قيمة العقود</span><strong>{money(Math.max(0, contractValue - paid))}</strong><i><b style={{ width: `${contractValue ? Math.min(100, (contractValue - paid) / contractValue * 100) : 0}%` }} /></i></div>
-      </section>}
+      {canReadContracts ? (
+        <FormSection
+          className={styles.financePanel}
+          eyebrow="الأداء المالي"
+          title="التدفقات المالية للعقود"
+          description="مقارنة قيمة العقود بالمبالغ المدفوعة والمطالبات والمتبقي."
+          actions={
+            <Link href="/platform/contracts">
+              فتح العقود
+            </Link>
+          }
+        >
+          {contractValue > 0 ? (
+            <div
+              className={styles.finance}
+              aria-label="ملخص التدفقات المالية للعقود"
+            >
+              <article
+                className={
+                  styles.financeMetric
+                }
+              >
+                <span>المدفوع</span>
 
-      {canReadContracts && canReadVendors && <section className={styles.panel}>
-        <div className={styles.panelHead}><div><span>تحليل الإنفاق</span><h2>أعلى الموردين حسب قيمة العقود</h2></div><Link href="/platform/partners">دليل الموردين</Link></div>
-        {topPartners.length ? <div className={styles.tableWrap}><table><thead><tr><th>المورد</th><th>عدد العقود</th><th>قيمة الأعمال</th><th>الحصة من العقود</th></tr></thead><tbody>
-          {topPartners.map((partner) => <tr key={partner.id}><td><Link href={`/platform/partners/${partner.id}`}>{partner.name}</Link></td><td>{partner.contracts}</td><td>{money(partner.value)}</td><td><div className={styles.share}><i><b style={{ width: `${contractValue ? partner.value / contractValue * 100 : 0}%` }} /></i><span>{contractValue ? (partner.value / contractValue * 100).toFixed(1) : "0"}%</span></div></td></tr>)}
-        </tbody></table></div> : <p className={styles.empty}>لا توجد عقود كافية لإظهار تحليل الموردين.</p>}
-      </section>}
+                <strong>
+                  {money(paid)}
+                </strong>
+
+                <div
+                  aria-label="نسبة المدفوع من قيمة العقود"
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={Math.round(
+                    paidPercentage,
+                  )}
+                  className={
+                    styles.progressTrack
+                  }
+                  role="progressbar"
+                >
+                  <span
+                    className={
+                      styles.progressFill
+                    }
+                    style={{
+                      width:
+                        `${paidPercentage}%`,
+                    }}
+                  />
+                </div>
+
+                <small>
+                  {paidPercentage.toFixed(
+                    0,
+                  )}
+                  % من قيمة العقود
+                </small>
+              </article>
+
+              <article
+                className={
+                  styles.financeMetric
+                }
+              >
+                <span>
+                  مطالبات قيد السداد
+                </span>
+
+                <strong>
+                  {money(claimed)}
+                </strong>
+
+                <div
+                  aria-label="نسبة المطالبات من قيمة العقود"
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={Math.round(
+                    claimedPercentage,
+                  )}
+                  className={
+                    styles.progressTrack
+                  }
+                  role="progressbar"
+                >
+                  <span
+                    className={
+                      styles.progressFill
+                    }
+                    style={{
+                      width:
+                        `${claimedPercentage}%`,
+                    }}
+                  />
+                </div>
+
+                <small>
+                  {claimedPercentage.toFixed(
+                    0,
+                  )}
+                  % من قيمة العقود
+                </small>
+              </article>
+
+              <article
+                className={
+                  styles.financeMetric
+                }
+              >
+                <span>
+                  المتبقي من قيمة العقود
+                </span>
+
+                <strong>
+                  {money(
+                    remainingContractValue,
+                  )}
+                </strong>
+
+                <div
+                  aria-label="نسبة المتبقي من قيمة العقود"
+                  aria-valuemax={100}
+                  aria-valuemin={0}
+                  aria-valuenow={Math.round(
+                    remainingPercentage,
+                  )}
+                  className={
+                    styles.progressTrack
+                  }
+                  role="progressbar"
+                >
+                  <span
+                    className={
+                      styles.progressFill
+                    }
+                    style={{
+                      width:
+                        `${remainingPercentage}%`,
+                    }}
+                  />
+                </div>
+
+                <small>
+                  {remainingPercentage.toFixed(
+                    0,
+                  )}
+                  % من قيمة العقود
+                </small>
+              </article>
+            </div>
+          ) : (
+            <EmptyState
+              className={
+                styles.compactEmpty
+              }
+              icon="▤"
+              title="لا توجد بيانات مالية للعقود"
+              description="لا توجد عقود بقيمة مالية تسمح بعرض التدفقات حتى الآن."
+              role="status"
+            />
+          )}
+        </FormSection>
+      ) : null}
+
+      {canReadContracts &&
+      canReadVendors ? (
+        <FormSection
+          className={styles.reportPanel}
+          eyebrow="تحليل الإنفاق"
+          title="أعلى الموردين حسب قيمة العقود"
+          description="أعلى الموردين من حيث قيمة العقود المرتبطة بمساحة العمل."
+          actions={
+            <Link href="/platform/partners">
+              دليل الموردين
+            </Link>
+          }
+        >
+          {topPartners.length > 0 ? (
+            <div className={styles.tableWrap}>
+              <table>
+                <caption
+                  className={styles.srOnly}
+                >
+                  أعلى الموردين حسب قيمة
+                  العقود في مساحة العمل
+                </caption>
+                <thead>
+                  <tr>
+                    <th>المورد</th>
+                    <th>عدد العقود</th>
+                    <th>قيمة الأعمال</th>
+                    <th>الحصة من العقود</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {topPartners.map(
+                    (partner) => {
+                      const share =
+                        contractValue > 0
+                          ? (
+                              partner.value /
+                              contractValue
+                            ) *
+                            100
+                          : 0;
+
+                      return (
+                        <tr key={partner.id}>
+                          <td>
+                            <Link
+                              href={`/platform/partners/${partner.id}`}
+                            >
+                              {partner.name}
+                            </Link>
+                          </td>
+
+                          <td>
+                            {
+                              partner.contracts
+                            }
+                          </td>
+
+                          <td>
+                            {money(
+                              partner.value,
+                            )}
+                          </td>
+
+                          <td>
+                            <div
+                              className={
+                                styles.share
+                              }
+                            >
+                              <i
+                                aria-hidden="true"
+                              >
+                                <b
+                                  style={{
+                                    width:
+                                      `${share}%`,
+                                  }}
+                                />
+                              </i>
+
+                              <span>
+                                {share.toFixed(
+                                  1,
+                                )}
+                                %
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    },
+                  )}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <EmptyState
+              className={
+                styles.compactEmpty
+              }
+              icon="▥"
+              title="لا توجد بيانات إنفاق كافية"
+              description="لا توجد عقود كافية لإظهار تحليل الموردين حتى الآن."
+              role="status"
+            />
+          )}
+        </FormSection>
+      ) : null}
     </main>
   );
 }
@@ -184,9 +561,86 @@ function Distribution({
   labels: Record<string, string>;
   total: number;
 }) {
-  if (!rows.length) return <p className={styles.empty}>لا توجد بيانات متاحة بعد.</p>;
-  return <div className={styles.distribution}>{rows.map(([status, count]) => {
-    const percentage = total ? count / total * 100 : 0;
-    return <div key={status}><div><span>{labels[status] ?? status}</span><strong>{count}</strong></div><i><b style={{ width: `${percentage}%` }} /></i></div>;
-  })}</div>;
+  if (!rows.length) {
+    return (
+      <EmptyState
+        className={styles.compactEmpty}
+        icon="▤"
+        title="لا توجد بيانات متاحة"
+        description="لا توجد سجلات كافية لإظهار هذا التوزيع حتى الآن."
+        role="status"
+      />
+    );
+  }
+
+  return (
+    <div
+      className={styles.distribution}
+      role="list"
+    >
+      {rows.map(
+        ([status, count]) => {
+          const percentage =
+            total > 0
+              ? Math.min(
+                  100,
+                  Math.max(
+                    0,
+                    (count / total) * 100,
+                  ),
+                )
+              : 0;
+
+          const label =
+            labels[status] ?? status;
+
+          return (
+            <div
+              className={
+                styles.distributionRow
+              }
+              key={status}
+              role="listitem"
+            >
+              <div
+                className={
+                  styles.distributionLabel
+                }
+              >
+                <span>{label}</span>
+                <strong>{count}</strong>
+              </div>
+
+              <div
+                aria-label={`نسبة ${label}`}
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={Math.round(
+                  percentage,
+                )}
+                className={
+                  styles.progressTrack
+                }
+                role="progressbar"
+              >
+                <span
+                  className={
+                    styles.progressFill
+                  }
+                  style={{
+                    width:
+                      `${percentage}%`,
+                  }}
+                />
+              </div>
+
+              <small>
+                {percentage.toFixed(0)}%
+              </small>
+            </div>
+          );
+        },
+      )}
+    </div>
+  );
 }
