@@ -1,3 +1,8 @@
+import {
+  EmptyState,
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
 import { hasPermission, Permissions } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { requireCurrentUser } from "@/lib/session";
@@ -11,7 +16,19 @@ export default async function SettingsPage() {
   const context = await requireCurrentWorkspace();
   const currentUser = await requireCurrentUser();
   if (!hasPermission(context, Permissions.workspace.read)) {
-    return <main className={styles.page}><p>لا تملك صلاحية عرض إعدادات مساحة العمل.</p></main>;
+    return (
+      <main className={styles.page}>
+        <EmptyState
+          className={styles.routeState}
+          tone="warning"
+          icon="!"
+          title="لا تملك صلاحية عرض إعدادات مساحة العمل"
+          description="تواصل مع مسؤول مساحة العمل للحصول على صلاحية الاطلاع على الإعدادات والفريق."
+          role="alert"
+          aria-live="polite"
+        />
+      </main>
+    );
   }
   const [workspace, members, roles, permissions, invitations] = await Promise.all([
     prisma.workspace.findUniqueOrThrow({
@@ -36,12 +53,33 @@ export default async function SettingsPage() {
     }),
   ]);
 
+  const activeMemberCount =
+    members.filter(
+      (member) =>
+        member.status === "ACTIVE",
+    ).length;
+
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <div><span>إدارة المنصة</span><h1>الإعدادات والفريق</h1><p>إدارة هوية مساحة العمل وأعضائها وأدوار الوصول من مكان واحد.</p></div>
-        <div><b>{members.filter((member) => member.status === "ACTIVE").length}</b><small>عضو نشط</small></div>
-      </header>
+      <WorkspaceHeader
+        className={styles.workspaceHeader}
+        eyebrow="إدارة المنصة"
+        title="الإعدادات والفريق"
+        description="إدارة هوية مساحة العمل وأعضائها وأدوار الوصول وأمان الحساب من مكان واحد."
+        actions={
+          <div
+            aria-label={`${activeMemberCount} عضو نشط`}
+            className={styles.memberSummary}
+            role="status"
+          >
+            <strong>
+              {activeMemberCount}
+            </strong>
+
+            <span>عضو نشط</span>
+          </div>
+        }
+      />
       <SettingsControlPanel
         canManageMembers={hasPermission(context, Permissions.workspace.manageMembers)}
         canManageRoles={hasPermission(context, Permissions.workspace.manageRoles)}

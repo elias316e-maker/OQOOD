@@ -1,2 +1,767 @@
 .stack{display:grid;gap:.85rem}.notice{border-radius:9px;font-size:.72rem;font-weight:700;padding:.7rem .85rem}.notice[data-tone=success]{background:#e8f7f0;color:#087f5b}.notice[data-tone=error]{background:#fff0f0;color:#a33}.panel{background:#fff;border:1px solid #dce5ef;border-radius:12px;overflow:hidden}.panelHead{align-items:center;border-bottom:1px solid #e7edf3;display:flex;justify-content:space-between;padding:.75rem .9rem}.panelHead span{color:#168260;font-size:.64rem;font-weight:800}.panelHead h2{color:#28455f;font-size:.92rem;margin:.12rem 0}.panelHead small{color:#8592a1;font-size:.6rem}.form,.invite{align-items:end;display:grid;gap:.65rem;padding:.8rem}.form{grid-template-columns:1.2fr 1.2fr 1fr .7fr .7fr auto}.invite{background:#f7fafc;border-bottom:1px solid #e7edf3;grid-template-columns:2fr 1fr auto}.form label,.invite label,.roleFields label{color:#65778b;font-size:.6rem;font-weight:700}.form input,.form select,.invite input,.invite select,.memberControls select,.roleFields input{background:#fff;border:1px solid #d6e0e8;border-radius:7px;color:#314b63;font:inherit;margin-top:.25rem;padding:.52rem;width:100%}.form button,.invite button,.memberControls button,.roleForm>button{background:#087f5b;border:0;border-radius:7px;color:#fff;cursor:pointer;font-size:.64rem;font-weight:800;padding:.58rem .75rem;white-space:nowrap}.memberList article{align-items:center;border-bottom:1px solid #edf1f5;display:flex;justify-content:space-between;padding:.72rem .9rem}.memberList article:last-child{border:0}.identity{display:grid}.identity b{color:#304a62;font-size:.72rem}.identity span{color:#718195;font-size:.62rem}.identity small{color:#a0aab5;font-size:.54rem}.memberControls{align-items:center;display:flex;gap:.45rem}.memberControls select{margin:0;min-width:110px}.memberControls em{background:#e7f5ef;border-radius:999px;color:#087f5b;font-size:.58rem;font-style:normal;font-weight:800;padding:.35rem .55rem}.roles{display:grid;gap:.55rem;grid-template-columns:repeat(3,1fr);padding:.8rem}.roles article{border:1px solid #e0e7ed;border-radius:9px;padding:.65rem}.roles article>div{align-items:center;display:flex;justify-content:space-between}.roles b{color:#304b64;font-size:.7rem}.roles span{background:#e9f5f1;border-radius:999px;color:#087f5b;font-size:.52rem;padding:.2rem .35rem}.roles p{color:#7b8999;font-size:.58rem;min-height:1.6rem}.roles small{color:#168260;font-size:.56rem;font-weight:800}.roleForm{border-top:1px solid #e7edf3;padding:.8rem}.roleFields{display:grid;gap:.65rem;grid-template-columns:1fr 2fr}.permissions{display:grid;gap:.55rem;grid-template-columns:repeat(3,1fr);margin:.75rem 0}.permissions fieldset{border:1px solid #e0e7ed;border-radius:8px;padding:.5rem}.permissions legend{color:#168260;font-size:.58rem;font-weight:900;padding:0 .2rem;text-transform:uppercase}.permissions label{align-items:start;display:flex;gap:.35rem;margin:.3rem 0}.permissions label input{accent-color:#087f5b;margin-top:.15rem}.permissions label span{display:grid}.permissions label b{color:#455e74;font-size:.58rem}.permissions label small{color:#96a1ae;font-size:.5rem}@media(max-width:1050px){.form{grid-template-columns:repeat(3,1fr)}.permissions{grid-template-columns:1fr 1fr}}@media(max-width:700px){.form,.invite,.roleFields,.permissions,.roles{grid-template-columns:1fr}.memberList article{align-items:start;flex-direction:column;gap:.55rem}.memberControls{flex-wrap:wrap;width:100%}}
 .stack{gap:.65rem}.notice{padding:.5rem .65rem}.notice[data-tone=success]{background:rgb(16 185 129 / 11%);color:#6ee7b7}.notice[data-tone=error]{background:rgb(244 63 94 / 10%);color:#f59aaa}.panel{border-color:rgb(148 163 184 / 13%);border-radius:9px;background:linear-gradient(145deg,#162b46,#102139);box-shadow:0 8px 22px rgb(4 12 25 / 13%)}.panelHead{padding:.52rem .65rem;border-color:rgb(148 163 184 / 9%);background:rgb(25 48 77 / 55%)}.panelHead h2{color:#eef5fa;font-size:.76rem}.panelHead small{color:#8799ae}.form,.invite{gap:.5rem;padding:.6rem}.invite{border-color:rgb(148 163 184 / 9%);background:rgb(25 48 77 / 40%)}.form label,.invite label,.roleFields label{color:#9aacc0;font-size:.56rem}.form input,.form select,.invite input,.invite select,.memberControls select,.roleFields input{padding:.45rem;border-color:rgb(148 163 184 / 17%);background:#10233b;color:#dce7f2;font-size:.61rem}.form button,.invite button,.memberControls button,.roleForm>button{padding:.48rem .62rem;background:#118766;font-size:.59rem}.memberList article{padding:.5rem .65rem;border-color:rgb(148 163 184 / 8%)}.memberList article:nth-child(even){background:rgb(31 54 84 / 25%)}.identity b{color:#dce7f2;font-size:.65rem}.identity span,.identity small{color:#8497ad}.memberControls em{background:rgb(16 185 129 / 13%);color:#6ee7b7}.roles{gap:.45rem;padding:.6rem}.roles article{padding:.52rem;border-color:rgb(148 163 184 / 11%);background:rgb(18 39 65 / 50%)}.roles b{color:#dce7f2}.roles span{background:rgb(16 185 129 / 13%);color:#6ee7b7}.roles p{color:#8fa2b8;min-height:1.3rem}.roles small{color:#7dd3b0}.roleForm{padding:.6rem;border-color:rgb(148 163 184 / 9%)}.roleFields{gap:.5rem}.permissions{gap:.45rem;margin:.55rem 0}.permissions fieldset{padding:.42rem;border-color:rgb(148 163 184 / 11%);background:rgb(18 39 65 / 42%)}.permissions legend{color:#65d9b5}.permissions label b{color:#cfdce8}.permissions label small{color:#7f92a9}
+
+/* Settings workspace panel Design System integration */
+
+.notice {
+  margin: 0;
+}
+
+.workspacePanel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.workspacePanel :global(.oqoodFormSection__content) {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.75rem;
+}
+
+.workspaceForm {
+  grid-template-columns: 1fr;
+  align-items: stretch;
+  gap: 0.7rem;
+  padding: 0;
+}
+
+.workspaceGuidance,
+.workspaceActions {
+  margin: 0;
+}
+
+.workspaceFields {
+  display: grid;
+  grid-template-columns:
+    1.2fr
+    1.2fr
+    1fr
+    0.72fr
+    0.72fr;
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.workspaceFields label {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.workspaceFields input,
+.workspaceFields select {
+  min-height: 2.25rem;
+  margin-top: 0;
+}
+
+.workspaceFields input:focus,
+.workspaceFields select:focus {
+  border-color: #2bb58d;
+  outline: none;
+  box-shadow:
+    0 0 0 3px
+    rgb(43 181 141 / 12%);
+}
+
+.workspaceFields input:disabled,
+.workspaceFields select:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.workspaceActions :global(.oqoodFormActions__status) {
+  color: #8799ae;
+  font-size: 0.59rem;
+}
+
+.workspaceActions :global(.oqoodFormActions__buttons) {
+  justify-content: flex-end;
+}
+
+.workspaceActions button:focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 2px;
+}
+
+@media (max-width: 1050px) {
+  .workspaceFields {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .workspacePanel :global(.oqoodFormSection__content) {
+    padding: 0.65rem;
+  }
+
+  .workspaceFields {
+    grid-template-columns: 1fr;
+  }
+
+  .workspaceActions :global(.oqoodFormActions__buttons) {
+    width: 100%;
+  }
+
+  .workspaceActions button {
+    width: 100%;
+  }
+}
+
+/* Settings members and invitations integration */
+
+.membersPanel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.membersPanel :global(.oqoodFormSection__content) {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.membersPanel :global(.oqoodFormSection__actions) {
+  color: #8799ae;
+}
+
+.sectionCount {
+  color: #8799ae;
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+
+.invite {
+  grid-template-columns: 1fr;
+  align-items: stretch;
+  gap: 0.65rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.inviteGuidance,
+.inviteActions,
+.readOnlyGuidance {
+  margin: 0;
+}
+
+.inviteFields {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: end;
+}
+
+.inviteFields label {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.inviteFields input,
+.inviteFields select {
+  min-height: 2.25rem;
+  margin-top: 0;
+}
+
+.inviteFields input:focus,
+.inviteFields select:focus,
+.memberControls select:focus {
+  border-color: #2bb58d;
+  outline: none;
+  box-shadow:
+    0 0 0 3px
+    rgb(43 181 141 / 12%);
+}
+
+.inviteActions :global(.oqoodFormActions__status) {
+  color: #8799ae;
+  font-size: 0.58rem;
+}
+
+.inviteActions :global(.oqoodFormActions__buttons) {
+  justify-content: flex-end;
+}
+
+.subsection {
+  display: grid;
+  min-width: 0;
+  gap: 0.45rem;
+  overflow: hidden;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
+  border-radius: 8px;
+  background:
+    rgb(18 39 65 / 35%);
+}
+
+.subsectionHeader {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.55rem 0.65rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 8%);
+  background:
+    rgb(25 48 77 / 38%);
+}
+
+.subsectionHeader > div {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.subsectionHeader span {
+  color: #65d9b5;
+  font-size: 0.55rem;
+  font-weight: 800;
+}
+
+.subsectionHeader h3 {
+  margin: 0;
+  color: #dce7f2;
+  font-size: 0.7rem;
+}
+
+.subsectionHeader small {
+  color: #8799ae;
+  font-size: 0.56rem;
+  font-weight: 800;
+}
+
+.invitationList {
+  border-block-end: 0;
+}
+
+.identity {
+  min-width: 0;
+}
+
+.identityHeading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.identityHeading strong {
+  overflow: hidden;
+  color: #dce7f2;
+  font-size: 0.65rem;
+  text-overflow: ellipsis;
+}
+
+.identityBadges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.pendingBadge,
+.currentBadge,
+.ownerBadge {
+  display: inline-flex;
+  min-height: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0.36rem;
+  border-radius: 999px;
+  font-size: 0.5rem;
+  font-weight: 800;
+}
+
+.pendingBadge {
+  background:
+    rgb(245 158 11 / 12%);
+  color: #f7c768;
+}
+
+.currentBadge {
+  background:
+    rgb(59 130 246 / 12%);
+  color: #93c5fd;
+}
+
+.ownerBadge {
+  background:
+    rgb(16 185 129 / 13%);
+  color: #6ee7b7;
+}
+
+.rowActionForm {
+  margin: 0;
+}
+
+.rowAction {
+  min-height: 2rem;
+  padding: 0.42rem 0.58rem;
+  border: 1px solid
+    rgb(110 231 183 / 20%);
+  border-radius: 6px;
+  background:
+    rgb(16 185 129 / 10%);
+  color: #75deb9;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.56rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.rowAction:hover:not(:disabled) {
+  border-color:
+    rgb(110 231 183 / 38%);
+  background:
+    rgb(16 185 129 / 16%);
+}
+
+.rowActionDanger {
+  border-color:
+    rgb(244 63 94 / 22%);
+  background:
+    rgb(244 63 94 / 10%);
+  color: #f59aaa;
+}
+
+.rowAction:focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 2px;
+}
+
+.rowAction:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.memberControls {
+  justify-content: flex-end;
+}
+
+.memberControls label {
+  display: grid;
+  min-width: 110px;
+  gap: 0.2rem;
+  color: #8799ae;
+  font-size: 0.53rem;
+  font-weight: 700;
+}
+
+.memberControls label > span {
+  padding-inline: 0.1rem;
+}
+
+.memberControls select {
+  min-height: 2rem;
+}
+
+.memberControls select:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.compactEmpty {
+  min-height: 8rem;
+}
+
+@media (max-width: 760px) {
+  .membersPanel :global(.oqoodFormSection__content) {
+    padding: 0.65rem;
+  }
+
+  .inviteFields {
+    grid-template-columns: 1fr;
+  }
+
+  .inviteActions :global(.oqoodFormActions__buttons) {
+    width: 100%;
+  }
+
+  .inviteActions button {
+    width: 100%;
+  }
+
+  .subsectionHeader {
+    align-items: start;
+  }
+
+  .memberControls {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .memberControls label {
+    flex: 1 1 9rem;
+  }
+
+  .memberControls .rowAction {
+    flex: 1 1 100%;
+  }
+}
+
+/* Settings ownership and roles integration */
+
+.ownershipPanel,
+.rolesPanel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ownershipPanel :global(.oqoodFormSection__content),
+.rolesPanel :global(.oqoodFormSection__content) {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.ownershipPanel :global(.oqoodFormSection__actions),
+.rolesPanel :global(.oqoodFormSection__actions) {
+  color: #8799ae;
+}
+
+.sensitiveBadge {
+  display: inline-flex;
+  min-height: 1.4rem;
+  align-items: center;
+  padding-inline: 0.45rem;
+  border-radius: 999px;
+  background:
+    rgb(244 63 94 / 10%);
+  color: #f59aaa;
+  font-size: 0.52rem;
+  font-weight: 800;
+}
+
+.ownershipForm {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.ownershipGuidance,
+.ownershipActions,
+.roleGuidance,
+.roleActions,
+.roleDeleteActions,
+.rolesReadOnlyGuidance {
+  margin: 0;
+}
+
+.ownershipFields {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.ownershipFields label {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+  color: #9aacc0;
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+.ownershipFields select {
+  min-height: 2.3rem;
+  padding: 0.48rem;
+  border: 1px solid
+    rgb(148 163 184 / 17%);
+  border-radius: 7px;
+  outline: none;
+  background: #10233b;
+  color: #dce7f2;
+  font: inherit;
+  font-size: 0.61rem;
+}
+
+.ownershipFields select:focus {
+  border-color: #2bb58d;
+  box-shadow:
+    0 0 0 3px
+    rgb(43 181 141 / 12%);
+}
+
+.ownershipFields select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ownershipActions :global(.oqoodFormActions__status),
+.roleActions :global(.oqoodFormActions__status),
+.roleDeleteActions :global(.oqoodFormActions__status) {
+  color: #8799ae;
+  font-size: 0.58rem;
+}
+
+.ownershipActions :global(.oqoodFormActions__buttons),
+.roleActions :global(.oqoodFormActions__buttons),
+.roleDeleteActions :global(.oqoodFormActions__buttons) {
+  justify-content: flex-end;
+}
+
+.dangerButton {
+  min-height: 2.2rem;
+  padding: 0.48rem 0.7rem;
+  border: 1px solid
+    rgb(244 63 94 / 26%);
+  border-radius: 7px;
+  background:
+    rgb(244 63 94 / 11%);
+  color: #f59aaa;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.59rem;
+  font-weight: 800;
+}
+
+.dangerButton:hover:not(:disabled) {
+  border-color:
+    rgb(244 63 94 / 44%);
+  background:
+    rgb(244 63 94 / 17%);
+}
+
+.dangerButton:focus-visible {
+  outline: 2px solid #fb7185;
+  outline-offset: 2px;
+}
+
+.dangerButton:disabled {
+  cursor: wait;
+  opacity: 0.52;
+}
+
+.roles {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  padding: 0;
+}
+
+.roleCard {
+  min-width: 0;
+}
+
+.roleCardHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
+.roleCardHeader > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.12rem;
+}
+
+.roleCardHeader strong {
+  overflow: hidden;
+  color: #dce7f2;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roleCode {
+  color: #7f92a9 !important;
+  font-size: 0.5rem !important;
+  font-weight: 700;
+}
+
+.systemBadge,
+.customBadge {
+  display: inline-flex;
+  min-height: 1.2rem;
+  flex: 0 0 auto;
+  align-items: center;
+  padding-inline: 0.36rem;
+  border-radius: 999px;
+  font-size: 0.5rem;
+  font-weight: 800;
+}
+
+.systemBadge {
+  background:
+    rgb(16 185 129 / 13%);
+  color: #6ee7b7;
+}
+
+.customBadge {
+  background:
+    rgb(59 130 246 / 12%);
+  color: #93c5fd;
+}
+
+.permissionCount {
+  color: #7dd3b0 !important;
+  font-size: 0.56rem !important;
+  font-weight: 800;
+}
+
+.roleDetails {
+  margin-block-start: 0.55rem;
+  border-block-start: 1px solid
+    rgb(148 163 184 / 9%);
+  padding-block-start: 0.5rem;
+}
+
+.roleDetails > summary {
+  cursor: pointer;
+  color: #75deb9;
+  font-size: 0.57rem;
+  font-weight: 800;
+}
+
+.roleDetails > summary:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+.roleDetails[open] > summary {
+  margin-block-end: 0.55rem;
+}
+
+.roleForm {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0;
+  border: 0;
+}
+
+.roleFields {
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 2fr);
+}
+
+.roleFields label {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.roleFields input {
+  min-height: 2.2rem;
+  margin-top: 0;
+}
+
+.roleFields input:focus {
+  border-color: #2bb58d;
+  outline: none;
+  box-shadow:
+    0 0 0 3px
+    rgb(43 181 141 / 12%);
+}
+
+.permissions {
+  margin: 0;
+}
+
+.permissions fieldset {
+  min-width: 0;
+}
+
+.permissions label strong {
+  color: #cfdce8;
+  font-size: 0.58rem;
+}
+
+.deleteRoleForm {
+  display: grid;
+  gap: 0.5rem;
+  margin-block-start: 0.6rem;
+  padding-block-start: 0.6rem;
+  border-block-start: 1px solid
+    rgb(244 63 94 / 12%);
+}
+
+.createRoleForm {
+  padding: 0.75rem;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
+  border-radius: 8px;
+  background:
+    rgb(18 39 65 / 38%);
+}
+
+.roleActions button:not(.dangerButton) {
+  min-height: 2.2rem;
+  padding: 0.48rem 0.7rem;
+  border: 1px solid #118766;
+  border-radius: 7px;
+  background:
+    linear-gradient(
+      135deg,
+      #118766,
+      #176e70
+    );
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.59rem;
+  font-weight: 800;
+}
+
+.roleActions button:not(.dangerButton):hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.roleActions button:not(.dangerButton):focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 2px;
+}
+
+.roleActions button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+@media (max-width: 1050px) {
+  .roles {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .permissions {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .ownershipPanel :global(.oqoodFormSection__content),
+  .rolesPanel :global(.oqoodFormSection__content) {
+    padding: 0.65rem;
+  }
+
+  .ownershipFields,
+  .roles,
+  .roleFields,
+  .permissions {
+    grid-template-columns: 1fr;
+  }
+
+  .ownershipActions :global(.oqoodFormActions__buttons),
+  .roleActions :global(.oqoodFormActions__buttons),
+  .roleDeleteActions :global(.oqoodFormActions__buttons) {
+    width: 100%;
+  }
+
+  .ownershipActions button,
+  .roleActions button,
+  .roleDeleteActions button {
+    width: 100%;
+  }
+
+  .createRoleForm {
+    padding: 0.65rem;
+  }
+}

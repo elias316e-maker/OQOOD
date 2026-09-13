@@ -1,1 +1,372 @@
-.panel{margin-top:18px;padding:22px;border:1px solid rgba(148,163,184,.18);border-radius:20px;background:linear-gradient(145deg,#172334,#1d2d40);color:#e8eef6}.heading,.sessionsHeader{display:flex;align-items:center;justify-content:space-between;gap:16px}.heading span{color:#8fa4bc;font-size:.82rem}.heading h2,.sessionsHeader h3{margin:5px 0}.enabled,.disabled{padding:7px 12px;border-radius:999px;font-size:.82rem}.enabled{background:#123e35;color:#7ee0bd}.disabled{background:#402a30;color:#ffb5bd}.message{padding:10px 12px;border-radius:10px;background:#21364d;color:#b9d8f2}.form{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:18px 0;padding:16px;border-radius:14px;background:rgba(8,18,31,.4)}.form p,.form label{width:100%;margin:0;color:#b7c5d5}.form input{min-width:260px;flex:1;padding:11px 13px;border:1px solid #40546b;border-radius:10px;background:#101b2a;color:#fff}.form button,.sessionsHeader button,.sessions button{padding:10px 14px;border:0;border-radius:9px;background:#277d68;color:#fff;cursor:pointer}.danger,.sessions button{background:#7f3340!important}.uri{width:100%;padding:12px;overflow-wrap:anywhere;border-radius:9px;background:#0d1724;color:#8be0c7}.codes{padding:16px;border:1px solid #3e5369;border-radius:14px}.codes h3{margin-top:0}.codes div{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.codes code{padding:8px;text-align:center;background:#101b2a;border-radius:8px}.sessionsHeader{margin-top:24px}.sessionsHeader p{margin:0;color:#94a7bb}.sessions{display:grid;gap:9px;margin-top:12px}.sessions article{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px;border-radius:12px;background:#111d2c}.sessions article div{display:grid;gap:3px}.sessions span,.sessions small{color:#91a4b8}@media(max-width:700px){.heading,.sessionsHeader{align-items:flex-start;flex-direction:column}.form input{min-width:100%}.sessions article{align-items:flex-start}}
+.securityPanel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.securityPanel :global(.oqoodFormSection__content) {
+  padding: 0.75rem;
+}
+
+.securityPanel :global(.oqoodFormSection__actions) {
+  display: flex;
+  align-items: center;
+}
+
+.enabled,
+.disabled {
+  display: inline-flex;
+  min-height: 1.45rem;
+  align-items: center;
+  padding-inline: 0.48rem;
+  border-radius: 999px;
+  font-size: 0.53rem;
+  font-weight: 800;
+}
+
+.enabled {
+  background:
+    rgb(16 185 129 / 13%);
+  color: #6ee7b7;
+}
+
+.disabled {
+  background:
+    rgb(244 63 94 / 10%);
+  color: #f59aaa;
+}
+
+.securityFlow {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.message {
+  margin: 0;
+}
+
+.securityForm {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
+  border-radius: 8px;
+  background:
+    rgb(18 39 65 / 40%);
+}
+
+.securityGuidance,
+.securityActions {
+  margin: 0;
+}
+
+.field {
+  display: grid;
+  max-width: 32rem;
+  gap: 0.28rem;
+}
+
+.field > span,
+.setupKey > span {
+  color: #9aacc0;
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+.field input {
+  width: 100%;
+  min-height: 2.3rem;
+  padding: 0.5rem 0.58rem;
+  border: 1px solid
+    rgb(148 163 184 / 17%);
+  border-radius: 7px;
+  outline: none;
+  background: #10233b;
+  color: #dce7f2;
+  font: inherit;
+  font-size: 0.63rem;
+}
+
+.field input:focus {
+  border-color: #2bb58d;
+  box-shadow:
+    0 0 0 3px
+    rgb(43 181 141 / 12%);
+}
+
+.field input::placeholder {
+  color: #6f8298;
+}
+
+.setupKey {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.uri {
+  display: block;
+  width: 100%;
+  overflow-wrap: anywhere;
+  padding: 0.65rem;
+  border: 1px solid
+    rgb(110 231 183 / 16%);
+  border-radius: 7px;
+  background: #0d1c2e;
+  color: #8be0c7;
+  font-size: 0.59rem;
+  user-select: all;
+}
+
+.securityActions :global(.oqoodFormActions__status) {
+  color: #8799ae;
+  font-size: 0.58rem;
+}
+
+.securityActions :global(.oqoodFormActions__buttons) {
+  justify-content: flex-end;
+}
+
+.primaryButton,
+.dangerButton,
+.secondaryButton,
+.sessionDangerButton {
+  min-height: 2.2rem;
+  padding: 0.46rem 0.68rem;
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.59rem;
+  font-weight: 800;
+}
+
+.primaryButton {
+  border: 1px solid #118766;
+  background:
+    linear-gradient(
+      135deg,
+      #118766,
+      #176e70
+    );
+  color: #fff;
+}
+
+.dangerButton,
+.sessionDangerButton {
+  border: 1px solid
+    rgb(244 63 94 / 25%);
+  background:
+    rgb(244 63 94 / 11%);
+  color: #f59aaa;
+}
+
+.secondaryButton {
+  border: 1px solid
+    rgb(148 163 184 / 18%);
+  background: #172b46;
+  color: #a8d9c8;
+}
+
+.primaryButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.secondaryButton:hover:not(:disabled) {
+  border-color:
+    rgb(110 231 183 / 34%);
+  color: #d9fff2;
+}
+
+.dangerButton:hover:not(:disabled),
+.sessionDangerButton:hover:not(:disabled) {
+  border-color:
+    rgb(244 63 94 / 44%);
+  background:
+    rgb(244 63 94 / 17%);
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.dangerButton:focus-visible,
+.sessionDangerButton:focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 2px;
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled,
+.dangerButton:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.recoveryCodes {
+  margin: 0;
+}
+
+.recoveryCodes :global(.oqoodAlert__content) {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.recoveryCodes p {
+  margin: 0;
+}
+
+.recoveryCodeGrid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(8rem, 1fr)
+    );
+  gap: 0.4rem;
+}
+
+.recoveryCodeGrid code {
+  padding: 0.48rem;
+  border: 1px solid
+    rgb(245 158 11 / 15%);
+  border-radius: 6px;
+  background: #101b2a;
+  color: #f7c768;
+  font-size: 0.57rem;
+  text-align: center;
+  user-select: all;
+}
+
+.sessionsSection {
+  display: grid;
+  overflow: hidden;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
+  border-radius: 8px;
+  background:
+    rgb(18 39 65 / 34%);
+}
+
+.sessionsHeader {
+  display: flex;
+  min-height: 3.8rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 8%);
+  background:
+    rgb(25 48 77 / 38%);
+}
+
+.sessionsHeader > div {
+  display: grid;
+  gap: 0.12rem;
+}
+
+.sessionsHeader span {
+  color: #65d9b5;
+  font-size: 0.55rem;
+  font-weight: 800;
+}
+
+.sessionsHeader h3 {
+  margin: 0;
+  color: #dce7f2;
+  font-size: 0.72rem;
+}
+
+.sessionsHeader p {
+  margin: 0;
+  color: #8799ae;
+  font-size: 0.57rem;
+}
+
+.sessionLoading {
+  padding: 1.5rem;
+  color: #8799ae;
+  font-size: 0.63rem;
+  text-align: center;
+}
+
+.sessions {
+  display: grid;
+}
+
+.sessions article {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 8%);
+}
+
+.sessions article:nth-child(even) {
+  background:
+    rgb(31 54 84 / 22%);
+}
+
+.sessions article:last-child {
+  border-block-end: 0;
+}
+
+.sessionIdentity {
+  display: grid;
+  min-width: 0;
+  gap: 0.16rem;
+}
+
+.sessionIdentity strong {
+  color: #dce7f2;
+  font-size: 0.65rem;
+}
+
+.sessionIdentity span {
+  color: #9aacc0;
+  font-size: 0.58rem;
+}
+
+.sessionIdentity small {
+  color: #75889e;
+  font-size: 0.52rem;
+}
+
+.sessionDangerButton {
+  flex: 0 0 auto;
+}
+
+.compactEmpty {
+  min-height: 8rem;
+  border: 0;
+  border-radius: 0;
+}
+
+@media (max-width: 700px) {
+  .securityPanel :global(.oqoodFormSection__content) {
+    padding: 0.65rem;
+  }
+
+  .securityForm {
+    padding: 0.65rem;
+  }
+
+  .securityActions :global(.oqoodFormActions__buttons) {
+    width: 100%;
+  }
+
+  .securityActions button {
+    width: 100%;
+  }
+
+  .sessionsHeader,
+  .sessions article {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sessionsHeader .secondaryButton,
+  .sessionDangerButton {
+    width: 100%;
+  }
+}
