@@ -1,0 +1,526 @@
+.page {
+  display: grid;
+  gap: 0.7rem;
+  padding: 14px 18px 26px;
+  color: #dce7f2;
+}
+
+.header {
+  min-width: 0;
+}
+
+.primaryAction {
+  display: inline-flex;
+  min-height: 2.3rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #118766;
+  border-radius: 7px;
+  background:
+    linear-gradient(
+      135deg,
+      #118766,
+      #176e70
+    );
+  color: #fff;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primaryAction:hover {
+  filter: brightness(1.08);
+}
+
+.primaryAction:focus-visible,
+.retryLink:focus-visible,
+.identity a:focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 2px;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.summary article {
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid
+    rgb(148 163 184 / 13%);
+  border-radius: 9px;
+  background:
+    linear-gradient(
+      145deg,
+      #162b46,
+      #102139
+    );
+  box-shadow:
+    0 8px 22px
+    rgb(4 12 25 / 13%);
+}
+
+.summary span,
+.summary small {
+  display: block;
+  color: #8da0b6;
+  font-size: 0.61rem;
+}
+
+.summary strong {
+  display: block;
+  margin-block: 0.18rem;
+  color: #7dd3b0;
+  font-size: 1.05rem;
+}
+
+.feedback {
+  margin: 0;
+}
+
+.feedback p {
+  margin: 0;
+}
+
+.feedback :global(.oqoodAlert__content) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.retryLink {
+  flex: 0 0 auto;
+  color: #fecdd3;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.empty {
+  min-height: 13rem;
+}
+
+.panel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.panel :global(.oqoodFormSection__content) {
+  padding: 0;
+}
+
+.panel :global(.oqoodFormSection__actions) {
+  color: #8799ae;
+}
+
+.panelMeta {
+  color: #8799ae;
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 0.68rem 0.72rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 8%);
+  font-size: 0.64rem;
+  text-align: start;
+  vertical-align: middle;
+}
+
+.table th {
+  background:
+    rgb(25 48 77 / 58%);
+  color: #8fa2b8;
+  font-size: 0.58rem;
+  font-weight: 800;
+}
+
+.table tbody tr:nth-child(even) {
+  background:
+    rgb(31 54 84 / 22%);
+}
+
+.table tbody tr:hover {
+  background:
+    rgb(27 92 91 / 20%);
+}
+
+.identity {
+  display: flex;
+  min-width: 14rem;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.initial {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 7px;
+  background:
+    rgb(16 185 129 / 13%);
+  color: #6ee7b7;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.identity > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.12rem;
+}
+
+.identity a {
+  overflow: hidden;
+  color: #dce7f2;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.identity a:hover {
+  color: #7dd3b0;
+}
+
+.identity small {
+  overflow: hidden;
+  max-width: 14rem;
+  color: #7f92a9;
+  font-size: 0.54rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roles,
+.contact {
+  display: block;
+  max-width: 15rem;
+  overflow: hidden;
+  color: #a9b8c8;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status {
+  display: inline-flex;
+  min-height: 1.35rem;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0.42rem;
+  border-radius: 999px;
+  background: #263b55;
+  color: #aebdcc;
+  font-size: 0.53rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.status[data-status="VERIFIED"] {
+  background:
+    rgb(16 185 129 / 13%);
+  color: #6ee7b7;
+}
+
+.status[data-status="PENDING"] {
+  background:
+    rgb(245 158 11 / 12%);
+  color: #f7c768;
+}
+
+.status[data-status="REJECTED"] {
+  background:
+    rgb(244 63 94 / 10%);
+  color: #f59aaa;
+}
+
+.invitationCount {
+  display: inline-flex;
+  min-width: 1.75rem;
+  min-height: 1.4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background:
+    rgb(59 130 246 / 11%);
+  color: #93c5fd;
+  font-size: 0.56rem;
+  font-weight: 800;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding-inline: 10px;
+  }
+
+  .summary {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .feedback :global(.oqoodAlert__content) {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 520px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .primaryAction {
+    width: 100%;
+  }
+}
+
+/* Partners route states and skeleton */
+
+.routeState {
+  min-height: 15rem;
+}
+
+.stateAction {
+  display: inline-flex;
+  min-height: 2.2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.48rem 0.72rem;
+  border: 1px solid
+    rgb(148 163 184 / 18%);
+  border-radius: 7px;
+  background: #172b46;
+  color: #a8d9c8;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.stateAction:hover {
+  border-color:
+    rgb(110 231 183 / 35%);
+  color: #d9fff2;
+}
+
+.stateAction:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+.stateActionPrimary {
+  border-color:
+    rgb(110 231 183 / 24%);
+  background:
+    linear-gradient(
+      135deg,
+      #118766,
+      #176e70
+    );
+  color: #fff;
+}
+
+.loadingPanel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.loadingPanelHeader {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 9%);
+  background:
+    rgb(25 48 77 / 55%);
+}
+
+.loadingPanelHeader > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+}
+
+.loadingTable {
+  display: grid;
+  min-width: 780px;
+}
+
+.loadingTableHeader,
+.loadingTableRow {
+  display: grid;
+  grid-template-columns:
+    minmax(14rem, 1.6fr)
+    minmax(9rem, 1fr)
+    minmax(6rem, 0.7fr)
+    minmax(9rem, 1fr)
+    minmax(6rem, 0.7fr)
+    minmax(4rem, 0.45fr);
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.75rem;
+}
+
+.loadingTableHeader {
+  min-height: 2.5rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 9%);
+  background:
+    rgb(25 48 77 / 45%);
+}
+
+.loadingTableRow {
+  min-height: 3.8rem;
+  border-block-end: 1px solid
+    rgb(148 163 184 / 8%);
+}
+
+.loadingTableRow:last-child {
+  border-block-end: 0;
+}
+
+.loadingIdentity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.loadingIdentity > div {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 0.3rem;
+}
+
+.skeleton {
+  display: block;
+  border-radius: 6px;
+  background:
+    linear-gradient(
+      90deg,
+      #182b45 25%,
+      #244362 50%,
+      #182b45 75%
+    );
+  background-size: 200% 100%;
+  animation:
+    partnersSkeletonPulse
+    1.45s linear infinite;
+}
+
+.skeletonLabel {
+  width: 56%;
+  height: 0.46rem;
+}
+
+.skeletonValue {
+  width: 68%;
+  height: 0.9rem;
+  margin-block: 0.28rem;
+}
+
+.skeletonNote {
+  width: 48%;
+  height: 0.42rem;
+}
+
+.skeletonEyebrow {
+  width: 5.5rem;
+  height: 0.4rem;
+}
+
+.skeletonPanelTitle {
+  width: 10rem;
+  height: 0.68rem;
+}
+
+.skeletonPanelDescription {
+  width: 18rem;
+  max-width: 70vw;
+  height: 0.44rem;
+}
+
+.skeletonPanelMeta {
+  width: 4rem;
+  height: 0.5rem;
+}
+
+.skeletonHeaderCell {
+  width: 58%;
+  height: 0.42rem;
+}
+
+.skeletonAvatar {
+  width: 2rem;
+  height: 2rem;
+}
+
+.skeletonPartnerName {
+  width: 62%;
+  height: 0.62rem;
+}
+
+.skeletonReference {
+  width: 44%;
+  height: 0.44rem;
+}
+
+.skeletonCell {
+  width: 72%;
+  height: 0.56rem;
+}
+
+@keyframes partnersSkeletonPulse {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (max-width: 800px) {
+  .loadingPanel {
+    overflow-x: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

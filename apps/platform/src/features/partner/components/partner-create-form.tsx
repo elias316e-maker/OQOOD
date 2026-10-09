@@ -1,200 +1,350 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { useFormStatus } from "react-dom";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import {
+  useActionState,
+  useEffect,
+} from "react";
 
-import { Input, Select } from "@oqood/design-system";
+import {
+  useFormStatus,
+} from "react-dom";
+
+import Link from "next/link";
+
+import {
+  useRouter,
+} from "next/navigation";
+
+import {
+  Alert,
+  FormActions,
+  FormGuidance,
+  FormSection,
+  Input,
+  Select,
+} from "@oqood/design-system";
 
 import {
   createPartnerAction,
   type PartnerRoleValue,
 } from "../actions";
 
+import styles from "./partner-create-form.module.css";
+
 type FormState = {
-  status: "idle" | "error" | "success";
+  status:
+    | "idle"
+    | "error"
+    | "success";
   message?: string;
   partnerId?: string;
 };
 
-const initialState: FormState = { status: "idle" };
+const initialState: FormState = {
+  status: "idle",
+};
 
 const roleOptions: Array<{
   value: PartnerRoleValue;
   label: string;
 }> = [
-  { value: "SUPPLIER", label: "مورد" },
-  { value: "CONTRACTOR", label: "مقاول" },
-  { value: "CONSULTANT", label: "استشاري" },
-  { value: "MANUFACTURER", label: "مصنع" },
-  { value: "DISTRIBUTOR", label: "موزع" },
-  { value: "SERVICE_PROVIDER", label: "مقدم خدمات" },
+  {
+    value: "SUPPLIER",
+    label: "مورد",
+  },
+  {
+    value: "CONTRACTOR",
+    label: "مقاول",
+  },
+  {
+    value: "CONSULTANT",
+    label: "استشاري",
+  },
+  {
+    value: "MANUFACTURER",
+    label: "مصنع",
+  },
+  {
+    value: "DISTRIBUTOR",
+    label: "موزع",
+  },
+  {
+    value: "SERVICE_PROVIDER",
+    label: "مقدم خدمات",
+  },
   {
     value: "LOGISTICS_PROVIDER",
     label: "مقدم خدمات لوجستية",
   },
-  { value: "INVESTMENT_PARTNER", label: "شريك استثماري" },
+  {
+    value: "INVESTMENT_PARTNER",
+    label: "شريك استثماري",
+  },
 ];
 
-function value(formData: FormData, key: string) {
+function value(
+  formData: FormData,
+  key: string,
+): string {
   const result = formData.get(key);
-  return typeof result === "string" ? result.trim() : "";
+
+  return typeof result === "string"
+    ? result.trim()
+    : "";
 }
 
 async function submitPartner(
   _previousState: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const result = await createPartnerAction({
-    nameAr: value(formData, "nameAr"),
-    nameEn: value(formData, "nameEn"),
-    commercialRegister: value(
-      formData,
-      "commercialRegister",
-    ),
-    taxNumber: value(formData, "taxNumber"),
-    email: value(formData, "email"),
-    phone: value(formData, "phone"),
-    website: value(formData, "website"),
-    city: value(formData, "city"),
-    roles: [value(formData, "role") as PartnerRoleValue],
-  });
+  const result =
+    await createPartnerAction({
+      nameAr: value(
+        formData,
+        "nameAr",
+      ),
+      nameEn: value(
+        formData,
+        "nameEn",
+      ),
+      commercialRegister: value(
+        formData,
+        "commercialRegister",
+      ),
+      taxNumber: value(
+        formData,
+        "taxNumber",
+      ),
+      email: value(
+        formData,
+        "email",
+      ),
+      phone: value(
+        formData,
+        "phone",
+      ),
+      website: value(
+        formData,
+        "website",
+      ),
+      city: value(
+        formData,
+        "city",
+      ),
+      roles: [
+        value(
+          formData,
+          "role",
+        ) as PartnerRoleValue,
+      ],
+    });
 
   return result.success
     ? {
         status: "success",
         message: result.message,
-        partnerId: result.data.partnerId,
+        partnerId:
+          result.data.partnerId,
       }
-    : { status: "error", message: result.message };
+    : {
+        status: "error",
+        message: result.message,
+      };
 }
 
 function SubmitButton() {
-  const { pending } = useFormStatus();
+  const { pending } =
+    useFormStatus();
+
   return (
     <button
-      className="oppPrimaryButton"
+      className={styles.primaryButton}
       disabled={pending}
       type="submit"
     >
-      {pending ? "جارٍ الحفظ..." : "حفظ شريك الأعمال"}
+      {pending
+        ? "جارٍ حفظ شريك الأعمال..."
+        : "حفظ شريك الأعمال"}
     </button>
   );
 }
 
 export function PartnerCreateForm() {
   const router = useRouter();
-  const [state, formAction] = useActionState(
-    submitPartner,
-    initialState,
-  );
+
+  const [state, formAction] =
+    useActionState(
+      submitPartner,
+      initialState,
+    );
 
   useEffect(() => {
-    if (state.status === "success") {
-      router.push("/platform/partners");
-      router.refresh();
+    if (
+      state.status !== "success" ||
+      !state.partnerId
+    ) {
+      return;
     }
-  }, [router, state.status]);
+
+    router.push(
+      "/platform/partners",
+    );
+
+    router.refresh();
+  }, [
+    router,
+    state.partnerId,
+    state.status,
+  ]);
 
   return (
     <form
       action={formAction}
-      className="opportunitySetupPanel partnerCreateForm"
+      className={styles.form}
     >
-      <section className="opportunitySection">
-        <div className="opportunitySection__head">
-          <div>
-            <span>البيانات الأساسية</span>
-            <h2>تعريف شريك الأعمال</h2>
-            <p>
-              أدخل بيانات المورد أو المقاول ليصبح متاحًا
-              للدعوة في الفرص.
-            </p>
-          </div>
-        </div>
+      <FormGuidance
+        className={styles.pageGuidance}
+        icon="♧"
+        title="أنشئ سجلًا موحدًا لشريك الأعمال"
+        description="أدخل بيانات المنشأة النظامية ووسائل التواصل والتصنيف؛ ويمكن استكمال بيانات الأداء والتوثيق لاحقًا."
+      />
 
-        {state.status === "error" ? (
-          <div className="opportunityFormAlert opportunityFormAlert--error">
-            {state.message}
-          </div>
-        ) : null}
+      {state.status === "error" ? (
+        <Alert
+          className={styles.feedback}
+          tone="danger"
+          title="تعذر حفظ شريك الأعمال"
+          aria-live="assertive"
+        >
+          {state.message}
+        </Alert>
+      ) : null}
 
-        <div className="opportunityFormGrid">
-          <div className="partnerFormGroupTitle">
-            <span>01</span><div><strong>هوية المنشأة</strong><small>الاسم والتصنيف والموقع</small></div>
-          </div>
-          <label>
-            <span>الاسم بالعربية *</span>
+      <div className={styles.sections}>
+        <FormSection
+          className={styles.section}
+          eyebrow="01"
+          title="هوية المنشأة"
+          description="الاسم والتصنيف والموقع الأساسي لشريك الأعمال."
+        >
+          <div className={styles.grid}>
             <Input
+              autoComplete="organization"
+              hint="حقل إلزامي، من حرفين إلى 160 حرفًا."
+              label="الاسم بالعربية *"
+              maxLength={160}
               name="nameAr"
               placeholder="مثال: شركة التوريد المتقدمة"
               required
             />
-          </label>
-          <label>
-            <span>الاسم بالإنجليزية</span>
-            <Input name="nameEn" />
-          </label>
-          <label>
-            <span>التصنيف *</span>
-            <Select name="role" required>
-              {roleOptions.map((option) => (
-                <option
-                  key={option.value}
-                  value={option.value}
-                >
-                  {option.label}
-                </option>
-              ))}
-            </Select>
-          </label>
-          <label>
-            <span>المدينة</span>
-            <Input name="city" placeholder="الرياض" />
-          </label>
-          <div className="partnerFormGroupTitle">
-            <span>02</span><div><strong>البيانات النظامية</strong><small>السجل التجاري والرقم الضريبي</small></div>
-          </div>
-          <label>
-            <span>السجل التجاري</span>
-            <Input name="commercialRegister" />
-          </label>
-          <label>
-            <span>الرقم الضريبي</span>
-            <Input name="taxNumber" />
-          </label>
-          <div className="partnerFormGroupTitle">
-            <span>03</span><div><strong>بيانات التواصل</strong><small>القنوات المستخدمة للدعوات والتنبيهات</small></div>
-          </div>
-          <label>
-            <span>البريد الإلكتروني</span>
-            <Input name="email" type="email" />
-          </label>
-          <label>
-            <span>رقم الهاتف</span>
-            <Input name="phone" type="tel" />
-          </label>
-          <label>
-            <span>الموقع الإلكتروني</span>
-            <Input
-              name="website"
-              placeholder="https://example.com"
-              type="url"
-            />
-          </label>
-        </div>
-      </section>
 
-      <div className="opportunityFormActions">
+            <Input
+              autoComplete="organization"
+              label="الاسم بالإنجليزية"
+              maxLength={160}
+              name="nameEn"
+              placeholder="Advanced Supply Company"
+            />
+
+            <Select
+              hint="حدد التصنيف الرئيسي للشريك."
+              label="التصنيف *"
+              name="role"
+              required
+            >
+              {roleOptions.map(
+                (option) => (
+                  <option
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </option>
+                ),
+              )}
+            </Select>
+
+            <Input
+              autoComplete="address-level2"
+              label="المدينة"
+              name="city"
+              placeholder="الرياض"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection
+          className={styles.section}
+          eyebrow="02"
+          title="البيانات النظامية"
+          description="الأرقام الرسمية المستخدمة في التعريف والتحقق من المنشأة."
+        >
+          <div className={styles.grid}>
+            <Input
+              inputMode="numeric"
+              label="السجل التجاري"
+              name="commercialRegister"
+              placeholder="رقم السجل التجاري"
+            />
+
+            <Input
+              inputMode="numeric"
+              label="الرقم الضريبي"
+              name="taxNumber"
+              placeholder="الرقم الضريبي"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection
+          className={styles.section}
+          eyebrow="03"
+          title="بيانات التواصل"
+          description="القنوات المستخدمة في الدعوات والمراسلات والتنبيهات."
+        >
+          <div className={styles.grid}>
+            <Input
+              autoComplete="email"
+              label="البريد الإلكتروني"
+              name="email"
+              placeholder="name@company.sa"
+              type="email"
+            />
+
+            <Input
+              autoComplete="tel"
+              label="رقم الهاتف"
+              name="phone"
+              placeholder="+966"
+              type="tel"
+            />
+
+            <div className={styles.fullWidth}>
+              <Input
+                autoComplete="url"
+                label="الموقع الإلكتروني"
+                name="website"
+                placeholder="https://example.com"
+                type="url"
+              />
+            </div>
+          </div>
+        </FormSection>
+      </div>
+
+      <FormActions
+        className={styles.actions}
+        status="بعد الحفظ سيصبح شريك الأعمال متاحًا للاستخدام في دعوات الفرص والمنافسات."
+      >
         <Link
-          className="oppSecondaryButton"
+          className={styles.secondaryButton}
           href="/platform/partners"
         >
           إلغاء
         </Link>
+
         <SubmitButton />
-      </div>
+      </FormActions>
     </form>
   );
 }

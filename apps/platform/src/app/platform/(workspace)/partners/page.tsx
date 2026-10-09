@@ -1,19 +1,38 @@
 import Link from "next/link";
 
-import { listPartnersAction } from "@/features/partner";
+import {
+  Alert,
+  EmptyState,
+  FormSection,
+  WorkspaceHeader,
+} from "@oqood/design-system";
 
-const roleLabels: Record<string, string> = {
+import {
+  listPartnersAction,
+} from "@/features/partner";
+
+import styles from "./partners.module.css";
+
+const roleLabels: Record<
+  string,
+  string
+> = {
   SUPPLIER: "مورد",
   CONTRACTOR: "مقاول",
   CONSULTANT: "استشاري",
   MANUFACTURER: "مصنع",
   DISTRIBUTOR: "موزع",
   SERVICE_PROVIDER: "مقدم خدمات",
-  LOGISTICS_PROVIDER: "خدمات لوجستية",
-  INVESTMENT_PARTNER: "شريك استثماري",
+  LOGISTICS_PROVIDER:
+    "خدمات لوجستية",
+  INVESTMENT_PARTNER:
+    "شريك استثماري",
 };
 
-const verificationLabels: Record<string, string> = {
+const verificationLabels: Record<
+  string,
+  string
+> = {
   UNVERIFIED: "غير موثق",
   PENDING: "قيد التحقق",
   VERIFIED: "موثق",
@@ -21,122 +40,313 @@ const verificationLabels: Record<string, string> = {
 };
 
 export default async function PartnersPage() {
-  const result = await listPartnersAction();
-  const partners = result.success ? result.data : [];
-  const verifiedCount = partners.filter(
-    (partner) => partner.verificationStatus === "VERIFIED",
-  ).length;
-  const invitedCount = partners.filter(
-    (partner) => partner.invitationCount > 0,
-  ).length;
+  const result =
+    await listPartnersAction();
+
+  const partners = result.success
+    ? result.data
+    : [];
+
+  const verifiedCount =
+    partners.filter(
+      (partner) =>
+        partner.verificationStatus ===
+        "VERIFIED",
+    ).length;
+
+  const invitedCount =
+    partners.filter(
+      (partner) =>
+        partner.invitationCount > 0,
+    ).length;
+
+  const verificationRate =
+    partners.length > 0
+      ? Math.round(
+          (
+            verifiedCount /
+            partners.length
+          ) * 100,
+        )
+      : 0;
 
   return (
-    <main className="platformContent partnerDirectoryPage partnerDirectoryRefresh">
-      <header className="partnerDirectoryHeader">
-        <div>
-          <span className="pageEyebrow">دليل المنشأة</span>
-          <h1>شركاء الأعمال والموردون</h1>
-          <p>
-            إدارة الموردين والمقاولين والاستشاريين
-            وإتاحـتهم لدعوات الفرص.
-          </p>
-        </div>
-        <Link
-          className="primaryButton compactButton"
-          href="/platform/partners/new"
-        >
-          + إضافة شريك أعمال
-        </Link>
-      </header>
+    <main className={styles.page}>
+      <WorkspaceHeader
+        className={styles.header}
+        eyebrow="دليل المنشأة"
+        title="شركاء الأعمال والموردون"
+        description="إدارة الموردين والمقاولين والاستشاريين وإتاحتهم لدعوات الفرص والمنافسات."
+        actions={
+          <Link
+            className={
+              styles.primaryAction
+            }
+            href="/platform/partners/new"
+          >
+            إضافة شريك أعمال
+          </Link>
+        }
+      />
 
-      {result.success && (
-        <section className="partnerDirectorySummary" aria-label="ملخص الموردين">
-          <article><span>إجمالي الشركاء</span><strong>{partners.length}</strong><small>في مساحة العمل</small></article>
-          <article><span>موردون موثقون</span><strong>{verifiedCount}</strong><small>{partners.length ? Math.round(verifiedCount / partners.length * 100) : 0}% من الدليل</small></article>
-          <article><span>شاركوا في منافسات</span><strong>{invitedCount}</strong><small>لديهم دعوة واحدة أو أكثر</small></article>
+      {result.success ? (
+        <section
+          aria-label="ملخص شركاء الأعمال"
+          className={styles.summary}
+        >
+          <article>
+            <span>
+              إجمالي الشركاء
+            </span>
+
+            <strong>
+              {partners.length}
+            </strong>
+
+            <small>
+              في مساحة العمل
+            </small>
+          </article>
+
+          <article>
+            <span>
+              شركاء موثقون
+            </span>
+
+            <strong>
+              {verifiedCount}
+            </strong>
+
+            <small>
+              {verificationRate}% من الدليل
+            </small>
+          </article>
+
+          <article>
+            <span>
+              شاركوا في منافسات
+            </span>
+
+            <strong>
+              {invitedCount}
+            </strong>
+
+            <small>
+              لديهم دعوة واحدة أو أكثر
+            </small>
+          </article>
         </section>
-      )}
+      ) : null}
 
       {!result.success ? (
-        <div className="opportunityFormAlert opportunityFormAlert--error">
-          {result.message}
-        </div>
-      ) : result.data.length === 0 ? (
-        <section className="partnerDirectoryPanel">
-          <div className="emptyState">
-            <h2>لا يوجد شركاء أعمال مسجلون</h2>
-            <p>
-              أضف المورد الأول ليظهر ضمن خيارات دعوة
-              الشركات في الفرص.
-            </p>
+        <Alert
+          className={styles.feedback}
+          tone="danger"
+          title="تعذر تحميل دليل الشركاء"
+          aria-live="assertive"
+        >
+          <p>
+            {result.message}
+          </p>
+
+          <Link
+            className={styles.retryLink}
+            href="/platform/partners"
+          >
+            إعادة المحاولة
+          </Link>
+        </Alert>
+      ) : partners.length === 0 ? (
+        <EmptyState
+          className={styles.empty}
+          tone="info"
+          icon="♧"
+          title="لا يوجد شركاء أعمال مسجلون"
+          description="أضف المورد أو المقاول الأول ليظهر ضمن خيارات دعوة الشركات في الفرص والمنافسات."
+          role="status"
+          actions={
             <Link
-              className="primaryButton compactButton"
+              className={
+                styles.primaryAction
+              }
               href="/platform/partners/new"
             >
-              إضافة المورد الأول
+              إضافة الشريك الأول
             </Link>
-          </div>
-        </section>
+          }
+        />
       ) : (
-        <section className="partnerDirectoryPanel">
-          <div className="opportunitySection__head">
-            <div>
-              <span>إجمالي الشركاء</span>
-            <h2>{result.data.length} شريك أعمال</h2>
-            <small>اضغط على اسم الشركة لفتح بطاقة الأداء</small>
-            </div>
-          </div>
-          <div className="oqDataTable">
-            <div className="oqDataTableViewport">
-            <table className="oqDataTableElement">
+        <FormSection
+          className={styles.panel}
+          eyebrow="الدليل الموحد"
+          title={`${partners.length} شريك أعمال`}
+          description="اضغط على اسم الشركة لفتح بطاقة الأداء والبيانات المرتبطة بها."
+          actions={
+            <small
+              className={
+                styles.panelMeta
+              }
+            >
+              {verifiedCount} موثق
+            </small>
+          }
+        >
+          <div className={styles.tableWrap}>
+            <table
+              className={styles.table}
+            >
+              <caption
+                className={styles.srOnly}
+              >
+                قائمة شركاء الأعمال
+                والموردين في مساحة العمل
+              </caption>
+
               <thead>
                 <tr>
-                  <th>الشركة</th>
-                  <th>التصنيف</th>
-                  <th>المدينة</th>
-                  <th>التواصل</th>
-                  <th>التوثيق</th>
-                  <th>الدعوات</th>
+                  <th scope="col">
+                    الشركة
+                  </th>
+
+                  <th scope="col">
+                    التصنيف
+                  </th>
+
+                  <th scope="col">
+                    المدينة
+                  </th>
+
+                  <th scope="col">
+                    التواصل
+                  </th>
+
+                  <th scope="col">
+                    التوثيق
+                  </th>
+
+                  <th scope="col">
+                    الدعوات
+                  </th>
                 </tr>
               </thead>
+
               <tbody>
-                {result.data.map((partner) => (
-                  <tr key={partner.id}>
-                    <td>
-                      <strong className="partnerIdentityName"><span aria-hidden="true">{partner.nameAr.slice(0, 1)}</span><Link href={`/platform/partners/${partner.id}`}>{partner.nameAr}</Link></strong>
-                      <small>
-                        {partner.commercialRegister ||
-                          partner.nameEn ||
-                          "لا يوجد سجل تجاري"}
-                      </small>
-                    </td>
-                    <td>
-                      {partner.roles
+                {partners.map(
+                  (partner) => {
+                    const roles =
+                      partner.roles
                         .map(
                           (role) =>
-                            roleLabels[role] ?? role,
+                            roleLabels[
+                              role
+                            ] ?? role,
                         )
-                        .join("، ")}
-                    </td>
-                    <td>{partner.city || "—"}</td>
-                    <td>
-                      {partner.email ||
-                        partner.phone ||
-                        "—"}
-                    </td>
-                    <td>
-                      {verificationLabels[
-                        partner.verificationStatus
-                      ] ?? partner.verificationStatus}
-                    </td>
-                    <td>{partner.invitationCount}</td>
-                  </tr>
-                ))}
+                        .join("، ");
+
+                    const contact =
+                      partner.email ||
+                      partner.phone ||
+                      "غير متاح";
+
+                    return (
+                      <tr key={partner.id}>
+                        <td>
+                          <div
+                            className={
+                              styles.identity
+                            }
+                          >
+                            <span
+                              aria-hidden="true"
+                              className={
+                                styles.initial
+                              }
+                            >
+                              {partner.nameAr
+                                .slice(0, 1)}
+                            </span>
+
+                            <div>
+                              <Link
+                                href={`/platform/partners/${partner.id}`}
+                              >
+                                {
+                                  partner.nameAr
+                                }
+                              </Link>
+
+                              <small>
+                                {partner.commercialRegister ||
+                                  partner.nameEn ||
+                                  "لا يوجد سجل تجاري"}
+                              </small>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td>
+                          <span
+                            className={
+                              styles.roles
+                            }
+                          >
+                            {roles ||
+                              "غير مصنف"}
+                          </span>
+                        </td>
+
+                        <td>
+                          {partner.city ||
+                            "—"}
+                        </td>
+
+                        <td>
+                          <span
+                            className={
+                              styles.contact
+                            }
+                          >
+                            {contact}
+                          </span>
+                        </td>
+
+                        <td>
+                          <span
+                            className={
+                              styles.status
+                            }
+                            data-status={
+                              partner.verificationStatus
+                            }
+                          >
+                            {verificationLabels[
+                              partner
+                                .verificationStatus
+                            ] ??
+                              partner
+                                .verificationStatus}
+                          </span>
+                        </td>
+
+                        <td>
+                          <span
+                            className={
+                              styles.invitationCount
+                            }
+                          >
+                            {
+                              partner.invitationCount
+                            }
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  },
+                )}
               </tbody>
             </table>
-            </div>
           </div>
-        </section>
+        </FormSection>
       )}
     </main>
   );
