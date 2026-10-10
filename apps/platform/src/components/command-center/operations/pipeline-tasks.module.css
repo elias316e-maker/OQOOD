@@ -1,85 +1,129 @@
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.75fr);
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(330px, 0.75fr);
   gap: 14px;
 }
 
 .pipelinePanel,
 .tasksPanel {
   min-width: 0;
-  padding: 20px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  overflow: hidden;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
   border-radius: 18px;
-  color: #f8fafc;
   background:
     linear-gradient(
       145deg,
-      rgba(15, 26, 47, 0.98),
-      rgba(7, 16, 31, 0.99)
+      rgb(15 26 47 / 98%),
+      rgb(7 16 31 / 99%)
     );
   box-shadow:
-    0 18px 48px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    0 18px 48px
+    rgb(0 0 0 / 16%),
+    inset 0 1px 0
+    rgb(255 255 255 / 2%);
+  color: #f8fafc;
 }
 
-.panelHeader {
+.pipelinePanel
+:global(.odsDashboardPanelCard__header),
+.tasksPanel
+:global(.odsDashboardPanelCard__header) {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-}
-
-.panelHeader h2 {
-  margin: 0;
-  font-size: 16px;
-}
-
-.panelHeader p {
-  margin: 5px 0 0;
-  color: #71809a;
-  font-size: 9px;
-}
-
-.panelHeader button,
-.viewTasks {
+  padding: 20px 20px 0;
   border: 0;
-  cursor: pointer;
+}
+
+.pipelinePanel
+:global(.odsDashboardPanelCard__title),
+.tasksPanel
+:global(.odsDashboardPanelCard__title) {
+  color: #f8fafc;
+  font-size: 1rem;
+}
+
+.pipelinePanel
+:global(.odsDashboardPanelCard__description),
+.tasksPanel
+:global(.odsDashboardPanelCard__description) {
+  margin-block-start: 5px;
+  color: #71809a;
+  font-size: 0.57rem;
+}
+
+.pipelinePanel
+:global(.odsDashboardPanelCard__body),
+.tasksPanel
+:global(.odsDashboardPanelCard__body) {
+  padding: 20px;
+}
+
+.pipelinePanel
+:global(.odsDashboardPanelCard__footer),
+.tasksPanel
+:global(.odsDashboardPanelCard__footer) {
+  padding: 0 20px 20px;
+  border: 0;
+}
+
+.panelLink {
   color: #60a5fa;
-  background: transparent;
-  font: inherit;
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 0.57rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.panelLink:hover,
+.viewTasks:hover {
+  color: #bfdbfe;
+}
+
+.panelLink:focus-visible,
+.viewTasks:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
 }
 
 .pipeline {
-  margin-top: 20px;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
   gap: 9px;
 }
 
 .stage {
+  position: relative;
   min-width: 0;
   min-height: 139px;
   padding: 14px;
-  position: relative;
-  border: 1px solid rgba(148, 163, 184, 0.09);
+  border: 1px solid
+    rgb(148 163 184 / 9%);
   border-radius: 13px;
-  color: #60a5fa;
   background:
     linear-gradient(
       145deg,
-      rgba(19, 32, 56, 0.73),
-      rgba(8, 17, 33, 0.86)
+      rgb(19 32 56 / 73%),
+      rgb(8 17 33 / 86%)
     );
+  color: #60a5fa;
   transition:
     transform 180ms ease,
     border-color 180ms ease;
 }
 
 .stage:hover {
+  border-color:
+    color-mix(
+      in srgb,
+      currentColor 28%,
+      transparent
+    );
   transform: translateY(-3px);
-  border-color: color-mix(in srgb, currentColor 28%, transparent);
 }
 
 .stageTop {
@@ -89,46 +133,38 @@
   gap: 7px;
 }
 
-.stageTop > span {
-  width: 24px;
-  height: 24px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  color: currentColor;
-  background: color-mix(in srgb, currentColor 13%, transparent);
-  font-size: 8px;
-  font-weight: 800;
+.stageIndex {
+  flex: 0 0 auto;
 }
 
 .stageTop small {
   overflow: hidden;
   color: #65748b;
-  font-size: 7px;
+  font-size: 0.46rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .stage > strong {
   display: block;
-  margin-top: 25px;
-  color: #ffffff;
-  font-size: 26px;
+  margin-block-start: 25px;
+  color: #fff;
+  font-size: 1.65rem;
 }
 
 .stage h3 {
   margin: 5px 0 0;
   color: #9eacc0;
-  font-size: 9px;
+  font-size: 0.57rem;
 }
 
 .connector {
   position: absolute;
-  top: 50%;
-  inset-inline-end: -9px;
   z-index: 2;
+  inset-block-start: 50%;
+  inset-inline-end: -9px;
   color: #41516b;
-  font-size: 12px;
+  font-size: 0.75rem;
   transform: translateY(-50%);
 }
 
@@ -152,123 +188,153 @@
   color: #34d399;
 }
 
-.pipelineFooter {
-  margin-top: 14px;
-  padding-top: 13px;
+.pipelineFooter,
+.tasksFooter {
   display: flex;
+  min-height: 2.1rem;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-top: 1px solid rgba(148, 163, 184, 0.08);
+  padding-block-start: 13px;
+  border-block-start: 1px solid
+    rgb(148 163 184 / 8%);
   color: #65748b;
-  font-size: 8px;
+  font-size: 0.5rem;
 }
 
-.pipelineFooter span {
-  display: flex;
+.footerMetric {
+  display: inline-flex;
   align-items: center;
   gap: 5px;
 }
 
-.pipelineFooter strong {
+.footerMetric strong {
   color: #dbe5f3;
+  font-size: 0.63rem;
 }
 
 .taskCount {
-  min-width: 25px;
-  height: 25px;
-  display: grid;
-  place-items: center;
-  border-radius: 8px;
-  color: #bfdbfe;
-  background: rgba(37, 99, 235, 0.16);
-  font-size: 9px;
-  font-weight: 800;
+  white-space: nowrap;
 }
 
 .tasks {
-  margin-top: 16px;
   display: grid;
   gap: 7px;
 }
 
 .task {
-  min-width: 0;
-  padding: 10px;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
+  min-width: 0;
+  grid-template-columns:
+    auto
+    minmax(0, 1fr)
+    auto;
   gap: 9px;
-  border: 1px solid rgba(148, 163, 184, 0.075);
+  align-items: center;
+  padding: 10px;
+  border: 1px solid
+    rgb(148 163 184 / 7.5%);
   border-radius: 11px;
-  background: rgba(255, 255, 255, 0.018);
+  background:
+    rgb(255 255 255 / 1.8%);
 }
 
 .taskCheck {
+  display: grid;
   width: 22px;
   height: 22px;
-  display: grid;
   place-items: center;
   border: 1px solid currentColor;
   border-radius: 7px;
-  cursor: pointer;
   color: #60a5fa;
-  background: transparent;
-  font-size: 9px;
+  font-size: 0.65rem;
+  font-weight: 900;
+}
+
+.taskCheck[data-completed="true"] {
+  background:
+    rgb(16 185 129 / 10%);
+  color: #34d399;
 }
 
 .taskContent {
-  min-width: 0;
   display: grid;
+  min-width: 0;
   gap: 3px;
 }
 
-.taskContent strong {
+.taskHeading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.taskHeading strong {
   overflow: hidden;
   color: #dbe5f3;
-  font-size: 9px;
+  font-size: 0.57rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.taskContent span,
-.task small {
+.taskStatus {
+  flex: 0 0 auto;
+  font-size: 0.46rem;
+}
+
+.taskContent > span,
+.taskDue {
   color: #65748b;
-  font-size: 7px;
+  font-size: 0.46rem;
 }
 
-.priority-high .taskCheck {
-  color: #fb7185;
+.taskDue {
+  max-width: 6.5rem;
+  overflow: hidden;
+  text-align: end;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.priority-medium .taskCheck {
-  color: #f59e0b;
+.priority-high {
+  border-inline-start-color:
+    rgb(251 113 133 / 38%);
 }
 
-.priority-low .taskCheck {
-  color: #60a5fa;
+.priority-medium {
+  border-inline-start-color:
+    rgb(245 158 11 / 34%);
+}
+
+.priority-low {
+  border-inline-start-color:
+    rgb(96 165 250 / 30%);
 }
 
 .completed {
   opacity: 0.58;
 }
 
-.completed .taskCheck {
-  color: #34d399;
-  background: rgba(16, 185, 129, 0.1);
-}
-
-.completed .taskContent strong {
+.completed .taskHeading strong {
   text-decoration: line-through;
 }
 
+.tasksFooter > span {
+  color: #65748b;
+}
+
 .viewTasks {
-  width: 100%;
-  min-height: 32px;
-  margin-top: 11px;
-  border: 1px solid rgba(96, 165, 250, 0.13);
-  border-radius: 9px;
-  background: rgba(37, 99, 235, 0.055);
+  color: #60a5fa;
+  font-size: 0.55rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.empty {
+  min-height: 10rem;
+  border: 0;
+  background: transparent;
 }
 
 @media (max-width: 1100px) {
@@ -279,7 +345,8 @@
 
 @media (max-width: 790px) {
   .pipeline {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 
   .connector {
@@ -287,8 +354,50 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
+  .pipelinePanel
+  :global(.odsDashboardPanelCard__header),
+  .tasksPanel
+  :global(.odsDashboardPanelCard__header),
+  .pipelinePanel
+  :global(.odsDashboardPanelCard__body),
+  .tasksPanel
+  :global(.odsDashboardPanelCard__body),
+  .pipelinePanel
+  :global(.odsDashboardPanelCard__footer),
+  .tasksPanel
+  :global(.odsDashboardPanelCard__footer) {
+    padding-inline: 14px;
+  }
+
   .pipeline {
     grid-template-columns: 1fr;
+  }
+
+  .task {
+    grid-template-columns:
+      auto
+      minmax(0, 1fr);
+  }
+
+  .taskDue {
+    grid-column: 2;
+    text-align: start;
+  }
+
+  .pipelineFooter,
+  .tasksFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    transition: none;
+  }
+
+  .stage:hover {
+    transform: none;
   }
 }

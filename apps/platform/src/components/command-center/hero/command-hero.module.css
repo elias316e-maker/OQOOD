@@ -1,89 +1,137 @@
 .hero {
-  min-height: 330px;
-  padding: 32px;
   position: relative;
+  min-height: 330px;
   overflow: hidden;
-  border: 1px solid rgba(96, 165, 250, 0.17);
+  padding: 32px;
+  border: 1px solid
+    rgb(96 165 250 / 17%);
   border-radius: 22px;
-  color: #f8fafc;
   background:
-    radial-gradient(circle at 14% 10%, rgba(79, 70, 229, 0.32), transparent 31%),
-    radial-gradient(circle at 88% 78%, rgba(6, 182, 212, 0.13), transparent 26%),
-    linear-gradient(135deg, #071128, #0a1630 55%, #071021);
+    radial-gradient(
+      circle at 14% 10%,
+      rgb(79 70 229 / 32%),
+      transparent 31%
+    ),
+    radial-gradient(
+      circle at 88% 78%,
+      rgb(6 182 212 / 13%),
+      transparent 26%
+    ),
+    linear-gradient(
+      135deg,
+      #071128,
+      #0a1630 55%,
+      #071021
+    );
   box-shadow:
-    0 28px 70px rgba(0, 0, 0, 0.23),
-    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    0 28px 70px
+    rgb(0 0 0 / 23%),
+    inset 0 1px 0
+    rgb(255 255 255 / 2.5%);
+  color: #f8fafc;
 }
 
 .main {
-  min-height: 266px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  align-items: center;
-  gap: 30px;
   position: relative;
   z-index: 2;
+  display: grid;
+  min-height: 266px;
+  grid-template-columns:
+    minmax(0, 1fr)
+    300px;
+  gap: 30px;
+  align-items: center;
 }
 
 .intro {
   min-width: 0;
 }
 
-.date {
-  display: block;
-  color: #7f8da4;
-  font-size: 11px;
+.heroHeader {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.eyebrow {
-  margin-top: 18px;
-  display: inline-flex;
+.heroHeader :global(.oqoodWorkspaceHeader__identity) {
+  min-width: 0;
+}
+
+.heroHeader :global(.oqoodWorkspaceHeader__eyebrowRow) {
   align-items: center;
-  gap: 8px;
-  color: #93c5fd;
-  font-size: 12px;
-  font-weight: 700;
+  gap: 0.65rem;
 }
 
-.liveDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.09);
-}
-
-.intro h1 {
-  margin: 10px 0 0;
-  font-size: clamp(35px, 4vw, 58px);
+.heroHeader :global(.oqoodWorkspaceHeader__title) {
+  margin-block-start: 0.6rem;
+  color: #f8fafc;
+  font-size:
+    clamp(
+      2.15rem,
+      4vw,
+      3.65rem
+    );
   line-height: 1.2;
   letter-spacing: -0.045em;
 }
 
-.intro > p {
+.heroHeader :global(.oqoodWorkspaceHeader__description) {
   max-width: 720px;
-  margin: 12px 0 0;
+  margin-block-start: 0.7rem;
   color: #aab7ca;
-  font-size: 14px;
+  font-size: 0.85rem;
   line-height: 1.9;
 }
 
+.heroHeader :global(.oqoodWorkspaceHeader__badge) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.liveBadge {
+  border-color:
+    rgb(34 197 94 / 20%);
+  background:
+    rgb(34 197 94 / 8%);
+  color: #86efac;
+}
+
+.liveBadge :global(.odsBadge__dot) {
+  background: #22c55e;
+  box-shadow:
+    0 0 0 5px
+    rgb(34 197 94 / 9%);
+}
+
+.date {
+  display: block;
+  color: #7f8da4;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
 .alerts {
-  margin-top: 25px;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
   gap: 10px;
+  margin-block-start: 25px;
 }
 
 .alertCard {
-  min-width: 0;
-  padding: 13px;
   display: flex;
+  min-width: 0;
   align-items: center;
   gap: 11px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  padding: 13px;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.035);
+  background:
+    rgb(255 255 255 / 3.5%);
   backdrop-filter: blur(12px);
   transition:
     transform 180ms ease,
@@ -92,49 +140,56 @@
 }
 
 .alertCard:hover {
+  border-color:
+    rgb(96 165 250 / 20%);
+  background:
+    rgb(255 255 255 / 5.5%);
   transform: translateY(-2px);
-  border-color: rgba(96, 165, 250, 0.2);
-  background: rgba(255, 255, 255, 0.055);
 }
 
 .alertIcon {
+  display: grid;
   width: 38px;
   height: 38px;
-  display: grid;
+  flex: 0 0 auto;
   place-items: center;
-  flex-shrink: 0;
   border-radius: 11px;
+  background:
+    color-mix(
+      in srgb,
+      currentColor 16%,
+      transparent
+    );
   color: currentColor;
-  background: color-mix(in srgb, currentColor 16%, transparent);
   font-weight: 900;
 }
 
 .alertCard > div {
-  min-width: 0;
   display: grid;
+  min-width: 0;
 }
 
 .alertCard strong {
-  color: #ffffff;
-  font-size: 20px;
+  color: #fff;
+  font-size: 1.25rem;
   line-height: 1.1;
 }
 
 .alertCard span:not(.alertIcon) {
-  margin-top: 3px;
   overflow: hidden;
+  margin-block-start: 3px;
   color: #dbe5f3;
-  font-size: 10px;
+  font-size: 0.63rem;
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .alertCard small {
-  margin-top: 3px;
   overflow: hidden;
+  margin-block-start: 3px;
   color: #71809a;
-  font-size: 9px;
+  font-size: 0.56rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -155,98 +210,161 @@
   color: #34d399;
 }
 
+.tone-purple {
+  color: #c084fc;
+}
+
+.tone-cyan {
+  color: #22d3ee;
+}
+
 .progressCard {
-  padding: 20px;
-  border: 1px solid rgba(148, 163, 184, 0.13);
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid
+    rgb(148 163 184 / 13%);
   border-radius: 19px;
   background:
-    linear-gradient(145deg, rgba(17, 31, 56, 0.94), rgba(7, 17, 34, 0.96));
+    linear-gradient(
+      145deg,
+      rgb(17 31 56 / 94%),
+      rgb(7 17 34 / 96%)
+    );
   box-shadow:
-    0 24px 55px rgba(0, 0, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    0 24px 55px
+    rgb(0 0 0 / 22%),
+    inset 0 1px 0
+    rgb(255 255 255 / 3.5%);
   backdrop-filter: blur(18px);
 }
 
-.progressCard header {
+.progressCard :global(.odsDashboardPanelCard__header) {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
+  padding: 20px 20px 0;
+  border: 0;
 }
 
-.progressCard header > div {
-  display: grid;
-  gap: 4px;
+.progressCard :global(.odsDashboardPanelCard__title) {
+  color: #f8fafc;
+  font-size: 0.75rem;
 }
 
-.progressCard header strong {
-  font-size: 12px;
-}
-
-.progressCard header span {
+.progressCard :global(.odsDashboardPanelCard__description) {
+  margin-block-start: 4px;
   color: #71809a;
-  font-size: 9px;
+  font-size: 0.56rem;
 }
 
-.progressStatus {
-  padding: 4px 8px;
-  border-radius: 999px;
-  color: #86efac !important;
-  background: rgba(16, 185, 129, 0.1);
-  font-weight: 700;
+.progressCard :global(.odsDashboardPanelCard__body) {
+  padding: 0 20px;
+}
+
+.progressCard :global(.odsDashboardPanelCard__footer) {
+  padding: 0 20px 20px;
+  border: 0;
 }
 
 .progressRing {
+  display: grid;
   width: 138px;
   height: 138px;
+  place-items: center;
   margin: 24px auto 18px;
   padding: 11px;
-  display: grid;
-  place-items: center;
   border-radius: 50%;
   background:
     conic-gradient(
       from 0deg,
       #2563eb 0deg,
-      #6366f1 calc(var(--progress-angle) * 0.66),
-      #06b6d4 var(--progress-angle),
-      rgba(148, 163, 184, 0.1) var(--progress-angle)
+      #6366f1
+      calc(
+        var(--progress-angle) *
+        0.66
+      ),
+      #06b6d4
+      var(--progress-angle),
+      rgb(148 163 184 / 10%)
+      var(--progress-angle)
     );
   box-shadow:
-    0 0 35px rgba(37, 99, 235, 0.2),
-    inset 0 0 25px rgba(255, 255, 255, 0.04);
+    0 0 35px
+    rgb(37 99 235 / 20%),
+    inset 0 0 25px
+    rgb(255 255 255 / 4%);
 }
 
 .progressRing > div {
+  display: grid;
   width: 100%;
   height: 100%;
-  display: grid;
   place-content: center;
-  text-align: center;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 30%, #111f3a, #071224 72%);
+    radial-gradient(
+      circle at 50% 30%,
+      #111f3a,
+      #071224 72%
+    );
+  text-align: center;
 }
 
 .progressRing strong {
-  font-size: 30px;
+  color: #fff;
+  font-size: 1.9rem;
 }
 
 .progressRing span {
-  margin-top: 4px;
+  margin-block-start: 4px;
   color: #71809a;
-  font-size: 9px;
+  font-size: 0.56rem;
 }
 
-.progressCard > p {
-  margin: 0 0 17px;
-  text-align: center;
+.progressFooter {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.progressFooter p {
+  margin: 0;
   color: #7f8da4;
-  font-size: 10px;
+  font-size: 0.63rem;
+  text-align: center;
 }
 
-.progressCard > p strong {
-  color: #ffffff;
+.progressFooter p strong {
+  color: #fff;
+}
+
+.startAction {
+  display: inline-flex;
+  min-height: 2.55rem;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0.9rem;
+  border: 1px solid #2563eb;
+  border-radius: 9px;
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #4f46e5
+    );
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.startAction:hover {
+  filter: brightness(1.08);
+}
+
+.startAction:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
 }
 
 .gridPattern {
@@ -254,10 +372,24 @@
   inset: 0;
   opacity: 0.06;
   background-image:
-    linear-gradient(rgba(96, 165, 250, 0.32) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(96, 165, 250, 0.32) 1px, transparent 1px);
+    linear-gradient(
+      rgb(96 165 250 / 32%)
+      1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgb(96 165 250 / 32%)
+      1px,
+      transparent 1px
+    );
   background-size: 42px 42px;
-  mask-image: linear-gradient(to bottom, black, transparent 88%);
+  mask-image:
+    linear-gradient(
+      to bottom,
+      #000,
+      transparent 88%
+    );
 }
 
 .glowOne,
@@ -269,19 +401,21 @@
 }
 
 .glowOne {
+  inset-block-start: -170px;
+  inset-inline-start: 25%;
   width: 260px;
   height: 260px;
-  top: -170px;
-  inset-inline-start: 25%;
-  background: rgba(99, 102, 241, 0.18);
+  background:
+    rgb(99 102 241 / 18%);
 }
 
 .glowTwo {
+  inset-inline-end: 20%;
+  inset-block-end: -150px;
   width: 210px;
   height: 210px;
-  bottom: -150px;
-  inset-inline-end: 20%;
-  background: rgba(6, 182, 212, 0.13);
+  background:
+    rgb(6 182 212 / 13%);
 }
 
 @media (max-width: 1180px) {
@@ -301,7 +435,8 @@
   }
 
   .alerts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -310,7 +445,21 @@
     grid-template-columns: 1fr;
   }
 
-  .intro h1 {
-    font-size: 32px;
+  .heroHeader :global(.oqoodWorkspaceHeader__title) {
+    font-size: 2rem;
+  }
+
+  .progressCard {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alertCard {
+    transition: none;
+  }
+
+  .alertCard:hover {
+    transform: none;
   }
 }

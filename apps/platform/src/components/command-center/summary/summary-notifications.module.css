@@ -1,275 +1,348 @@
 .layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.8fr);
+  grid-template-columns:
+    minmax(0, 1.35fr)
+    minmax(340px, 0.8fr);
   gap: 14px;
 }
 
 .summaryPanel,
 .notificationsPanel {
   min-width: 0;
-  padding: 20px;
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  overflow: hidden;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
   border-radius: 18px;
-  color: #f8fafc;
   background:
     linear-gradient(
       145deg,
-      rgba(15, 26, 47, 0.98),
-      rgba(7, 16, 31, 0.99)
+      rgb(15 26 47 / 98%),
+      rgb(7 16 31 / 99%)
     );
   box-shadow:
-    0 18px 48px rgba(0, 0, 0, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    0 18px 48px
+    rgb(0 0 0 / 16%),
+    inset 0 1px 0
+    rgb(255 255 255 / 2%);
+  color: #f8fafc;
 }
 
 .summaryPanel {
   position: relative;
-  overflow: hidden;
   background:
     radial-gradient(
       circle at 5% 0%,
-      rgba(37, 99, 235, 0.13),
+      rgb(37 99 235 / 13%),
       transparent 34%
     ),
     radial-gradient(
       circle at 95% 100%,
-      rgba(139, 92, 246, 0.1),
+      rgb(139 92 246 / 10%),
       transparent 30%
     ),
     linear-gradient(
       145deg,
-      rgba(15, 26, 47, 0.99),
-      rgba(7, 16, 31, 0.99)
+      rgb(15 26 47 / 99%),
+      rgb(7 16 31 / 99%)
     );
 }
 
-.summaryPanel > header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 24px;
+.summaryPanel::before {
+  position: absolute;
+  inset-block-start: -120px;
+  inset-inline-start: 30%;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background:
+    rgb(99 102 241 / 10%);
+  content: "";
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.summaryPanel
+:global(.odsDashboardPanelCard__header),
+.notificationsPanel
+:global(.odsDashboardPanelCard__header) {
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 20px 0;
+  border: 0;
 }
 
-.eyebrow {
-  color: #60a5fa;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+.summaryPanel
+:global(.odsDashboardPanelCard__title),
+.notificationsPanel
+:global(.odsDashboardPanelCard__title) {
+  color: #f8fafc;
+  font-size: 1.05rem;
 }
 
-.summaryPanel h2,
-.notificationsPanel h2 {
-  margin: 8px 0 0;
-  font-size: 17px;
-}
-
-.summaryPanel header p,
-.notificationsHeader p {
+.summaryPanel
+:global(.odsDashboardPanelCard__description),
+.notificationsPanel
+:global(.odsDashboardPanelCard__description) {
   max-width: 580px;
-  margin: 7px 0 0;
+  margin-block-start: 0.42rem;
   color: #71809a;
-  font-size: 9px;
+  font-size: 0.57rem;
   line-height: 1.7;
 }
 
-.healthScore {
-  width: 105px;
-  height: 105px;
-  padding: 8px;
+.summaryPanel
+:global(.odsDashboardPanelCard__body),
+.notificationsPanel
+:global(.odsDashboardPanelCard__body) {
+  position: relative;
+  z-index: 1;
+}
+
+.summaryPanel
+:global(.odsDashboardPanelCard__body) {
+  padding: 20px;
+}
+
+.notificationsPanel
+:global(.odsDashboardPanelCard__body) {
+  padding: 16px 20px 12px;
+}
+
+.summaryPanel
+:global(.odsDashboardPanelCard__footer),
+.notificationsPanel
+:global(.odsDashboardPanelCard__footer) {
+  position: relative;
+  z-index: 1;
+  padding: 0 20px 20px;
+  border: 0;
+}
+
+.executiveBadge {
+  border-color:
+    rgb(139 92 246 / 22%);
+  background:
+    rgb(139 92 246 / 10%);
+  color: #c4b5fd;
+  letter-spacing: 0.03em;
+}
+
+.notificationCount {
+  white-space: nowrap;
+}
+
+.summaryBody {
   display: grid;
+  grid-template-columns:
+    auto
+    minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.healthScore {
+  display: grid;
+  width: 108px;
+  height: 108px;
+  flex: 0 0 auto;
   place-items: center;
+  padding: 8px;
   border-radius: 50%;
   background:
     conic-gradient(
       #2563eb 0deg,
-      #8b5cf6 var(--health-angle),
-      rgba(148, 163, 184, 0.1) var(--health-angle)
+      #8b5cf6
+      var(--health-angle),
+      rgb(148 163 184 / 10%)
+      var(--health-angle)
     );
-  box-shadow: 0 0 35px rgba(59, 130, 246, 0.16);
+  box-shadow:
+    0 0 35px
+    rgb(59 130 246 / 16%);
 }
 
 .healthScore > div {
+  display: grid;
   width: 100%;
   height: 100%;
-  display: grid;
   place-content: center;
-  text-align: center;
   border-radius: 50%;
   background: #091428;
+  text-align: center;
 }
 
 .healthScore strong {
-  font-size: 20px;
+  color: #f8fafc;
+  font-size: 1.28rem;
 }
 
 .healthScore span {
-  margin-top: 3px;
+  margin-block-start: 3px;
   color: #71809a;
-  font-size: 7px;
+  font-size: 0.45rem;
 }
 
 .summaryGrid {
-  margin-top: 21px;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  min-width: 0;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
   gap: 9px;
-  position: relative;
-  z-index: 2;
 }
 
 .summaryItem {
-  min-width: 0;
-  padding: 12px;
   display: grid;
+  min-width: 0;
   gap: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.075);
+  padding: 12px;
+  border: 1px solid
+    rgb(148 163 184 / 7.5%);
+  border-block-start-color:
+    color-mix(
+      in srgb,
+      currentColor 38%,
+      transparent
+    );
   border-radius: 11px;
+  background:
+    rgb(255 255 255 / 1.8%);
   color: #60a5fa;
-  background: rgba(255, 255, 255, 0.018);
 }
 
 .summaryItem span {
   overflow: hidden;
   color: #71809a;
-  font-size: 8px;
+  font-size: 0.5rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .summaryItem strong {
+  overflow: hidden;
   color: #e5edf8;
-  font-size: 14px;
+  font-size: 0.88rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.tone-blue {
-  border-top-color: rgba(59, 130, 246, 0.35);
-}
-
-.tone-green {
-  border-top-color: rgba(16, 185, 129, 0.35);
-}
-
-.tone-orange {
-  border-top-color: rgba(245, 158, 11, 0.35);
-}
-
-.tone-purple {
-  border-top-color: rgba(139, 92, 246, 0.35);
-}
-
-.summaryPanel footer {
-  margin-top: 15px;
-  padding-top: 13px;
+.summaryFooter {
   display: flex;
+  min-height: 2.1rem;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  position: relative;
-  z-index: 2;
-  border-top: 1px solid rgba(148, 163, 184, 0.075);
+  padding-block-start: 13px;
+  border-block-start: 1px solid
+    rgb(148 163 184 / 7.5%);
 }
 
-.summaryPanel footer span {
+.healthStatus {
   display: flex;
   align-items: center;
   gap: 7px;
   color: #71809a;
-  font-size: 8px;
+  font-size: 0.5rem;
 }
 
-.summaryPanel footer i {
+.serviceDot {
   width: 7px;
   height: 7px;
+  flex: 0 0 auto;
   border-radius: 50%;
+}
+
+.health-success {
   background: #34d399;
-  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.08);
+  box-shadow:
+    0 0 0 4px
+    rgb(52 211 153 / 8%);
 }
 
-.summaryPanel footer button,
-.viewAll {
-  border: 0;
-  cursor: pointer;
+.health-info {
+  background: #60a5fa;
+  box-shadow:
+    0 0 0 4px
+    rgb(96 165 250 / 8%);
+}
+
+.health-warning {
+  background: #f59e0b;
+  box-shadow:
+    0 0 0 4px
+    rgb(245 158 11 / 8%);
+}
+
+.panelLink {
   color: #60a5fa;
-  background: transparent;
-  font: inherit;
-  font-size: 8px;
-  font-weight: 700;
-}
-
-.summaryGlow {
-  width: 190px;
-  height: 190px;
-  position: absolute;
-  top: -120px;
-  inset-inline-start: 30%;
-  border-radius: 50%;
-  background: rgba(99, 102, 241, 0.1);
-  filter: blur(30px);
-}
-
-.notificationsHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.notificationsPanel h2 {
-  margin-top: 0;
-}
-
-.notificationCount {
-  min-width: 27px;
-  height: 27px;
-  display: grid;
-  place-items: center;
-  border-radius: 8px;
-  color: #bfdbfe;
-  background: rgba(37, 99, 235, 0.16);
-  font-size: 9px;
+  font-size: 0.52rem;
   font-weight: 800;
+  text-decoration: none;
+}
+
+.panelLink:hover {
+  color: #bfdbfe;
+}
+
+.panelLink:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
 }
 
 .notificationsList {
-  margin-top: 16px;
   display: grid;
   gap: 7px;
 }
 
 .notification {
-  min-width: 0;
-  padding: 9px;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: start;
-  gap: 9px;
   position: relative;
-  border: 1px solid rgba(148, 163, 184, 0.07);
+  display: grid;
+  min-width: 0;
+  grid-template-columns:
+    auto
+    minmax(0, 1fr)
+    auto;
+  gap: 9px;
+  align-items: start;
+  padding: 9px;
+  border: 1px solid
+    rgb(148 163 184 / 7%);
   border-radius: 11px;
+  background:
+    rgb(255 255 255 / 1.7%);
   color: #60a5fa;
-  background: rgba(255, 255, 255, 0.017);
 }
 
 .notification.unread {
   background:
     linear-gradient(
       90deg,
-      color-mix(in srgb, currentColor 5%, transparent),
-      rgba(255, 255, 255, 0.015)
+      color-mix(
+        in srgb,
+        currentColor 5%,
+        transparent
+      ),
+      rgb(255 255 255 / 1.5%)
     );
 }
 
 .notificationIcon {
+  display: grid;
   width: 28px;
   height: 28px;
-  display: grid;
   place-items: center;
   border-radius: 8px;
+  background:
+    color-mix(
+      in srgb,
+      currentColor 13%,
+      transparent
+    );
   color: currentColor;
-  background: color-mix(in srgb, currentColor 13%, transparent);
-  font-size: 9px;
+  font-size: 0.57rem;
   font-weight: 900;
 }
 
@@ -281,64 +354,79 @@
   display: block;
   overflow: hidden;
   color: #dbe5f3;
-  font-size: 9px;
+  font-size: 0.57rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .notificationContent p {
-  margin: 4px 0 0;
   overflow: hidden;
+  margin: 4px 0 0;
   color: #65748b;
-  font-size: 7px;
+  font-size: 0.46rem;
   line-height: 1.5;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.notificationContent small {
-  display: block;
-  margin-top: 5px;
+.notificationMeta {
+  display: grid;
+  min-width: 4.5rem;
+  gap: 0.28rem;
+  justify-items: end;
+}
+
+.notificationMeta small {
   color: #4f5d72;
-  font-size: 7px;
+  font-size: 0.44rem;
+  white-space: nowrap;
 }
 
-.unreadDot {
-  width: 6px;
-  height: 6px;
-  margin-top: 5px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 8px currentColor;
+.unreadBadge {
+  font-size: 0.43rem;
 }
 
-.tone-red {
-  color: #fb7185;
+.tone-blue {
+  color: #60a5fa;
 }
 
-.tone-orange {
-  color: #f59e0b;
+.tone-cyan {
+  color: #22d3ee;
 }
 
 .tone-green {
   color: #34d399;
 }
 
+.tone-orange {
+  color: #f59e0b;
+}
+
 .tone-purple {
   color: #a78bfa;
 }
 
-.notificationsPanel .tone-blue {
-  color: #60a5fa;
+.tone-red {
+  color: #fb7185;
 }
 
 .viewAll {
+  display: flex;
   width: 100%;
   min-height: 32px;
-  margin-top: 11px;
-  border: 1px solid rgba(96, 165, 250, 0.12);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid
+    rgb(96 165 250 / 12%);
   border-radius: 9px;
-  background: rgba(37, 99, 235, 0.045);
+  background:
+    rgb(37 99 235 / 4.5%);
+}
+
+.empty {
+  min-height: 10rem;
+  border: 0;
+  background: transparent;
 }
 
 @media (max-width: 1100px) {
@@ -348,13 +436,7 @@
 }
 
 @media (max-width: 720px) {
-  .summaryGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 480px) {
-  .summaryPanel > header {
+  .summaryBody {
     grid-template-columns: 1fr;
   }
 
@@ -363,6 +445,56 @@
   }
 
   .summaryGrid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .summaryPanel
+  :global(.odsDashboardPanelCard__header),
+  .notificationsPanel
+  :global(.odsDashboardPanelCard__header) {
+    flex-direction: column;
+    padding-inline: 14px;
+  }
+
+  .summaryPanel
+  :global(.odsDashboardPanelCard__body),
+  .notificationsPanel
+  :global(.odsDashboardPanelCard__body),
+  .summaryPanel
+  :global(.odsDashboardPanelCard__footer),
+  .notificationsPanel
+  :global(.odsDashboardPanelCard__footer) {
+    padding-inline: 14px;
+  }
+
+  .summaryGrid {
     grid-template-columns: 1fr;
+  }
+
+  .summaryFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .notification {
+    grid-template-columns:
+      auto
+      minmax(0, 1fr);
+  }
+
+  .notificationMeta {
+    grid-column: 2;
+    grid-template-columns:
+      auto
+      auto;
+    align-items: center;
+    justify-content: start;
+  }
+
+  .notificationContent p {
+    white-space: normal;
   }
 }

@@ -1,101 +1,224 @@
-import type { CSSProperties } from "react";
-import { Button } from "@oqood/design-system";
+import type {
+  CSSProperties,
+} from "react";
+
+import Link from "next/link";
+
+import {
+  Badge,
+  DashboardPanel,
+  WorkspaceHeader,
+} from "@oqood/design-system";
+
 import type {
   CommandCenterAlert,
   CommandCenterData,
 } from "@/features/command-center";
+
 import styles from "./command-hero.module.css";
 
 type CommandHeroProps = {
   data: CommandCenterData;
 };
 
-function AlertCard({ alert }: { alert: CommandCenterAlert }) {
+function AlertCard({
+  alert,
+}: {
+  alert: CommandCenterAlert;
+}) {
   return (
     <article
       className={`${styles.alertCard} ${styles[`tone-${alert.tone}`]}`}
+      role="listitem"
     >
-      <span className={styles.alertIcon} aria-hidden="true">
+      <span
+        aria-hidden="true"
+        className={styles.alertIcon}
+      >
         {alert.icon}
       </span>
 
       <div>
         <strong>{alert.value}</strong>
+
         <span>{alert.title}</span>
-        <small>{alert.description}</small>
+
+        <small>
+          {alert.description}
+        </small>
       </div>
     </article>
   );
 }
 
-export function CommandHero({ data }: CommandHeroProps) {
-  const progress = data.hero.progress.percentage;
+export function CommandHero({
+  data,
+}: CommandHeroProps) {
+  const progress = Math.min(
+    100,
+    Math.max(
+      0,
+      data.hero.progress.percentage,
+    ),
+  );
+
+  const progressLabel =
+    progress >= 75
+      ? "ممتاز"
+      : progress >= 40
+        ? "قيد التقدم"
+        : "يحتاج متابعة";
+
+  const progressTone:
+    | "success"
+    | "info"
+    | "warning" =
+    progress >= 75
+      ? "success"
+      : progress >= 40
+        ? "info"
+        : "warning";
 
   return (
-    <section className={styles.hero}>
-      <div className={styles.gridPattern} />
-      <div className={styles.glowOne} />
-      <div className={styles.glowTwo} />
+    <section
+      aria-label="ملخص مركز القيادة التشغيلي"
+      className={styles.hero}
+    >
+      <div
+        aria-hidden="true"
+        className={styles.gridPattern}
+      />
+
+      <div
+        aria-hidden="true"
+        className={styles.glowOne}
+      />
+
+      <div
+        aria-hidden="true"
+        className={styles.glowTwo}
+      />
 
       <div className={styles.main}>
         <div className={styles.intro}>
-          <span className={styles.date}>{data.date}</span>
+          <WorkspaceHeader
+            badge={
+              <time className={styles.date}>
+                {data.date}
+              </time>
+            }
+            className={styles.heroHeader}
+            description={
+              data.hero.description
+            }
+            eyebrow={
+              <Badge
+                className={
+                  styles.liveBadge
+                }
+                dot
+                size="sm"
+                tone="success"
+              >
+                {data.hero.eyebrow}
+              </Badge>
+            }
+            title={data.hero.title}
+          />
 
-          <span className={styles.eyebrow}>
-            <span className={styles.liveDot} />
-            {data.hero.eyebrow}
-          </span>
-
-          <h1>
-            {data.hero.title}
-            <span> 👋</span>
-          </h1>
-
-          <p>{data.hero.description}</p>
-
-          <div className={styles.alerts}>
-            {data.hero.alerts.map((alert) => (
-              <AlertCard alert={alert} key={alert.id} />
-            ))}
+          <div
+            aria-label="التنبيهات التشغيلية المختصرة"
+            className={styles.alerts}
+            role="list"
+          >
+            {data.hero.alerts.map(
+              (alert) => (
+                <AlertCard
+                  alert={alert}
+                  key={alert.id}
+                />
+              ),
+            )}
           </div>
         </div>
 
-        <aside className={styles.progressCard}>
-          <header>
-            <div>
-              <strong>تقدم أعمال اليوم</strong>
-              <span>يتم التحديث تلقائيًا</span>
+        <DashboardPanel
+          action={
+            <Badge
+              size="sm"
+              tone={progressTone}
+            >
+              {progressLabel}
+            </Badge>
+          }
+          aria-label="تقدم أعمال اليوم"
+          className={styles.progressCard}
+          description="يتم التحديث تلقائيًا"
+          footer={
+            <div
+              className={
+                styles.progressFooter
+              }
+            >
+              <p>
+                تم إنجاز
+                <strong>
+                  {" "}
+                  {
+                    data.hero.progress
+                      .completed
+                  }{" "}
+                </strong>
+                من أصل
+                <strong>
+                  {" "}
+                  {
+                    data.hero.progress
+                      .total
+                  }{" "}
+                </strong>
+                مهمة.
+              </p>
+
+              <Link
+                className={
+                  styles.startAction
+                }
+                href="/platform/approvals"
+              >
+                ابدأ العمل
+              </Link>
             </div>
-
-            <span className={styles.progressStatus}>ممتاز</span>
-          </header>
-
+          }
+          padding="none"
+          title="تقدم أعمال اليوم"
+        >
           <div
-            className={styles.progressRing}
+            aria-label={`نسبة تقدم أعمال اليوم: ${progress}%`}
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={progress}
+            aria-valuetext={`${progress}% مكتمل`}
+            className={
+              styles.progressRing
+            }
+            role="progressbar"
             style={
               {
-                "--progress-angle": `${progress * 3.6}deg`,
+                "--progress-angle":
+                  `${progress * 3.6}deg`,
               } as CSSProperties
             }
           >
             <div>
-              <strong>{progress}%</strong>
+              <strong>
+                {progress}%
+              </strong>
+
               <span>مكتمل</span>
             </div>
           </div>
-
-          <p>
-            تم إنجاز
-            <strong> {data.hero.progress.completed} </strong>
-            من أصل
-            <strong> {data.hero.progress.total} </strong>
-            مهمة.
-          </p>
-
-          <Button fullWidth size="md">
-            ابدأ العمل
-          </Button>
-        </aside>
+        </DashboardPanel>
       </div>
     </section>
   );

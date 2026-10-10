@@ -1,13 +1,46 @@
 import type {
+  CSSProperties,
+} from "react";
+
+import Link from "next/link";
+
+import {
+  Badge,
+  DashboardPanel,
+  EmptyState,
+} from "@oqood/design-system";
+
+import type {
   CommandCenterNotificationsData,
   CommandCenterSummaryData,
   SmartNotification,
 } from "@/features/command-center";
+
 import styles from "./summary-notifications.module.css";
 
 type SummaryNotificationsProps = {
   summary: CommandCenterSummaryData;
-  notifications: CommandCenterNotificationsData;
+  notifications:
+    CommandCenterNotificationsData;
+};
+
+type BadgeTone =
+  | "neutral"
+  | "info"
+  | "primary"
+  | "success"
+  | "warning"
+  | "danger";
+
+const notificationTones: Record<
+  SmartNotification["tone"],
+  BadgeTone
+> = {
+  blue: "info",
+  green: "success",
+  orange: "warning",
+  purple: "primary",
+  red: "danger",
 };
 
 function NotificationItem({
@@ -16,29 +49,74 @@ function NotificationItem({
   notification: SmartNotification;
 }) {
   return (
-    <article
+    <div
+      aria-label={`${notification.title}${
+        notification.unread
+          ? "، غير مقروء"
+          : ""
+      }`}
       className={[
         styles.notification,
-        styles[`tone-${notification.tone}`],
-        notification.unread ? styles.unread : "",
+        styles[
+          `tone-${notification.tone}`
+        ],
+        notification.unread
+          ? styles.unread
+          : "",
       ]
         .filter(Boolean)
         .join(" ")}
+      role="listitem"
     >
-      <span className={styles.notificationIcon} aria-hidden="true">
+      <span
+        aria-hidden="true"
+        className={
+          styles.notificationIcon
+        }
+      >
         {notification.icon}
       </span>
 
-      <div className={styles.notificationContent}>
-        <strong>{notification.title}</strong>
-        <p>{notification.description}</p>
-        <small>{notification.time}</small>
+      <div
+        className={
+          styles.notificationContent
+        }
+      >
+        <strong>
+          {notification.title}
+        </strong>
+
+        <p>
+          {notification.description}
+        </p>
       </div>
 
-      {notification.unread ? (
-        <span className={styles.unreadDot} aria-label="غير مقروء" />
-      ) : null}
-    </article>
+      <div
+        className={
+          styles.notificationMeta
+        }
+      >
+        {notification.unread ? (
+          <Badge
+            className={
+              styles.unreadBadge
+            }
+            size="sm"
+            tone={
+              notificationTones[
+                notification.tone
+              ]
+            }
+          >
+            غير مقروء
+          </Badge>
+        ) : null}
+
+        <small>
+          {notification.time}
+        </small>
+      </div>
+    </div>
   );
 }
 
@@ -46,82 +124,229 @@ export function SummaryNotifications({
   summary,
   notifications,
 }: SummaryNotificationsProps) {
+  const healthScore = Math.min(
+    100,
+    Math.max(
+      0,
+      summary.healthScore,
+    ),
+  );
+
+  const healthTone:
+    | "success"
+    | "info"
+    | "warning" =
+    healthScore >= 80
+      ? "success"
+      : healthScore >= 60
+        ? "info"
+        : "warning";
+
+  const healthLabel =
+    healthScore >= 80
+      ? "صحة الأعمال ممتازة"
+      : healthScore >= 60
+        ? "صحة الأعمال مستقرة"
+        : "صحة الأعمال تحتاج متابعة";
+
   return (
-    <section className={styles.layout}>
-      <article className={styles.summaryPanel}>
-        <div className={styles.summaryGlow} />
-
-        <header>
-          <div>
-            <span className={styles.eyebrow}>Executive Overview</span>
-            <h2>{summary.headline}</h2>
-            <p>{summary.description}</p>
-          </div>
-
+    <section
+      aria-label="النظرة التنفيذية والإشعارات الذكية"
+      className={styles.layout}
+    >
+      <DashboardPanel
+        action={
+          <Badge
+            className={
+              styles.executiveBadge
+            }
+            size="sm"
+            tone="primary"
+          >
+            Executive Overview
+          </Badge>
+        }
+        aria-label="النظرة التنفيذية"
+        className={
+          styles.summaryPanel
+        }
+        description={
+          summary.description
+        }
+        footer={
           <div
-            className={styles.healthScore}
+            className={
+              styles.summaryFooter
+            }
+          >
+            <div
+              className={
+                styles.healthStatus
+              }
+            >
+              <span
+                aria-hidden="true"
+                className={`${styles.serviceDot} ${styles[`health-${healthTone}`]}`}
+              />
+
+              <span>
+                {healthLabel}
+              </span>
+            </div>
+
+            <Link
+              className={
+                styles.panelLink
+              }
+              href="/platform/reports"
+            >
+              فتح التقرير التنفيذي
+            </Link>
+          </div>
+        }
+        padding="none"
+        title={summary.headline}
+      >
+        <div
+          className={styles.summaryBody}
+        >
+          <div
+            aria-label={`مؤشر صحة الأعمال: ${healthScore}%`}
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={
+              healthScore
+            }
+            aria-valuetext={`${healthScore}% — ${healthLabel}`}
+            className={
+              styles.healthScore
+            }
+            role="progressbar"
             style={
               {
-                "--health-angle": `${summary.healthScore * 3.6}deg`,
-              } as React.CSSProperties
+                "--health-angle":
+                  `${healthScore * 3.6}deg`,
+              } as CSSProperties
             }
           >
             <div>
-              <strong>{summary.healthScore}%</strong>
-              <span>صحة الأعمال</span>
+              <strong>
+                {healthScore}%
+              </strong>
+
+              <span>
+                صحة الأعمال
+              </span>
             </div>
           </div>
-        </header>
 
-        <div className={styles.summaryGrid}>
-          {summary.items.map((item) => (
-            <article
-              className={`${styles.summaryItem} ${
-                styles[`tone-${item.tone}`]
-              }`}
-              key={item.id}
+          {summary.items.length > 0 ? (
+            <div
+              aria-label="مؤشرات النظرة التنفيذية"
+              className={
+                styles.summaryGrid
+              }
+              role="list"
             >
-              <span>{item.label}</span>
-              <strong>{item.value}</strong>
-            </article>
-          ))}
-        </div>
+              {summary.items.map(
+                (item) => (
+                  <div
+                    aria-label={`${item.label}: ${item.value}`}
+                    className={`${styles.summaryItem} ${styles[`tone-${item.tone}`]}`}
+                    key={item.id}
+                    role="listitem"
+                  >
+                    <span>
+                      {item.label}
+                    </span>
 
-        <footer>
-          <span>
-            <i />
-            جميع الخدمات الأساسية تعمل بصورة طبيعية.
-          </span>
-
-          <button type="button">فتح التقرير التنفيذي</button>
-        </footer>
-      </article>
-
-      <article className={styles.notificationsPanel}>
-        <header className={styles.notificationsHeader}>
-          <div>
-            <h2>الإشعارات الذكية</h2>
-            <p>أهم التنبيهات التي تحتاج إلى الانتباه.</p>
-          </div>
-
-          <span className={styles.notificationCount}>
-            {notifications.unreadCount}
-          </span>
-        </header>
-
-        <div className={styles.notificationsList}>
-          {notifications.items.map((notification) => (
-            <NotificationItem
-              key={notification.id}
-              notification={notification}
+                    <strong>
+                      {item.value}
+                    </strong>
+                  </div>
+                ),
+              )}
+            </div>
+          ) : (
+            <EmptyState
+              className={styles.empty}
+              icon="▦"
+              title="لا توجد مؤشرات تنفيذية"
+              description="ستظهر المؤشرات التنفيذية بعد إضافة البيانات التشغيلية إلى مساحة العمل."
+              role="status"
             />
-          ))}
+          )}
         </div>
+      </DashboardPanel>
 
-        <button className={styles.viewAll} type="button">
-          عرض جميع الإشعارات
-        </button>
-      </article>
+      <DashboardPanel
+        action={
+          <Badge
+            className={
+              styles.notificationCount
+            }
+            size="sm"
+            tone={
+              notifications.unreadCount >
+              0
+                ? "warning"
+                : "success"
+            }
+          >
+            {
+              notifications.unreadCount
+            }
+            {" غير مقروء"}
+          </Badge>
+        }
+        aria-label="الإشعارات الذكية"
+        className={
+          styles.notificationsPanel
+        }
+        description="أهم التنبيهات التي تحتاج إلى الانتباه."
+        footer={
+          <Link
+            className={`${styles.panelLink} ${styles.viewAll}`}
+            href="/platform/notifications"
+          >
+            عرض جميع الإشعارات
+          </Link>
+        }
+        padding="none"
+        title="الإشعارات الذكية"
+      >
+        {notifications.items.length >
+        0 ? (
+          <div
+            className={
+              styles.notificationsList
+            }
+            role="list"
+          >
+            {notifications.items.map(
+              (notification) => (
+                <NotificationItem
+                  key={
+                    notification.id
+                  }
+                  notification={
+                    notification
+                  }
+                />
+              ),
+            )}
+          </div>
+        ) : (
+          <EmptyState
+            className={styles.empty}
+            tone="success"
+            icon="✓"
+            title="لا توجد إشعارات جديدة"
+            description="لا توجد تنبيهات تشغيلية تحتاج إلى متابعتك حاليًا."
+            role="status"
+          />
+        )}
+      </DashboardPanel>
     </section>
   );
 }

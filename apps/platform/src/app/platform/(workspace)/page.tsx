@@ -15,12 +15,18 @@ export default async function PlatformPage() {
   const { operations } = commandCenterData;
 
   return (
-    <main className={styles.page}>
+    <main
+      aria-label="مركز القيادة التشغيلي"
+      className={styles.page}
+    >
       <CommandHero data={commandCenterData} />
 
       <KpiStrip items={commandCenterData.kpis} />
 
-      <section className={styles.intelligenceRow}>
+      <section
+        aria-label="الذكاء التشغيلي والإجراءات السريعة"
+        className={styles.intelligenceRow}
+      >
         <IntelligencePanel
           data={commandCenterData.intelligence}
         />
@@ -45,7 +51,10 @@ export default async function PlatformPage() {
         summary={commandCenterData.summary}
       />
 
-      <section className={styles.performanceRow}>
+      <section
+        aria-label="تحليلات الأداء وآخر النشاطات"
+        className={styles.performanceRow}
+      >
         <PerformanceAnalytics
           data={commandCenterData.performance}
         />
