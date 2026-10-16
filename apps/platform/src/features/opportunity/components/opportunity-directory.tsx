@@ -1,7 +1,10 @@
 "use client";
 
+import styles from "./opportunity-directory.module.css";
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { Badge, Button, DataTable, EmptyState, Input, Select, type DataTableColumn } from "@oqood/design-system";
 
 import type { OpportunitySummaryResponse } from "../dtos";
 import { OpportunityCardGrid } from "./opportunity-card-grid";
@@ -127,121 +130,96 @@ export function OpportunityDirectory({
     setClosingSoonOnly(false);
   }
 
+  const columns: readonly DataTableColumn<OpportunitySummaryResponse>[] = [
+    { id: "opportunity", header: "المنافسة", cell: (item) => (
+      <Link className={styles.identity} href={`/platform/opportunities/${item.id}`}>
+        <strong>{item.title}</strong><small>{item.number}</small>
+      </Link>
+    ) },
+    { id: "owner", header: "الجهة المالكة", cell: () => "مساحة العمل الحالية" },
+    { id: "type", header: "نوع المنافسة", cell: (item) => (
+      <Badge tone="neutral">{typeLabels[item.type]}</Badge>
+    ) },
+    { id: "budget", header: "قيمة المنافسة", cell: (item) => (
+      <strong>{formatBudget(item)}</strong>
+    ) },
+    { id: "closingDate", header: "تاريخ الإغلاق", cell: (item) => (
+      <><span>{formatDate(item.closingDate)}</span><small>{isClosingSoon(item) ? "تنتهي قريبًا" : "موعد التقديم"}</small></>
+    ) },
+    { id: "status", header: "الحالة", cell: (item) => (
+      <Badge tone={statusTone(item.status)}>{statusLabels[item.status]}</Badge>
+    ) },
+  ];
+
   return (
-    <section className="approvedOpportunityWorkspace">
-      <aside className="approvedOpportunityFilters" aria-label="تصفية النتائج">
+    <section className={styles.workspace}>
+      <aside className={styles.filters} aria-label="تصفية النتائج">
         <header>
           <div><span>التحكم بالنتائج</span><h2>تصفية النتائج</h2></div>
           <span aria-hidden="true">⌁</span>
         </header>
 
-        <label>
-          <span>حالة المنافسة</span>
-          <select value={status} onChange={(event) => setStatus(event.target.value as OpportunityStatus | "ALL")}>
+        <Select id="opportunity-status" label="حالة المنافسة" value={status} onChange={(event) => setStatus(event.target.value as OpportunityStatus | "ALL")}>
             {statusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-          </select>
-        </label>
+        </Select>
 
-        <label>
-          <span>نوع المنافسة</span>
-          <select value={type} onChange={(event) => setType(event.target.value as OpportunityType | "ALL")}>
+        <Select id="opportunity-type" label="نوع المنافسة" value={type} onChange={(event) => setType(event.target.value as OpportunityType | "ALL")}>
             {typeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-          </select>
-        </label>
+        </Select>
 
-        <label><span>الجهة المالكة</span><select disabled><option>كل الجهات</option></select></label>
 
-        <div className="approvedOpportunityRange">
-          <span>قيمة المنافسة</span>
-          <input type="range" min="0" max="100" defaultValue="100" aria-label="الحد الأعلى لقيمة المنافسة" />
-          <div><span>0 ر.س</span><span>10,000,000+ ر.س</span></div>
-        </div>
 
-        <label className="approvedOpportunityCheck">
+        <label className={styles.check}>
           <input type="checkbox" checked={closingSoonOnly} onChange={(event) => setClosingSoonOnly(event.target.checked)} />
           <span>تنتهي خلال 7 أيام</span>
         </label>
 
-        <button className="approvedFilterApply" type="button">تطبيق الفلاتر</button>
-        <button className="approvedFilterReset" type="button" onClick={resetFilters}>مسح الفلاتر</button>
+        <Button variant="outline" onClick={resetFilters}>مسح الفلاتر</Button>
       </aside>
 
-      <div className="approvedOpportunityResults">
-        <div className="approvedOpportunityToolbar">
-          <label className="approvedOpportunitySearch">
-            <span aria-hidden="true">⌕</span>
-            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="بحث في المنافسات..." />
-          </label>
-
-          <div className="approvedOpportunitySort">
-            <span>ترتيب حسب</span>
-            <select aria-label="ترتيب المنافسات" defaultValue="latest">
-              <option value="latest">الأحدث</option>
-              <option value="deadline">موعد الإغلاق</option>
-              <option value="value">القيمة</option>
-            </select>
+      <div className={styles.results}>
+        <div className={styles.toolbar}>
+          <div className={styles.search}>
+            <Input id="opportunity-search" aria-label="بحث في المنافسات" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="بحث في المنافسات..." />
           </div>
 
-          <div className="approvedViewToggle" aria-label="طريقة عرض المنافسات">
-            <button className={view === "table" ? "isActive" : ""} type="button" onClick={() => setView("table")} aria-pressed={view === "table"}>☷</button>
-            <button className={view === "cards" ? "isActive" : ""} type="button" onClick={() => setView("cards")} aria-pressed={view === "cards"}>▦</button>
+
+          <div className={styles.viewToggle} role="group" aria-label="طريقة عرض المنافسات">
+            <Button variant={view === "table" ? "primary" : "ghost"} onClick={() => setView("table")} aria-pressed={view === "table"}>جدول</Button>
+            <Button variant={view === "cards" ? "primary" : "ghost"} onClick={() => setView("cards")} aria-pressed={view === "cards"}>بطاقات</Button>
           </div>
 
-          {canCreate && <Link href="/platform/opportunities/new">＋ إنشاء منافسة جديدة</Link>}
+          {canCreate && <Link className="odsButton odsButton--primary odsButton--md" href="/platform/opportunities/new">＋ إنشاء منافسة جديدة</Link>}
         </div>
 
-        <div className={view === "table" ? "approvedOpportunityTable" : "approvedOpportunityCards"}>
+        <div className={styles.content}>
           {filtered.length ? (
             view === "table"
               ? (
-                <div className="approvedTableScroller">
-                  <table>
-                    <caption>قائمة المنافسات</caption>
-                    <thead>
-                      <tr>
-                        <th>المنافسة</th>
-                        <th>الجهة المالكة</th>
-                        <th>نوع المنافسة</th>
-                        <th>قيمة المنافسة</th>
-                        <th>تاريخ الإغلاق</th>
-                        <th>الحالة</th>
-                        <th><span className="srOnly">الإجراءات</span></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filtered.map((opportunity) => (
-                        <tr key={opportunity.id}>
-                          <td>
-                            <Link href={`/platform/opportunities/${opportunity.id}`}>
-                              <strong>{opportunity.title}</strong>
-                              <small>{opportunity.number}</small>
-                            </Link>
-                          </td>
-                          <td><span className="approvedOwnerMark">ع</span><span>مساحة العمل الحالية</span></td>
-                          <td><span className={`approvedTypeTag type-${opportunity.type.toLocaleLowerCase()}`}>{typeLabels[opportunity.type]}</span></td>
-                          <td><strong className="approvedBudget">{formatBudget(opportunity)}</strong></td>
-                          <td><span>{formatDate(opportunity.closingDate)}</span><small>{isClosingSoon(opportunity) ? "تنتهي قريبًا" : "موعد التقديم"}</small></td>
-                          <td><span className={`approvedStatusTag ${statusTone(opportunity.status)}`}>{statusLabels[opportunity.status]}</span></td>
-                          <td><Link className="approvedRowAction" href={`/platform/opportunities/${opportunity.id}`} aria-label={`عرض تفاصيل ${opportunity.title}`}>•••</Link></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <DataTable
+                  caption="قائمة المنافسات"
+                  columns={columns}
+                  rows={filtered}
+                  getRowKey={(item) => item.id}
+                  rowActions={(item) => (
+                    <Link className="odsButton odsButton--ghost odsButton--md" href={`/platform/opportunities/${item.id}`} aria-label={`عرض تفاصيل ${item.title}`}>عرض التفاصيل</Link>
+                  )}
+                />
               )
               : <OpportunityCardGrid opportunities={[...filtered]} />
           ) : (
-            <div className="approvedOpportunityEmpty">
-              <strong>لا توجد نتائج مطابقة</strong>
-              <span>جرّب تعديل البحث أو إزالة بعض الفلاتر.</span>
-              <button type="button" onClick={resetFilters}>مسح الفلاتر</button>
-            </div>
+            <EmptyState
+              role="status"
+              title="لا توجد نتائج مطابقة"
+              description="جرّب تعديل البحث أو إزالة بعض الفلاتر."
+              actions={<Button variant="outline" onClick={resetFilters}>مسح الفلاتر</Button>}
+            />
           )}
         </div>
 
-        <footer className="approvedOpportunityPagination">
+        <footer className={styles.pagination}>
           <span>عرض {filtered.length} من {total} منافسة</span>
-          <div><button type="button" disabled>‹</button><strong>{page}</strong><span>من {Math.max(totalPages, 1)}</span><button type="button" disabled>›</button></div>
+          <span>الصفحة {page} من {Math.max(totalPages, 1)}</span>
         </footer>
       </div>
     </section>

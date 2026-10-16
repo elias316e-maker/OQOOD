@@ -1,8 +1,11 @@
+import styles from "./opportunity-activity-workspace.module.css";
+
 import {
   OpportunityKpiGrid,
 } from "../dashboard";
 
 import {
+  FormGuidance,
   FormSection,
 } from "@oqood/design-system";
 
@@ -68,13 +71,13 @@ export function OpportunityActivityWorkspace({
   }
 
   return (
-    <main className="opportunityActivityWorkspace">
+    <div className={styles.workspace}>
       <OpportunityKpiGrid
         items={[
           {
-            label: "إجمالي الأحداث",
+            label: "عناصر الملخص",
             value: String(activities.length),
-            helper: "الأحداث المتاحة حاليًا",
+            helper: "مستخلصة من بيانات المنافسة",
             icon: "◷",
             tone: "purple",
           },
@@ -103,32 +106,29 @@ export function OpportunityActivityWorkspace({
       />
 
       <FormSection
-      eyebrow="سجل العمليات"
+      eyebrow="ملخص بيانات المنافسة"
       title="نشاط المنافسة"
-      description="سجل زمني للتغييرات والإجراءات والمراحل المرتبطة بالمنافسة."
+      description="تواريخ المنافسة وحالتها الحالية حسب البيانات المتاحة."
     >
-      <div className="opportunityActivityWorkspace__notice">
-          <strong>البيانات الحالية محدودة</strong>
-          <p>
-            يعرض هذا القسم الأحداث المستخلصة من بيانات المنافسة
-            الحالية. سجل التدقيق الكامل يحتاج إلى ربط Audit Log.
-          </p>
-        </div>
+      <FormGuidance
+          title="ملخص البيانات المتاحة"
+          description="يعرض هذا القسم تاريخ الإنشاء وآخر تحديث والحالة والمواعيد المحددة للمنافسة. سجل العمليات التفصيلي غير متاح حاليًا."
+        />
     </FormSection>
 
       <FormSection
-      eyebrow="التسلسل الزمني"
-      title="سجل الأحداث"
-      description="التسلسل الزمني لأهم الأحداث والمراحل المسجلة على المنافسة."
+      eyebrow="التواريخ والحالة"
+      title="ملخص النشاط"
+      description="بيانات الإنشاء والتحديث والمرحلة الحالية ومواعيد المنافسة."
     >
-      <div className="opportunityActivityTimeline">
+      <ul className={styles.timeline}>
           {activities.map((activity, index) => (
-            <article
-              className={`opportunityActivityTimeline__item is-${activity.tone}`}
+            <li
+              className={styles.item}
               key={`${activity.title}-${index}`}
             >
               <span
-                className="opportunityActivityTimeline__marker"
+                className={styles.marker}
                 aria-hidden="true"
               />
 
@@ -140,10 +140,10 @@ export function OpportunityActivityWorkspace({
 
                 <p>{activity.description}</p>
               </div>
-            </article>
+            </li>
           ))}
-        </div>
+        </ul>
     </FormSection>
-    </main>
+    </div>
   );
 }

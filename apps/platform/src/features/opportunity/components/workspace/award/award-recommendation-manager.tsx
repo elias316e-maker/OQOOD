@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import styles from "./opportunity-award-workspace.module.css";
 
 import {
   awardOpportunityAction,
@@ -8,6 +9,7 @@ import {
 
 import {
   Alert,
+  Button,
 } from "@oqood/design-system";
 
 type AwardRecommendationManagerProps = {
@@ -61,7 +63,7 @@ export function AwardRecommendationManager({
   }
 
   return (
-    <div className="opportunityAwardRecommendation">
+    <div className={styles.recommendation}>
       {message && (
         <Alert
            tone="info"
@@ -71,9 +73,9 @@ export function AwardRecommendationManager({
         </Alert>
       )}
 
-      <button
+      <Button
         type="button"
-        className="primaryButton compactButton"
+        aria-busy={pending}
         disabled={
           pending || !canAward
         }
@@ -82,7 +84,7 @@ export function AwardRecommendationManager({
         {pending
           ? "جارٍ اعتماد الترسية..."
           : "اعتماد العرض الفائز"}
-      </button>
+      </Button>
     </div>
   );
 }

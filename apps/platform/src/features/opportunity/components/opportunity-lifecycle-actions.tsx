@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./opportunity-lifecycle-actions.module.css";
+
 import {
   useState,
   useTransition,
@@ -23,6 +25,7 @@ import type {
 
 import {
   Alert,
+  Button,
 } from "@oqood/design-system";
 
 type OpportunityLifecycleActionsProps = {
@@ -187,11 +190,11 @@ export function OpportunityLifecycleActions({
   }
 
   return (
-    <div className="opportunityLifecycleActions">
-      <div className="toolbarActions">
+    <div className={styles.root}>
+      <div className={styles.actions}>
         {showPublish && (
-          <button
-            className="primaryButton compactButton"
+          <Button
+            variant="primary"
             type="button"
             onClick={publishOpportunity}
             disabled={
@@ -206,26 +209,26 @@ export function OpportunityLifecycleActions({
             {isPending
               ? "جارٍ تنفيذ العملية..."
               : "نشر الفرصة"}
-          </button>
+          </Button>
         )}
 
         {showArchive && (
-          <button
-            className="secondaryButton compactButton"
+          <Button
+            variant="outline"
             type="button"
             onClick={requestArchive}
             disabled={isPending}
             aria-disabled={isPending}
           >
             أرشفة الفرصة
-          </button>
+          </Button>
         )}
       </div>
 
       {showPublish &&
         !publishRequirementsMet && (
           <p
-            className="formFieldError"
+            className={styles.requirement}
             role="status"
           >
             يجب تحديد تاريخ إغلاق
@@ -235,14 +238,13 @@ export function OpportunityLifecycleActions({
 
       {archiveConfirmationOpen && (
         <section
-          className="confirmationPanel"
-          role="alertdialog"
-          aria-modal="true"
+          className={styles.confirmation}
+          role="region"
           aria-labelledby="archive-confirmation-title"
           aria-describedby="archive-confirmation-description"
         >
           <div>
-            <span className="opportunitySectionEyebrow">
+            <span className={styles.eyebrow}>
               تأكيد الأرشفة
             </span>
 
@@ -263,18 +265,18 @@ export function OpportunityLifecycleActions({
             </p>
           </div>
 
-          <div className="confirmationActions">
-            <button
-              className="secondaryButton compactButton"
+          <div className={styles.actions}>
+            <Button
+              variant="outline"
               type="button"
               onClick={cancelArchive}
               disabled={isPending}
             >
               إلغاء
-            </button>
+            </Button>
 
-            <button
-              className="dangerButton compactButton"
+            <Button
+              variant="danger"
               type="button"
               onClick={confirmArchive}
               disabled={isPending}
@@ -283,7 +285,7 @@ export function OpportunityLifecycleActions({
               {isPending
                 ? "جارٍ الأرشفة..."
                 : "تأكيد الأرشفة"}
-            </button>
+            </Button>
           </div>
         </section>
       )}

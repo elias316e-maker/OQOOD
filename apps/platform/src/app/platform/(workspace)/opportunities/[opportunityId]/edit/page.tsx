@@ -1,3 +1,6 @@
+import styles from "./page.module.css";
+import { DashboardPanel, EmptyState } from "@oqood/design-system";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -45,30 +48,23 @@ export default async function OpportunityEditPage({
 
   if (!canUpdate) {
     return (
-      <main className="platformContent">
-        <section className="dashboardPanel opportunityVisiblePanel">
-          <div
-            className="emptyState"
+      <main className={styles.state}>
+        <DashboardPanel>
+          <EmptyState
+            tone="danger"
             role="alert"
-            aria-live="polite"
-          >
-            <h1>ليس لديك صلاحية تعديل الفرص</h1>
-
-            <p>
-              لا يسمح دورك الحالي بتعديل بيانات الفرصة.
-            </p>
-
-            <Link
-              className="primaryButton compactButton"
-              href={
-                `/platform/opportunities/` +
-                opportunityId
-              }
-            >
-              العودة إلى تفاصيل الفرصة
-            </Link>
-          </div>
-        </section>
+            title="ليس لديك صلاحية تعديل المنافسة"
+            description="لا يسمح دورك الحالي بتعديل بيانات المنافسة."
+            actions={
+              <Link
+                className="odsButton odsButton--primary odsButton--md"
+                href={`/platform/opportunities/${opportunityId}`}
+              >
+                العودة إلى تفاصيل المنافسة
+              </Link>
+            }
+          />
+        </DashboardPanel>
       </main>
     );
   }
@@ -84,26 +80,23 @@ export default async function OpportunityEditPage({
     }
 
     return (
-      <main className="platformContent">
-        <section className="dashboardPanel opportunityVisiblePanel">
-          <div
-            className="emptyState"
+      <main className={styles.state}>
+        <DashboardPanel>
+          <EmptyState
+            tone="danger"
             role="alert"
-          >
-            <h1>
-              تعذر تحميل بيانات الفرصة
-            </h1>
-
-            <p>{result.message}</p>
-
-            <Link
-              className="primaryButton compactButton"
-              href="/platform/opportunities"
-            >
-              العودة إلى قائمة الفرص
-            </Link>
-          </div>
-        </section>
+            title="تعذر تحميل بيانات المنافسة"
+            description={result.message}
+            actions={
+              <Link
+                className="odsButton odsButton--primary odsButton--md"
+                href="/platform/opportunities"
+              >
+                العودة إلى قائمة المنافسات
+              </Link>
+            }
+          />
+        </DashboardPanel>
       </main>
     );
   }

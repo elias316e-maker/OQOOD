@@ -1,9 +1,10 @@
+import styles from "../opportunity-section.module.css";
+
 import type {
   OpportunityOfferData,
 } from "../../../actions/manage-opportunity-offers";
 
 import {
-  EmptyState,
   FormSection,
 } from "@oqood/design-system";
 
@@ -12,10 +13,7 @@ import {
   OpportunityKpiGrid,
 } from "../dashboard";
 
-import {
-  WorkspaceCard,
-  WorkspaceSectionHeader,
-} from "../shared";
+
 
 import {
   OpportunityEvaluationSelector,
@@ -53,7 +51,7 @@ export function OpportunityEvaluationWorkspace({
     );
 
   return (
-    <main className="opportunityEvaluationWorkspace">
+    <div className={styles.workspace}>
       <OpportunityKpiGrid
         items={[
           {
@@ -103,6 +101,6 @@ export function OpportunityEvaluationWorkspace({
         data={data}
         canEvaluate={canEvaluate}
       />
-    </main>
+    </div>
   );
 }

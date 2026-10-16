@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./opportunity-criteria-manager.module.css";
+
 import {
   useState,
   type FormEvent,
@@ -32,6 +34,12 @@ import type {
 
 import {
   Alert,
+  Badge,
+  Button,
+  EmptyState,
+  Input,
+  Select,
+  Textarea,
 } from "@oqood/design-system";
 
 type OpportunityCriteriaManagerProps = {
@@ -250,10 +258,10 @@ export function OpportunityCriteriaManager({
   }
 
   return (
-    <section className="opportunityWorkspaceCard opportunityCriteriaManager">
-      <header className="opportunityCriteriaManager__header">
+    <section className={styles.manager}>
+      <header className={styles.header}>
         <div>
-          <span className="opportunitySectionEyebrow">
+          <span className={styles.eyebrow}>
             مصفوفة التقييم
           </span>
 
@@ -266,17 +274,17 @@ export function OpportunityCriteriaManager({
         </div>
 
         {canManage && !formOpen && (
-          <button
-            className="primaryButton compactButton"
+          <Button
+            variant="primary"
             onClick={startCreate}
             type="button"
           >
             إضافة معيار
-          </button>
+          </Button>
         )}
       </header>
 
-      <div className="opportunityCriteriaManager__summary">
+      <div className={styles.summary}>
         <div>
           <span>إجمالي الأوزان</span>
           <strong>{Number(totalWeight)}%</strong>
@@ -313,12 +321,12 @@ export function OpportunityCriteriaManager({
 
       {formOpen && canManage && (
         <form
-          className="opportunityCriteriaManager__form"
+          className={styles.form}
           onSubmit={submit}
         >
           <header>
             <div>
-              <span className="opportunitySectionEyebrow">
+              <span className={styles.eyebrow}>
                 {editingId
                   ? "تعديل المعيار"
                   : "معيار جديد"}
@@ -331,20 +339,18 @@ export function OpportunityCriteriaManager({
               </h3>
             </div>
 
-            <button
-              className="secondaryButton compactButton"
+            <Button
+              variant="outline"
               disabled={pending}
               onClick={resetForm}
               type="button"
             >
               إلغاء
-            </button>
+            </Button>
           </header>
 
-          <div className="opportunityCriteriaManager__fields">
-            <label className="formField">
-              <span>اسم المعيار</span>
-              <input
+          <div className={styles.fields}>
+            <Input id="criterion-name" label="اسم المعيار"
                 maxLength={150}
                 onChange={(event) =>
                   setForm((current) => ({
@@ -355,11 +361,8 @@ export function OpportunityCriteriaManager({
                 required
                 value={form.name}
               />
-            </label>
 
-            <label className="formField">
-              <span>التصنيف</span>
-              <select
+            <Select id="criterion-category" label="التصنيف"
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
@@ -380,12 +383,9 @@ export function OpportunityCriteriaManager({
                     {label}
                   </option>
                 ))}
-              </select>
-            </label>
+              </Select>
 
-            <label className="formField">
-              <span>طريقة القياس</span>
-              <select
+            <Select id="criterion-scoring" label="طريقة القياس"
                 onChange={(event) =>
                   setForm((current) => ({
                     ...current,
@@ -411,12 +411,9 @@ export function OpportunityCriteriaManager({
                     {label}
                   </option>
                 ))}
-              </select>
-            </label>
+              </Select>
 
-            <label className="formField">
-              <span>الوزن (%)</span>
-              <input
+            <Input id="criterion-weight" label="الوزن (%)"
                 max="100"
                 min="0"
                 onChange={(event) =>
@@ -430,11 +427,8 @@ export function OpportunityCriteriaManager({
                 type="number"
                 value={form.weight}
               />
-            </label>
 
-            <label className="formField">
-              <span>الحد الأدنى للنجاح</span>
-              <input
+            <Input id="criterion-minimum" label="الحد الأدنى للنجاح"
                 disabled={
                   form.scoringMethod ===
                   "PASS_FAIL"
@@ -452,11 +446,8 @@ export function OpportunityCriteriaManager({
                 type="number"
                 value={form.minimumScore}
               />
-            </label>
 
-            <label className="formField">
-              <span>ترتيب العرض</span>
-              <input
+            <Input id="criterion-order" label="ترتيب العرض"
                 min="0"
                 onChange={(event) =>
                   setForm((current) => ({
@@ -468,11 +459,9 @@ export function OpportunityCriteriaManager({
                 type="number"
                 value={form.displayOrder}
               />
-            </label>
 
-            <label className="formField opportunityCriteriaManager__description">
-              <span>الوصف</span>
-              <textarea
+            <div className={styles.description}>
+<Textarea id="criterion-description" label="الوصف"
                 maxLength={1000}
                 onChange={(event) =>
                   setForm((current) => ({
@@ -484,10 +473,10 @@ export function OpportunityCriteriaManager({
                 rows={4}
                 value={form.description}
               />
-            </label>
+</div>
           </div>
 
-          <div className="opportunityCriteriaManager__checks">
+          <div className={styles.checks}>
             <label>
               <input
                 checked={form.required}
@@ -520,8 +509,8 @@ export function OpportunityCriteriaManager({
           </div>
 
           <footer>
-            <button
-              className="primaryButton compactButton"
+            <Button
+              variant="primary"
               disabled={pending}
               type="submit"
             >
@@ -530,37 +519,32 @@ export function OpportunityCriteriaManager({
                 : editingId
                   ? "حفظ التعديلات"
                   : "إضافة المعيار"}
-            </button>
+            </Button>
           </footer>
         </form>
       )}
 
       {criteria.length === 0 ? (
-        <div className="opportunityWorkspaceEmptyPanel">
-          <span className="opportunityWorkspaceEmptyPanel__icon">
-            ✓
-          </span>
-
-          <h2>لا توجد معايير تقييم</h2>
-
-          <p>
-            {canManage
+        <EmptyState
+          title="لا توجد معايير تقييم"
+          description={
+            canManage
               ? "أضف أول معيار لبدء بناء مصفوفة التقييم."
-              : "لم تتم إضافة معايير لهذه المنافسة."}
-          </p>
-        </div>
+              : "لم تتم إضافة معايير لهذه المنافسة."
+          }
+        />
       ) : (
-        <div className="opportunityCriteriaManager__list">
+        <div className={styles.list}>
           {criteria.map((criterion) => (
             <article
               className={
                 criterion.active
-                  ? "opportunityCriteriaManager__item"
-                  : "opportunityCriteriaManager__item is-inactive"
+                  ? styles.item
+                  : `${styles.item} ${styles.inactive}`
               }
               key={criterion.id}
             >
-              <div className="opportunityCriteriaManager__identity">
+              <div className={styles.identity}>
                 <span>
                   {categoryLabels[
                     criterion.category
@@ -617,15 +601,15 @@ export function OpportunityCriteriaManager({
               </dl>
 
               {criterion.required && (
-                <span className="opportunityCriteriaManager__required">
+                <Badge tone="warning">
                   إلزامي
-                </span>
+                </Badge>
               )}
 
               {canManage && (
                 <footer>
-                  <button
-                    className="secondaryButton compactButton"
+                  <Button
+                    variant="outline"
                     disabled={pending}
                     onClick={() =>
                       startEdit(criterion)
@@ -633,10 +617,10 @@ export function OpportunityCriteriaManager({
                     type="button"
                   >
                     تعديل
-                  </button>
+                  </Button>
 
-                  <button
-                    className="dangerButton compactButton"
+                  <Button
+                    variant="danger"
                     disabled={pending}
                     onClick={() => {
                       void removeCriterion(
@@ -646,7 +630,7 @@ export function OpportunityCriteriaManager({
                     type="button"
                   >
                     حذف
-                  </button>
+                  </Button>
                 </footer>
               )}
             </article>

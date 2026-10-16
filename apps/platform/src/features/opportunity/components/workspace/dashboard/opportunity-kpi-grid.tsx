@@ -1,3 +1,5 @@
+import styles from "./opportunity-kpi-grid.module.css";
+
 type OpportunityKpiTone =
   | "purple"
   | "blue"
@@ -23,33 +25,31 @@ export function OpportunityKpiGrid({
 }: OpportunityKpiGridProps) {
   return (
     <section
-      className="opportunityKpiGrid"
+      className={styles.grid}
       aria-label="مؤشرات المنافسة"
     >
       {items.map((item) => (
         <article
-          className={
-            `opportunityKpiCard ` +
-            `opportunityKpiCard--${item.tone ?? "neutral"}`
-          }
+          className={styles.card}
+          data-tone={item.tone ?? "neutral"}
           key={item.label}
         >
-          <div className="opportunityKpiCard__top">
-            <span className="opportunityKpiCard__icon" aria-hidden="true">
+          <div className={styles.top}>
+            <span className={styles.icon} aria-hidden="true">
               {item.icon ?? "◇"}
             </span>
 
-            <span className="opportunityKpiCard__label">
+            <span className={styles.label}>
               {item.label}
             </span>
           </div>
 
-          <strong className="opportunityKpiCard__value">
+          <strong className={styles.value}>
             {item.value}
           </strong>
 
           {item.helper && (
-            <small className="opportunityKpiCard__helper">
+            <small className={styles.helper}>
               {item.helper}
             </small>
           )}

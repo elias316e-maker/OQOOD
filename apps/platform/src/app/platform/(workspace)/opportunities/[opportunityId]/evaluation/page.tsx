@@ -19,6 +19,8 @@ import {
 
 import {
   Alert,
+  DashboardPanel,
+  EmptyState,
 } from "@oqood/design-system";
 
 type OpportunityEvaluationPageProps = {
@@ -44,12 +46,14 @@ export default async function OpportunityEvaluationPage({
 
   if (!offersResult.success) {
     return (
-      <main className="opportunityWorkspaceSection">
-        <section className="opportunityWorkspaceEmptyPanel">
-          <h1>تعذر تحميل بيانات التقييم</h1>
-          <p>{offersResult.message}</p>
-        </section>
-      </main>
+      <DashboardPanel>
+        <EmptyState
+          tone="danger"
+          role="alert"
+          title="تعذر تحميل بيانات التقييم"
+          description={offersResult.message}
+        />
+      </DashboardPanel>
     );
   }
 
@@ -71,14 +75,14 @@ export default async function OpportunityEvaluationPage({
           canEvaluate={canEvaluate}
         />
       ) : (
-        <section className="opportunityWorkspaceCard">
+        <DashboardPanel>
           <Alert
              tone="danger"
             role="alert"
           >
             {financialResult.message}
           </Alert>
-        </section>
+        </DashboardPanel>
       )}
     </>
   );

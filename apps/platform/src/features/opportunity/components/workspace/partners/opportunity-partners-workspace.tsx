@@ -1,3 +1,5 @@
+import styles from "../../opportunity-partners-form.module.css";
+
 import {
   OpportunityPartnersForm,
 } from "../../opportunity-partners-form";
@@ -39,7 +41,7 @@ export function OpportunityPartnersWorkspace({
   ).length;
 
   return (
-    <main className="opportunityPartnersWorkspace">
+    <div className={styles.workspace}>
       <OpportunityKpiGrid
         items={[
           {
@@ -81,7 +83,7 @@ export function OpportunityPartnersWorkspace({
       description="اختر الموردين المؤهلين لإرسال الدعوات، وحدد الرسالة الموحدة التي ستصل إليهم عند نشر المنافسة."
     />
 
-      <div className="opportunityPartnersWorkspace__form">
+      <div className={styles.shell}>
         <OpportunityPartnersForm
           opportunity={opportunity}
           partners={partners}
@@ -89,6 +91,6 @@ export function OpportunityPartnersWorkspace({
           initialMessage={initialMessage}
         />
       </div>
-    </main>
+    </div>
   );
 }

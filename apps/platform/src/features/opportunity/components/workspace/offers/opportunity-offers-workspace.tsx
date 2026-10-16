@@ -1,3 +1,5 @@
+import styles from "../opportunity-section.module.css";
+
 import type {
   OpportunityOfferData,
 } from "../../../actions/manage-opportunity-offers";
@@ -75,7 +77,7 @@ export function OpportunityOffersWorkspace({
   );
 
   return (
-    <main className="opportunityOffersWorkspace">
+    <div className={styles.workspace}>
       <OpportunityKpiGrid
         items={[
           {
@@ -129,7 +131,7 @@ export function OpportunityOffersWorkspace({
       description="راجع العروض التجارية ونتائج التقييم، ثم اعتمد العرض الفائز وأنشئ مسودة العقد."
     />
 
-      <div className="opportunityOffersWorkspace__form">
+      <div className={styles.content}>
         <OpportunityOffersForm
           data={data}
           canEvaluate={canEvaluate}
@@ -137,6 +139,6 @@ export function OpportunityOffersWorkspace({
           canCreateContract={canCreateContract}
         />
       </div>
-    </main>
+    </div>
   );
 }

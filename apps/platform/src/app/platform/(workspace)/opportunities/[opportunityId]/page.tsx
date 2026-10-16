@@ -1,3 +1,7 @@
+import styles from "./overview.module.css";
+
+import { Badge, DashboardPanel, EmptyState, FormGuidance } from "@oqood/design-system";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -185,18 +189,23 @@ export default async function OpportunityOverviewPage({
     }
 
     return (
-      <main className="opportunityWorkspaceSection">
-        <section className="opportunityWorkspaceEmptyPanel">
-          <h1>تعذر تحميل المنافسة</h1>
-          <p>{result.message}</p>
-
-          <Link
-            className="primaryButton compactButton"
-            href="/platform/opportunities"
-          >
-            العودة إلى المنافسات
-          </Link>
-        </section>
+      <main className={styles.overview}>
+        <DashboardPanel>
+          <EmptyState
+            tone="danger"
+            role="alert"
+            title="تعذر تحميل المنافسة"
+            description={result.message}
+            actions={
+              <Link
+                className="odsButton odsButton--primary odsButton--md"
+                href="/platform/opportunities"
+              >
+                العودة إلى المنافسات
+              </Link>
+            }
+          />
+        </DashboardPanel>
       </main>
     );
   }
@@ -250,24 +259,24 @@ export default async function OpportunityOverviewPage({
   ];
 
   return (
-    <main className="opportunityOverviewV2">
-      <section className="opportunityOverviewV2__grid">
-        <div className="opportunityOverviewV2__main">
-          <article className="opportunityOverviewPanel">
-            <header className="opportunityOverviewPanel__header">
+    <main className={styles.overview}>
+      <section className={styles.grid}>
+        <div className={styles.column}>
+          <DashboardPanel>
+            <header className={styles.panelHeader}>
               <div>
-                <span className="opportunityOverviewPanel__eyebrow">
+                <span className={styles.eyebrow}>
                   دورة حياة المنافسة
                 </span>
                 <h2>مسار المنافسة</h2>
               </div>
 
-              <span className="opportunityOverviewStatus">
+              <Badge tone="neutral">
                 {statusLabels[opportunity.status]}
-              </span>
+              </Badge>
             </header>
 
-            <div className="opportunityOverviewLifecycle">
+            <div className={styles.lifecycle}>
               {lifecycleStages.map((stage, index) => {
                 const completed =
                   index < lifecycleIndex;
@@ -277,17 +286,18 @@ export default async function OpportunityOverviewPage({
                 return (
                   <div
                     className={[
-                      "opportunityOverviewLifecycle__stage",
+                      styles.stage,
                       completed
-                        ? "is-completed"
+                        ? styles.completed
                         : "",
                       active
-                        ? "is-active"
+                        ? styles.active
                         : "",
                     ]
                       .filter(Boolean)
                       .join(" ")}
                     key={stage}
+                    aria-current={active ? "step" : undefined}
                   >
                     <span>
                       {completed ? "✓" : index + 1}
@@ -297,23 +307,23 @@ export default async function OpportunityOverviewPage({
                 );
               })}
             </div>
-          </article>
+          </DashboardPanel>
 
-          <article className="opportunityOverviewPanel">
-            <header className="opportunityOverviewPanel__header">
+          <DashboardPanel>
+            <header className={styles.panelHeader}>
               <div>
-                <span className="opportunityOverviewPanel__eyebrow">
+                <span className={styles.eyebrow}>
                   معلومات خاصة
                 </span>
                 <h2>تفاصيل المنافسة</h2>
               </div>
 
-              <span className="opportunityOverviewPrivateBadge">
+              <Badge tone="neutral">
                 للاستخدام الداخلي
-              </span>
+              </Badge>
             </header>
 
-            <dl className="opportunityOverviewDetails">
+            <dl className={styles.details}>
               <div>
                 <dt>رقم المنافسة</dt>
                 <dd>{opportunity.number}</dd>
@@ -381,12 +391,12 @@ export default async function OpportunityOverviewPage({
                 </dd>
               </div>
             </dl>
-          </article>
+          </DashboardPanel>
 
-          <article className="opportunityOverviewPanel">
-            <header className="opportunityOverviewPanel__header">
+          <DashboardPanel>
+            <header className={styles.panelHeader}>
               <div>
-                <span className="opportunityOverviewPanel__eyebrow">
+                <span className={styles.eyebrow}>
                   نطاق المنافسة
                 </span>
                 <h2>الوصف والمتطلبات</h2>
@@ -394,7 +404,7 @@ export default async function OpportunityOverviewPage({
 
               {canUpdate && (
                 <Link
-                  className="secondaryButton compactButton"
+                  className="odsButton odsButton--ghost odsButton--md"
                   href={
                     `/platform/opportunities/` +
                     opportunity.id +
@@ -406,35 +416,29 @@ export default async function OpportunityOverviewPage({
               )}
             </header>
 
-            <div className="opportunityOverviewDescription">
+            <div className={styles.description}>
               {opportunity.description ? (
                 <p>{opportunity.description}</p>
               ) : (
-                <div className="opportunityOverviewEmpty">
-                  <strong>
-                    لم يضف وصف تفصيلي بعد
-                  </strong>
-                  <span>
-                    أضف نطاق العمل والمتطلبات
-                    والمخرجات من صفحة تعديل
-                    المنافسة.
-                  </span>
-                </div>
+                <EmptyState
+                  title="لم يضف وصف تفصيلي بعد"
+                  description="أضف نطاق العمل والمتطلبات والمخرجات من صفحة تعديل المنافسة."
+                />
               )}
             </div>
-          </article>
+          </DashboardPanel>
 
-          <article className="opportunityOverviewPanel">
-            <header className="opportunityOverviewPanel__header">
+          <DashboardPanel>
+            <header className={styles.panelHeader}>
               <div>
-                <span className="opportunityOverviewPanel__eyebrow">
+                <span className={styles.eyebrow}>
                   معلومات داخلية
                 </span>
                 <h2>معايير القبول</h2>
               </div>
 
               <Link
-                className="secondaryButton compactButton"
+                className="odsButton odsButton--ghost odsButton--md"
                 href={
                   `/platform/opportunities/` +
                   opportunity.id +
@@ -445,39 +449,13 @@ export default async function OpportunityOverviewPage({
               </Link>
             </header>
 
-            <div className="opportunityOverviewCriteria">
-              <div>
-                <span>التقييم الفني</span>
-                <strong>40%</strong>
-                <div>
-                  <span style={{ width: "40%" }} />
-                </div>
-              </div>
+            <FormGuidance
+              title="معايير المنافسة"
+              description="افتح صفحة إدارة المعايير للاطلاع على المعايير والأوزان المسجلة لهذه المنافسة وتحديثها حسب صلاحياتك."
+            />
+          </DashboardPanel>
 
-              <div>
-                <span>التقييم المالي</span>
-                <strong>40%</strong>
-                <div>
-                  <span style={{ width: "40%" }} />
-                </div>
-              </div>
-
-              <div>
-                <span>الخبرة والتأهيل</span>
-                <strong>20%</strong>
-                <div>
-                  <span style={{ width: "20%" }} />
-                </div>
-              </div>
-
-              <small>
-                القيم الحالية مؤقتة حتى يتم
-                ربط نموذج معايير القبول.
-              </small>
-            </div>
-          </article>
-
-          <section className="opportunityOverviewDocuments">
+          <section className={styles.documents}>
             <LinkedDocuments
               canManage={canUpdate}
               entityId={opportunity.id}
@@ -489,20 +467,20 @@ export default async function OpportunityOverviewPage({
           </section>
         </div>
 
-        <aside className="opportunityOverviewV2__side">
-          <article className="opportunityOverviewPanel opportunityHealthCard">
-            <header className="opportunityOverviewPanel__header">
+        <aside className={styles.column}>
+          <DashboardPanel className={styles.health}>
+            <header className={styles.panelHeader}>
               <div>
-                <span className="opportunityOverviewPanel__eyebrow">
-                  Competition Health
+                <span className={styles.eyebrow}>
+                  اكتمال البيانات
                 </span>
                 <h2>جاهزية المنافسة</h2>
               </div>
             </header>
 
-            <div className="opportunityHealthCard__score">
+            <div className={styles.score}>
               <div
-                className="opportunityHealthCard__ring"
+                className={styles.ring}
                 style={{
                   background:
                     `conic-gradient(` +
@@ -517,14 +495,14 @@ export default async function OpportunityOverviewPage({
               </div>
             </div>
 
-            <div className="opportunityHealthCard__items">
+            <div className={styles.healthItems}>
               {healthItems.map((item) => (
                 <div key={item.label}>
                   <span
                     className={
                       item.completed
-                        ? "is-complete"
-                        : "is-pending"
+                        ? styles.complete
+                        : styles.pending
                     }
                   >
                     {item.completed
@@ -535,19 +513,19 @@ export default async function OpportunityOverviewPage({
                 </div>
               ))}
             </div>
-          </article>
+          </DashboardPanel>
 
-          <article className="opportunityOverviewPanel">
-            <header className="opportunityOverviewPanel__header">
+          <DashboardPanel>
+            <header className={styles.panelHeader}>
               <div>
-                <span className="opportunityOverviewPanel__eyebrow">
+                <span className={styles.eyebrow}>
                   المعلومات المالية
                 </span>
                 <h2>القيمة والميزانية</h2>
               </div>
             </header>
 
-            <dl className="opportunityOverviewFinance">
+            <dl className={styles.finance}>
               <div>
                 <dt>القيمة التقديرية</dt>
                 <dd>
@@ -568,19 +546,19 @@ export default async function OpportunityOverviewPage({
                 <dd>{opportunity.priority}</dd>
               </div>
             </dl>
-          </article>
+          </DashboardPanel>
 
-          <article className="opportunityOverviewPanel">
-            <header className="opportunityOverviewPanel__header">
+          <DashboardPanel>
+            <header className={styles.panelHeader}>
               <div>
-                <span className="opportunityOverviewPanel__eyebrow">
+                <span className={styles.eyebrow}>
                   الوصول السريع
                 </span>
                 <h2>إجراءات المنافسة</h2>
               </div>
             </header>
 
-            <div className="opportunityOverviewActions">
+            <div className={styles.actions}>
               <Link
                 href={
                   `/platform/opportunities/` +
@@ -633,12 +611,12 @@ export default async function OpportunityOverviewPage({
               canPublish={canPublish}
               canArchive={canArchive}
             />
-          </article>
+          </DashboardPanel>
 
-          <article className="opportunityOverviewPanel">
-            <header className="opportunityOverviewPanel__header">
+          <DashboardPanel>
+            <header className={styles.panelHeader}>
               <div>
-                <span className="opportunityOverviewPanel__eyebrow">
+                <span className={styles.eyebrow}>
                   النشاط الأخير
                 </span>
                 <h2>سجل المنافسة</h2>
@@ -655,7 +633,7 @@ export default async function OpportunityOverviewPage({
               </Link>
             </header>
 
-            <div className="opportunityOverviewActivity">
+            <div className={styles.activity}>
               <div>
                 <span />
                 <div>
@@ -700,7 +678,7 @@ export default async function OpportunityOverviewPage({
                 </div>
               </div>
             </div>
-          </article>
+          </DashboardPanel>
         </aside>
       </section>
     </main>

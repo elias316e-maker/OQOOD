@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import styles from "./opportunity-workspace-countdown.module.css";
 
 type OpportunityWorkspaceCountdownProps = {
   closingDate: string | null;
@@ -67,7 +68,7 @@ export function OpportunityWorkspaceCountdown({
 
   if (!closingDate) {
     return (
-      <div className="opportunityWorkspaceCountdown is-empty">
+      <div className={styles.countdown}>
         <span>الوقت المتبقي</span>
         <strong>غير محدد</strong>
       </div>
@@ -76,7 +77,7 @@ export function OpportunityWorkspaceCountdown({
 
   return (
     <div
-      className="opportunityWorkspaceCountdown"
+      className={styles.countdown}
       aria-label="الوقت المتبقي لإغلاق المنافسة"
     >
       <span>
@@ -85,7 +86,7 @@ export function OpportunityWorkspaceCountdown({
           : "الوقت المتبقي لتقديم العروض"}
       </span>
 
-      <div className="opportunityWorkspaceCountdown__units">
+      <div className={styles.units}>
         <div>
           <strong>{String(countdown.days).padStart(2, "0")}</strong>
           <small>يوم</small>

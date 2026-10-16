@@ -1,7 +1,11 @@
 "use client";
 
+import styles from "./page.module.css";
+
 import {
+  Button,
   EmptyState,
+  WorkspaceHeader,
 } from "@oqood/design-system";
 
 
@@ -32,27 +36,23 @@ export default function OpportunitiesError({
   }, [error]);
 
   return (
-    <main className="platformContent">
+    <main className={styles.page}>
+      <WorkspaceHeader title="المنافسات" eyebrow="إدارة المنافسات" />
       <EmptyState
-          className="dashboardPanel opportunityVisiblePanel"
           tone="danger"
           icon="!"
-          title="تعذر عرض بيانات الفرص"
+          title="تعذر عرض بيانات المنافسات"
           description="حدث خطأ غير متوقع أثناء تحميل الصفحة. يمكنك إعادة المحاولة دون فقد بياناتك المحفوظة."
           role="alert"
           aria-live="assertive"
           actions={
             <>
-              <button
-                className="primaryButton compactButton"
-                type="button"
-                onClick={reset}
-              >
+              <Button onClick={reset}>
                 إعادة المحاولة
-              </button>
+              </Button>
 
               <Link
-                className="secondaryButton compactButton"
+                className="odsButton odsButton--ghost odsButton--md"
                 href="/platform"
               >
                 العودة إلى لوحة التحكم

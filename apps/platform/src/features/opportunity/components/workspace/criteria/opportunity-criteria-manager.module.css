@@ -1,0 +1,155 @@
+.manager {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-lg);
+  background: var(--ods-color-surface);
+  color: var(--ods-color-text-primary);
+}
+
+.header,
+.form > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.header h2,
+.form h3,
+.item h3 {
+  margin: 0.25rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.header p,
+.identity p,
+.eyebrow {
+  color: var(--ods-color-text-secondary);
+  line-height: 1.8;
+}
+
+.summary,
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.summary > div,
+.item dl > div {
+  min-inline-size: 0;
+  padding: 0.75rem;
+  border-radius: var(--ods-radius-md);
+  background: var(--ods-color-page);
+}
+
+.summary span,
+.summary strong {
+  display: block;
+}
+
+.summary span,
+.item dt {
+  color: var(--ods-color-text-secondary);
+}
+
+.summary strong {
+  margin-block-start: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.form,
+.list {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.form {
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-lg);
+}
+
+.fields > *,
+.identity {
+  min-inline-size: 0;
+}
+
+.description {
+  grid-column: 1 / -1;
+}
+
+.checks,
+.form > footer,
+.item > footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+}
+
+.checks input {
+  accent-color: var(--ods-color-brand-600);
+}
+
+.form > footer,
+.item > footer {
+  justify-content: flex-end;
+}
+
+.item {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-lg);
+}
+
+.inactive {
+  border-style: dashed;
+}
+
+.identity p {
+  margin-block-end: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.item dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.item dd {
+  margin: 0.5rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .summary,
+  .fields,
+  .item dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "./opportunity-workspace-navigation.module.css";
 import { usePathname } from "next/navigation";
 
 export type OpportunityWorkspaceSection =
@@ -95,7 +96,7 @@ export function OpportunityWorkspaceNavigation({
 
   return (
     <nav
-      className="opportunityWorkspaceNavigation"
+      className={styles.navigation}
       aria-label="أقسام مساحة المنافسة"
     >
       {navigationItems.map((item) => {
@@ -110,8 +111,8 @@ export function OpportunityWorkspaceNavigation({
           <Link
             className={
               active
-                ? "opportunityWorkspaceNavigation__item is-active"
-                : "opportunityWorkspaceNavigation__item"
+                ? `${styles.item} ${styles.active}`
+                : styles.item
             }
             href={href}
             aria-current={active ? "page" : undefined}

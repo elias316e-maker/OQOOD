@@ -1,0 +1,140 @@
+.header {
+  display: grid;
+  gap: 1.25rem;
+  min-inline-size: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-lg);
+  background: var(--ods-color-surface);
+  color: var(--ods-color-text-primary);
+}
+
+.top,
+.breadcrumbs,
+.actions,
+.statusTop,
+.completion > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.top,
+.statusTop,
+.completion > div:first-child {
+  justify-content: space-between;
+}
+
+.breadcrumbs {
+  color: var(--ods-color-text-secondary);
+}
+
+.breadcrumbs a {
+  color: inherit;
+}
+
+.breadcrumbs a:focus-visible {
+  outline: 2px solid var(--ods-color-brand-600);
+  outline-offset: 3px;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 15rem) minmax(0, 15rem);
+  align-items: start;
+  gap: 1rem;
+}
+
+.identity,
+.status {
+  min-inline-size: 0;
+}
+
+.identity h1 {
+  overflow-wrap: anywhere;
+}
+
+.meta,
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+}
+
+.meta > div,
+.summary > article,
+.status {
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-md);
+  background: var(--ods-color-page);
+}
+
+.meta dt,
+.summary span,
+.statusTop > span,
+.completion span {
+  color: var(--ods-color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.meta dd {
+  margin: 0.5rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.summary {
+  margin: 0;
+}
+
+.summary span,
+.summary strong {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.summary strong {
+  margin-block-start: 0.5rem;
+}
+
+.completion {
+  margin-block-start: 1rem;
+}
+
+.progress {
+  overflow: hidden;
+  block-size: 0.5rem;
+  margin-block-start: 0.5rem;
+  border-radius: var(--ods-radius-full);
+  background: var(--ods-color-border);
+}
+
+.progress > span {
+  display: block;
+  block-size: 100%;
+  background: var(--ods-color-brand-600);
+}
+
+@media (max-width: 1200px) {
+  .main {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .identity {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .main,
+  .meta,
+  .summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .header {
+    padding: 1rem;
+  }
+}
