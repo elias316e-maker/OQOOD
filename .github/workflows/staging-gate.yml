@@ -65,6 +65,9 @@ jobs:
       - name: Apply migrations
         run: pnpm --filter @oqood/platform db:deploy
 
+      - name: Seed CI database
+        run: pnpm --filter @oqood/platform exec prisma db seed
+
       - name: Typecheck
         run: pnpm --filter @oqood/platform typecheck
 
