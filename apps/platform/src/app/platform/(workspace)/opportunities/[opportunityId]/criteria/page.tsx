@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { DashboardPanel, EmptyState } from "@oqood/design-system";
+
 import {
   listOpportunityCriteriaAction,
 } from "@/features/opportunity/actions";
@@ -34,12 +37,22 @@ export default async function AcceptanceCriteriaPage({
 
   if (!result.success) {
     return (
-      <main className="opportunityWorkspaceSection">
-        <section className="opportunityWorkspaceEmptyPanel">
-          <h1>تعذر تحميل معايير التقييم</h1>
-          <p>{result.message}</p>
-        </section>
-      </main>
+      <DashboardPanel>
+        <EmptyState
+          tone="danger"
+          role="alert"
+          title="تعذر تحميل معايير التقييم"
+          description={result.message}
+          actions={
+            <Link
+              className="odsButton odsButton--ghost odsButton--md"
+              href={`/platform/opportunities/${opportunityId}`}
+            >
+              العودة إلى المنافسة
+            </Link>
+          }
+        />
+      </DashboardPanel>
     );
   }
 

@@ -1,3 +1,5 @@
+import { DashboardPanel, EmptyState } from "@oqood/design-system";
+
 import Link from "next/link";
 
 import {
@@ -26,19 +28,22 @@ export default async function OpportunityBoqPage({
 
   if (!result.success) {
     return (
-      <main className="opportunityWorkspaceSection">
-        <section className="opportunityWorkspaceEmptyPanel">
-          <h1>تعذر تحميل جدول الكميات</h1>
-          <p>{result.message}</p>
-
-          <Link
-            className="primaryButton compactButton"
-            href={`/platform/opportunities/${opportunityId}`}
-          >
-            العودة إلى المنافسة
-          </Link>
-        </section>
-      </main>
+      <DashboardPanel>
+        <EmptyState
+          tone="danger"
+          role="alert"
+          title="تعذر تحميل جدول الكميات"
+          description={result.message}
+          actions={
+            <Link
+              className="odsButton odsButton--outline odsButton--md"
+              href={`/platform/opportunities/${opportunityId}`}
+            >
+              العودة إلى المنافسة
+            </Link>
+          }
+        />
+      </DashboardPanel>
     );
   }
 

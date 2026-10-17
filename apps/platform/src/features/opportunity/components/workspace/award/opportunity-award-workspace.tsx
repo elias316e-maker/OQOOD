@@ -1,4 +1,5 @@
 import Link from "next/link";
+import styles from "./opportunity-award-workspace.module.css";
 
 import type {
   OpportunityOfferData,
@@ -8,12 +9,11 @@ import {
   OpportunityKpiGrid,
 } from "../dashboard";
 
-import {
-  WorkspaceCard,
-  WorkspaceSectionHeader,
-} from "../shared";
+
 
 import {
+  Badge,
+  DashboardPanel,
   EmptyState,
   FormSection,
 } from "@oqood/design-system";
@@ -55,7 +55,7 @@ export function OpportunityAwardWorkspace({
   ).length;
 
   return (
-    <main className="opportunityAwardWorkspace">
+    <div className={styles.workspace}>
       <OpportunityKpiGrid
         items={[
           {
@@ -100,32 +100,30 @@ export function OpportunityAwardWorkspace({
         ]}
       />
 
-      <WorkspaceCard>
-        <WorkspaceSectionHeader
+      <DashboardPanel>
+        <FormSection
           eyebrow="قرار المنافسة"
           title="الترسية والاعتماد"
           description="مراجعة العرض الفائز وقيمة الترسية والبيانات التجارية قبل إنشاء العقد."
           actions={
             <Link
-              className="secondaryButton compactButton"
+              className="odsButton odsButton--outline odsButton--md"
               href={`/platform/opportunities/${data.opportunity.id}/offers`}
             >
               العودة إلى العروض
             </Link>
           }
         />
-      </WorkspaceCard>
+      </DashboardPanel>
 
       {awardedOffer ? (
-        <section className="opportunityAwardWorkspace__grid">
+        <section className={styles.grid}>
           <FormSection
-        className="opportunityAwardWinner"
+        className={styles.winner}
         eyebrow="العرض الفائز"
         title={awardedOffer.partnerName}
         actions={
-          <span className="opportunityAwardWinner__badge">
-            تمت الترسية
-          </span>
+          <Badge tone="success">تمت الترسية</Badge>
         }
       >
         <dl>
@@ -193,14 +191,14 @@ export function OpportunityAwardWorkspace({
       >
         {canCreateContract ? (
               <Link
-                className="primaryButton compactButton"
+                className="odsButton odsButton--primary odsButton--md"
                 href={`/platform/opportunities/${data.opportunity.id}/offers`}
               >
                 الانتقال لإنشاء مسودة العقد
               </Link>
             ) : (
               <EmptyState
-            className="opportunityAwardWorkspace__permission"
+            role="status"
             tone="warning"
             icon="!"
             title="لا توجد صلاحية لإنشاء العقد"
@@ -210,22 +208,22 @@ export function OpportunityAwardWorkspace({
       </FormSection>
         </section>
       ) : (
-        <WorkspaceCard>
+        <DashboardPanel>
           <EmptyState
         icon="♜"
         title="لم تتم ترسية المنافسة بعد"
         description="راجع التقييم الفني والمالي، ثم اعتمد العرض الفائز من صفحة العروض."
         actions={
           <Link
-            className="primaryButton compactButton"
+            className="odsButton odsButton--primary odsButton--md"
             href={`/platform/opportunities/${data.opportunity.id}/offers`}
           >
             الانتقال إلى العروض
           </Link>
         }
       />
-        </WorkspaceCard>
+        </DashboardPanel>
       )}
-    </main>
+    </div>
   );
 }

@@ -1,6 +1,12 @@
+import styles from "./page.module.css";
+
 import Link from "next/link";
 
 import {
+  Alert,
+  DashboardPanel,
+  EmptyState,
+  KpiCard,
   WorkspaceHeader,
 } from "@oqood/design-system";
 
@@ -31,14 +37,14 @@ export default async function OpportunitiesPage() {
 
   if (!result.success) {
     return (
-      <main className="platformContent">
-        <section className="dashboardPanel" role="alert">
-          <div className="emptyState">
-            <h1>تعذر تحميل المنافسات</h1>
+      <main className={styles.page}>
+        <WorkspaceHeader title="المنافسات" eyebrow="إدارة المنافسات" />
+        <DashboardPanel>
+          <Alert tone="danger" title="تعذر تحميل المنافسات">
             <p>{result.message}</p>
-            <Link className="primaryButton compactButton" href="/platform/opportunities">إعادة المحاولة</Link>
-          </div>
-        </section>
+            <Link className="odsButton odsButton--primary odsButton--md" href="/platform/opportunities">إعادة المحاولة</Link>
+          </Alert>
+        </DashboardPanel>
       </main>
     );
   }
@@ -62,16 +68,15 @@ export default async function OpportunitiesPage() {
   }).length;
 
   return (
-    <main className="platformContent opportunityDirectoryRefresh approvedOpportunityDirectory">
+    <main className={styles.page}>
       <WorkspaceHeader
-        className="opportunityDirectoryHeader approvedOpportunityHeader"
         eyebrow="إدارة المنافسات"
         title="المنافسات"
         description="استعرض وشارك في جميع المنافسات والفرص المتاحة من مكان واحد."
         actions={
           canCreate ? (
             <Link
-              className="primaryButton compactButton"
+              className="odsButton odsButton--primary odsButton--md"
               href="/platform/opportunities/new"
             >
               ＋ إنشاء منافسة جديدة
@@ -80,21 +85,24 @@ export default async function OpportunitiesPage() {
         }
       />
 
-      <section className="listSummaryCards approvedOpportunityKpis" aria-label="ملخص المنافسات">
-        <article><span className="approvedKpiIcon purple">◇</span><div><span>إجمالي المنافسات</span><strong>{total}</strong><small>جميع المنافسات</small></div></article>
-        <article><span className="approvedKpiIcon green">♧</span><div><span>مفتوحة</span><strong>{openCount}</strong><small>متاحة للمشاركة</small></div></article>
-        <article><span className="approvedKpiIcon amber">⌛</span><div><span>قيد التقييم</span><strong>{evaluationCount}</strong><small>تحت المراجعة</small></div></article>
-        <article><span className="approvedKpiIcon blue">✓</span><div><span>مكتملة</span><strong>{completedCount}</strong><small>تمت الترسية</small></div></article>
-        <article><span className="approvedKpiIcon rose">▣</span><div><span>تنتهي قريبًا</span><strong>{closingSoonCount}</strong><small>خلال 7 أيام</small></div></article>
+      <section className={styles.summary} aria-label="ملخص المنافسات">
+        <KpiCard label="إجمالي المنافسات" value={total} description="جميع المنافسات" tone="primary" />
+        <KpiCard label="مفتوحة" value={openCount} description="متاحة للمشاركة" tone="success" />
+        <KpiCard label="قيد التقييم" value={evaluationCount} description="تحت المراجعة" tone="warning" />
+        <KpiCard label="مكتملة" value={completedCount} description="تمت الترسية" tone="info" />
+        <KpiCard label="تنتهي قريبًا" value={closingSoonCount} description="خلال 7 أيام" tone="danger" />
       </section>
 
-      <section className="dashboardPanel opportunityListPanel opportunityCardsPanel approvedOpportunityPanel">
+      <DashboardPanel>
         {opportunities.length === 0 ? (
-          <div className="emptyState" role="status">
-            <h2>لا توجد منافسات حتى الآن</h2>
-            <p>لم تُنشأ أي منافسة داخل مساحة العمل الحالية.</p>
-            {canCreate && <Link className="primaryButton compactButton" href="/platform/opportunities/new">إنشاء منافسة جديدة</Link>}
-          </div>
+          <EmptyState
+            role="status"
+            title="لا توجد منافسات حتى الآن"
+            description="لم تُنشأ أي منافسة داخل مساحة العمل الحالية."
+            actions={canCreate ? (
+              <Link className="odsButton odsButton--primary odsButton--md" href="/platform/opportunities/new">إنشاء منافسة جديدة</Link>
+            ) : null}
+          />
         ) : (
           <OpportunityDirectory
             opportunities={opportunities}
@@ -104,7 +112,7 @@ export default async function OpportunitiesPage() {
             canCreate={canCreate}
           />
         )}
-      </section>
+      </DashboardPanel>
     </main>
   );
 }

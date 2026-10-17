@@ -14,6 +14,9 @@ import {
 import Link from "next/link";
 
 import {
+  Alert,
+  Button,
+  WorkspaceHeader,
   FormActions,
   FormSection,
   Input,
@@ -47,15 +50,16 @@ function SaveButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
-      className={styles.primaryButton}
+    <Button
+      variant="primary"
       disabled={pending}
+      aria-busy={pending}
       type="submit"
     >
       {pending
         ? "جارٍ حفظ البنود..."
         : "حفظ جدول الكميات"}
-    </button>
+    </Button>
   );
 }
 
@@ -137,31 +141,28 @@ export function OpportunityBoqForm({
   }
 
   return (
-    <main className={styles.page}>
+    <div className={styles.page}>
       <form action={formAction} className={styles.shell}>
-        <section className={styles.header}>
-          <div>
-            <span className={styles.eyebrow}>
-              {opportunity.number}
-            </span>
-            <h1>جدول الكميات</h1>
-            <p>{opportunity.title}</p>
-          </div>
-
-          <div className={styles.actions}>
-            <Link
-              className={styles.secondaryButton}
-              href={`/platform/opportunities/${opportunity.id}`}
-            >
-              العودة للتفاصيل
-            </Link>
-            <SaveButton />
-          </div>
-        </section>
+        <WorkspaceHeader
+          eyebrow={opportunity.number}
+          title="جدول الكميات"
+          description={opportunity.title}
+          actions={
+            <>
+              <Link
+                className="odsButton odsButton--outline odsButton--md"
+                href={`/platform/opportunities/${opportunity.id}`}
+              >
+                العودة للتفاصيل
+              </Link>
+              <SaveButton />
+            </>
+          }
+        />
 
         <nav className={styles.flow} aria-label="مراحل إعداد المنافسة">
           <Link href={`/platform/opportunities/${opportunity.id}`}>1 <span>البيانات</span></Link>
-          <strong>2 <span>جدول الكميات</span></strong>
+          <strong aria-current="step">2 <span>جدول الكميات</span></strong>
           <Link href={`/platform/opportunities/${opportunity.id}/partners`}>3 <span>الموردون</span></Link>
           <Link href={`/platform/opportunities/${opportunity.id}/offers`}>4 <span>العروض</span></Link>
         </nav>
@@ -180,42 +181,35 @@ export function OpportunityBoqForm({
               </p>
             </div>
 
-            <button
-              className={styles.primaryButton}
+            <Button
+              variant="primary"
               onClick={addItem}
               type="button"
             >
               + إضافة بند
-            </button>
+            </Button>
           </div>
 
           {state.message && (
-            <div
-              className={
-                state.status === "success"
-                  ? `${styles.alert} ${styles.alertSuccess}`
-                  : `${styles.alert} ${styles.alertError}`
-              }
-              role={
-                state.status === "success"
-                  ? "status"
-                  : "alert"
-              }
+            <Alert
+              tone={state.status === "success" ? "success" : "danger"}
+              role={state.status === "success" ? "status" : "alert"}
             >
               {state.message}
-            </div>
+            </Alert>
           )}
 
-          <div className={styles.tableViewport}>
+          <div className={styles.tableViewport} role="region" aria-label="بنود جدول الكميات" tabIndex={0}>
             <table className={styles.table}>
+              <caption>بنود جدول الكميات</caption>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>وصف البند</th>
-                  <th>الكمية</th>
-                  <th>الوحدة</th>
-                  <th>المواصفة</th>
-                  <th>الإجراء</th>
+                  <th scope="col">#</th>
+                  <th scope="col">وصف البند</th>
+                  <th scope="col">الكمية</th>
+                  <th scope="col">الوحدة</th>
+                  <th scope="col">المواصفة</th>
+                  <th scope="col">الإجراء</th>
                 </tr>
               </thead>
               <tbody>
@@ -289,8 +283,8 @@ export function OpportunityBoqForm({
                       />
                     </td>
                     <td>
-                      <button
-                        className={styles.tableAction}
+                      <Button
+                        variant="danger" aria-label={`حذف البند ${index + 1}`}
                         disabled={
                           items.length === 1
                         }
@@ -300,7 +294,7 @@ export function OpportunityBoqForm({
                         type="button"
                       >
                         حذف
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -329,7 +323,7 @@ export function OpportunityBoqForm({
             <div className={styles.actions}>
               <SaveButton />
               <Link
-                className={styles.secondaryButton}
+                className="odsButton odsButton--outline odsButton--md"
                 href={`/platform/opportunities/${opportunity.id}/partners`}
               >
                 الانتقال إلى شركاء الأعمال
@@ -338,6 +332,6 @@ export function OpportunityBoqForm({
           </FormActions>
         </FormSection>
       </form>
-    </main>
+    </div>
   );
 }

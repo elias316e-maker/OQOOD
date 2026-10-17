@@ -1,3 +1,7 @@
+import styles from "../page.module.css";
+import shell from "./layout.module.css";
+import { DashboardPanel, EmptyState, WorkspaceHeader } from "@oqood/design-system";
+
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -73,20 +77,24 @@ export default async function OpportunityWorkspaceLayout({
     }
 
     return (
-      <main className="platformContent">
-        <section className="dashboardPanel opportunityVisiblePanel">
-          <div className="emptyState" role="alert">
-            <h1>تعذر تحميل المنافسة</h1>
-            <p>{result.message}</p>
-
-            <Link
-              className="primaryButton compactButton"
-              href="/platform/opportunities"
-            >
-              العودة إلى المنافسات
-            </Link>
-          </div>
-        </section>
+      <main className={styles.page}>
+        <WorkspaceHeader title="المنافسة" eyebrow="إدارة المنافسات" />
+        <DashboardPanel>
+          <EmptyState
+            tone="danger"
+            role="alert"
+            title="تعذر تحميل المنافسة"
+            description={result.message}
+            actions={
+              <Link
+                className="odsButton odsButton--primary odsButton--md"
+                href="/platform/opportunities"
+              >
+                العودة إلى المنافسات
+              </Link>
+            }
+          />
+        </DashboardPanel>
       </main>
     );
   }
@@ -99,7 +107,7 @@ export default async function OpportunityWorkspaceLayout({
   );
 
   return (
-    <div className="opportunityWorkspaceShell">
+    <div className={shell.shell}>
       <OpportunityWorkspaceHeader
         opportunity={opportunity}
         canUpdate={canUpdate}
@@ -110,7 +118,7 @@ export default async function OpportunityWorkspaceLayout({
         opportunityId={opportunity.id}
       />
 
-      <div className="opportunityWorkspaceContent">
+      <div className={shell.content}>
         {children}
       </div>
     </div>

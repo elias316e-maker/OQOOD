@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./offer-evaluation-manager.module.css";
+
 import {
   useEffect,
   useState,
@@ -24,6 +26,11 @@ import type {
 
 import {
   Alert,
+  Badge,
+  Button,
+  EmptyState,
+  Input,
+  Textarea,
 } from "@oqood/design-system";
 
 type OfferEvaluationManagerProps = {
@@ -241,36 +248,31 @@ export function OfferEvaluationManager({
 
   if (!offerId) {
     return (
-      <section className="opportunityWorkspaceCard">
-        <div className="opportunityWorkspaceEmptyPanel">
-          <span className="opportunityWorkspaceEmptyPanel__icon">
-            ◫
-          </span>
-
-          <h2>اختر عرضًا لبدء التقييم</h2>
-
-          <p>
-            اختر أحد عروض الموردين من الجدول لعرض
-            معايير التقييم وإدخال الدرجات.
-          </p>
-        </div>
+      <section className={styles.manager}>
+        <EmptyState
+          title="اختر عرضًا لبدء التقييم"
+          description="اختر أحد عروض الموردين من الجدول لعرض معايير التقييم وإدخال الدرجات."
+        />
       </section>
     );
   }
 
   if (loading) {
     return (
-      <section className="opportunityWorkspaceCard">
-        <div className="opportunityWorkspaceEmptyPanel">
-          <h2>جارٍ تحميل التقييم...</h2>
-        </div>
+      <section className={styles.manager}>
+        <EmptyState
+          title="جارٍ تحميل التقييم..."
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+        />
       </section>
     );
   }
 
   if (!evaluation) {
     return (
-      <section className="opportunityWorkspaceCard">
+      <section className={styles.manager}>
         {feedback && (
           <Alert
              tone="danger"
@@ -286,10 +288,10 @@ export function OfferEvaluationManager({
   const summary = evaluation.summary;
 
   return (
-    <section className="opportunityWorkspaceCard offerEvaluationManager">
-      <header className="offerEvaluationManager__header">
+    <section className={styles.manager}>
+      <header className={styles.header}>
         <div>
-          <span className="opportunitySectionEyebrow">
+          <span className={styles.eyebrow}>
             تقييم العرض
           </span>
 
@@ -301,12 +303,12 @@ export function OfferEvaluationManager({
           </p>
         </div>
 
-        <span className="opportunityEvaluationStatus">
+        <Badge tone="neutral">
           {evaluation.offer.status}
-        </span>
+        </Badge>
       </header>
 
-      <div className="offerEvaluationManager__summary">
+      <div className={styles.summary}>
         <article>
           <span>النتيجة الموزونة</span>
           <strong>
@@ -358,15 +360,12 @@ export function OfferEvaluationManager({
       )}
 
       {evaluation.scores.length === 0 ? (
-        <div className="opportunityWorkspaceEmptyPanel">
-          <h2>لا توجد معايير نشطة</h2>
-          <p>
-            أضف معايير التقييم إلى المنافسة قبل
-            تقييم عروض الموردين.
-          </p>
-        </div>
+        <EmptyState
+          title="لا توجد معايير نشطة"
+          description="أضف معايير التقييم إلى المنافسة قبل تقييم عروض الموردين."
+        />
       ) : (
-        <div className="offerEvaluationManager__criteria">
+        <div className={styles.criteria}>
           {evaluation.scores.map((criterion) => {
             const draft =
               drafts[criterion.criterionId] ?? {
@@ -381,7 +380,7 @@ export function OfferEvaluationManager({
 
             return (
               <article
-                className="offerEvaluationCriterion"
+                className={styles.criterion}
                 key={criterion.criterionId}
               >
                 <header>
@@ -413,7 +412,7 @@ export function OfferEvaluationManager({
                   </strong>
                 </header>
 
-                <div className="offerEvaluationCriterion__fields">
+                <div className={styles.fields}>
                   {passFail ? (
                     <fieldset>
                       <legend>نتيجة المعيار</legend>
@@ -463,10 +462,9 @@ export function OfferEvaluationManager({
                       </label>
                     </fieldset>
                   ) : (
-                    <label className="formField">
-                      <span>الدرجة من 100</span>
-
-                      <input
+                    <Input
+                        id={`criterion-score-${criterion.criterionId}`}
+                        label="الدرجة من 100"
                         disabled={
                           !canEvaluate || pending
                         }
@@ -485,13 +483,12 @@ export function OfferEvaluationManager({
                         type="number"
                         value={draft.score}
                       />
-                    </label>
                   )}
 
-                  <label className="formField offerEvaluationCriterion__notes">
-                    <span>ملاحظات المقيم</span>
-
-                    <textarea
+                  <div className={styles.notes}>
+<Textarea
+                        id={`criterion-notes-${criterion.criterionId}`}
+                        label="ملاحظات المقيم"
                       disabled={
                         !canEvaluate || pending
                       }
@@ -508,7 +505,7 @@ export function OfferEvaluationManager({
                       rows={3}
                       value={draft.notes}
                     />
-                  </label>
+                  </div>
                 </div>
 
                 <footer>
@@ -523,8 +520,8 @@ export function OfferEvaluationManager({
                   </span>
 
                   {canEvaluate && (
-                    <button
-                      className="secondaryButton compactButton"
+                    <Button
+                      variant="outline"
                       disabled={pending}
                       onClick={() =>
                         saveCriterion(
@@ -536,7 +533,7 @@ export function OfferEvaluationManager({
                       {pending
                         ? "جارٍ الحفظ..."
                         : "حفظ المعيار"}
-                    </button>
+                    </Button>
                   )}
                 </footer>
               </article>
@@ -547,14 +544,14 @@ export function OfferEvaluationManager({
 
       {canEvaluate &&
         evaluation.scores.length > 0 && (
-          <footer className="offerEvaluationManager__footer">
+          <footer className={styles.footer}>
             <span>
               يجب استكمال جميع المعايير النشطة
               قبل اعتماد التقييم.
             </span>
 
-            <button
-              className="primaryButton compactButton"
+            <Button
+              variant="primary"
               disabled={
                 pending || !summary.complete
               }
@@ -564,7 +561,7 @@ export function OfferEvaluationManager({
               {pending
                 ? "جارٍ الاعتماد..."
                 : "اعتماد التقييم الفني"}
-            </button>
+            </Button>
           </footer>
         )}
     </section>

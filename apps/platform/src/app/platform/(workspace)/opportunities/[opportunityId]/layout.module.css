@@ -1,0 +1,54 @@
+.shell {
+  --competition-bg-deep: #090d1c;
+  --competition-bg-panel: rgba(19, 24, 46, 0.95);
+  --competition-bg-panel-deep: rgba(9, 13, 28, 0.97);
+  --competition-bg-input: rgba(7, 10, 23, 0.72);
+  --competition-bg-soft: rgba(5, 8, 19, 0.34);
+  --competition-border: rgba(139, 149, 190, 0.15);
+  --competition-border-soft: rgba(139, 149, 190, 0.1);
+  --competition-border-strong: rgba(139, 92, 246, 0.32);
+  --competition-text: #f4f6ff;
+  --competition-text-soft: #dfe3ef;
+  --competition-muted: #7e88a5;
+  --competition-muted-strong: #8790ad;
+  --competition-purple: #8b5cf6;
+  --competition-blue: #5b8cff;
+  --competition-green: #35d399;
+  --competition-amber: #f4b740;
+  --competition-rose: #ef6688;
+  --competition-radius-sm: 10px;
+  --competition-radius-md: 14px;
+  --competition-radius-lg: 18px;
+  --competition-radius-xl: 22px;
+  --competition-gap-sm: 9px;
+  --competition-gap-md: 16px;
+  --competition-gap-lg: 22px;
+  --competition-shadow: 0 13px 32px rgba(0, 0, 0, 0.16);
+  --ods-color-page: var(--oqood-dark-bg, #0b172a);
+  --ods-color-surface: var(--oqood-dark-surface, #12233a);
+  --ods-color-text-primary: var(--oqood-dark-text, #f8fafc);
+  --ods-color-text-secondary: var(--oqood-dark-text-secondary, #cbd5e1);
+  --ods-color-text-muted: var(--oqood-dark-text-muted, #71809a);
+  --ods-color-border: var(--oqood-dark-border, rgba(148, 163, 184, 0.11));
+
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+  padding: 1.75rem;
+  color: var(--ods-color-text-primary);
+  background: var(--ods-color-page);
+}
+
+.content {
+  min-inline-size: 0;
+}
+
+.content > :global(.platformContent) {
+  padding: 0;
+}
+
+@media (max-width: 600px) {
+  .shell {
+    padding: 1rem;
+  }
+}

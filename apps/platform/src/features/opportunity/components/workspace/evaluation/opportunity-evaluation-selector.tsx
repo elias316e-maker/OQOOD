@@ -1,5 +1,9 @@
 "use client";
 
+import styles from "./evaluation-tables.module.css";
+
+import { Badge, Button, DashboardPanel, EmptyState } from "@oqood/design-system";
+
 import {
   useState,
 } from "react";
@@ -42,31 +46,25 @@ export function OpportunityEvaluationSelector({
 
   return (
     <>
-      <section className="opportunityWorkspaceCard">
+      <DashboardPanel>
         {data.offers.length === 0 ? (
-          <div className="opportunityWorkspaceEmptyPanel">
-            <span className="opportunityWorkspaceEmptyPanel__icon">
-              ◫
-            </span>
-
-            <h2>لا توجد عروض للتقييم</h2>
-
-            <p>
-              يجب تسجيل عروض الموردين أولًا قبل بدء التقييم.
-            </p>
-          </div>
+          <EmptyState
+            title="لا توجد عروض للتقييم"
+            description="يجب تسجيل عروض الموردين أولًا قبل بدء التقييم."
+          />
         ) : (
-          <div className="opportunityEvaluationWorkspace__table">
-            <table>
+          <div className={styles.tableViewport} role="region" aria-label="اختيار العرض للتقييم الفني" tabIndex={0}>
+            <table className={styles.table}>
+              <caption>اختيار العرض للتقييم الفني</caption>
               <thead>
                 <tr>
-                  <th>المورد</th>
-                  <th>رقم العرض</th>
-                  <th>الحالة</th>
-                  <th>القيمة الإجمالية</th>
-                  <th>مدة التسليم</th>
-                  <th>الصلاحية</th>
-                  <th>التقييم</th>
+                  <th scope="col">المورد</th>
+                  <th scope="col">رقم العرض</th>
+                  <th scope="col">الحالة</th>
+                  <th scope="col">القيمة الإجمالية</th>
+                  <th scope="col">مدة التسليم</th>
+                  <th scope="col">الصلاحية</th>
+                  <th scope="col">التقييم</th>
                 </tr>
               </thead>
 
@@ -79,7 +77,7 @@ export function OpportunityEvaluationSelector({
                     <tr
                       className={
                         selected
-                          ? "is-selected"
+                          ? styles.selected
                           : undefined
                       }
                       key={offer.id}
@@ -95,14 +93,9 @@ export function OpportunityEvaluationSelector({
                       </td>
 
                       <td>
-                        <span
-                          className={
-                            `opportunityEvaluationStatus ` +
-                            `status-${offer.status.toLowerCase()}`
-                          }
-                        >
+                        <Badge tone="neutral">
                           {offer.status}
-                        </span>
+                        </Badge>
                       </td>
 
                       <td>
@@ -124,12 +117,9 @@ export function OpportunityEvaluationSelector({
                       </td>
 
                       <td>
-                        <button
-                          className={
-                            selected
-                              ? "primaryButton compactButton"
-                              : "secondaryButton compactButton"
-                          }
+                        <Button
+                          variant={selected ? "primary" : "outline"}
+                          aria-pressed={selected}
                           onClick={() =>
                             setSelectedOfferId(
                               offer.id,
@@ -140,7 +130,7 @@ export function OpportunityEvaluationSelector({
                           {selected
                             ? "العرض المحدد"
                             : "فتح التقييم"}
-                        </button>
+                        </Button>
                       </td>
                     </tr>
                   );
@@ -149,7 +139,7 @@ export function OpportunityEvaluationSelector({
             </table>
           </div>
         )}
-      </section>
+      </DashboardPanel>
 
       <OfferEvaluationManager
         offerId={selectedOfferId}

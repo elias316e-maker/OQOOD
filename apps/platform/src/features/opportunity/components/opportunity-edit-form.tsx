@@ -17,6 +17,9 @@ import {
   } from "next/navigation";
 
 import {
+  Button,
+  FormActions,
+  FormSection,
   Input,
   Select,
   Textarea,
@@ -211,16 +214,16 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
-      className={styles.primaryButton}
+    <Button
       type="submit"
       disabled={pending}
       aria-disabled={pending}
+      aria-busy={pending}
     >
       {pending
         ? "جارٍ حفظ التعديلات..."
         : "حفظ التعديلات"}
-    </button>
+    </Button>
   );
 }
 
@@ -268,7 +271,7 @@ export function OpportunityEditForm({
           actions={
             <>
               <Link
-                className={styles.cancelButton}
+                className="odsButton odsButton--ghost odsButton--md"
                 href={
                   `/platform/opportunities/` +
                   opportunity.id
@@ -282,7 +285,11 @@ export function OpportunityEditForm({
           }
         />
 
-        <section className={styles.panel}>
+        <FormSection
+          className={styles.panel}
+          title="بيانات المنافسة"
+          description="راجع البيانات والمواعيد ونطاق النشر قبل حفظ التعديلات."
+        >
           <FormGuidance
           icon="✎"
           title="تعديل بيانات المنافسة"
@@ -651,15 +658,13 @@ export function OpportunityEditForm({
             </div>
           </div>
 
-          <div className={styles.footerBar}>
-            <span>
-              الحالة الحالية:{" "}
-              {opportunity.status}
-            </span>
-
+          <FormActions
+            sticky
+            status={<>الحالة الحالية: {opportunity.status}</>}
+          >
             <SubmitButton />
-          </div>
-        </section>
+          </FormActions>
+        </FormSection>
       </form>
     </main>
   );

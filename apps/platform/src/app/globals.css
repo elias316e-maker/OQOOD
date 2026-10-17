@@ -12470,3 +12470,12 @@ main.platformContent
   border-radius: 12px;
   background: rgba(255,255,255,.02);
 }
+
+/* Platform dark shell — viewport background fix */
+.platformDarkShell.odsAppShell {
+  background-color: var(--oqood-dark-bg, #0b172a);
+}
+
+.platformDarkShell .odsAppShell__workspace {
+  background-color: var(--oqood-dark-bg, #0b172a);
+}

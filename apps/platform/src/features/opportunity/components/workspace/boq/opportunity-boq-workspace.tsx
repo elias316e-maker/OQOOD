@@ -1,3 +1,5 @@
+import styles from "../../opportunity-boq-form.module.css";
+
 import type { OpportunityItemInput } from "../../../actions/manage-opportunity-setup";
 import { OpportunityBoqForm } from "../../opportunity-boq-form";
 
@@ -5,10 +7,7 @@ import {
   OpportunityKpiGrid,
 } from "../dashboard";
 
-import {
-  WorkspaceCard,
-  WorkspaceSectionHeader,
-} from "../shared";
+import { FormSection } from "@oqood/design-system";
 
 type OpportunityBoqWorkspaceProps = {
   opportunity: {
@@ -42,7 +41,7 @@ export function OpportunityBoqWorkspace({
     : 0;
 
   return (
-    <main className="opportunityBoqWorkspace">
+    <div className={styles.workspace}>
       <OpportunityKpiGrid
         items={[
           {
@@ -76,20 +75,18 @@ export function OpportunityBoqWorkspace({
         ]}
       />
 
-      <WorkspaceCard>
-        <WorkspaceSectionHeader
+      <FormSection
           eyebrow="جدول الكميات"
           title="إدارة بنود المنافسة"
           description="أضف البنود والكميات والوحدات والمواصفات المطلوبة، ثم احفظ التغييرات من النموذج أدناه."
         />
-      </WorkspaceCard>
 
-      <div className="opportunityBoqWorkspace__form">
+      <div className={styles.page}>
         <OpportunityBoqForm
           opportunity={opportunity}
           initialItems={items}
         />
       </div>
-    </main>
+    </div>
   );
 }

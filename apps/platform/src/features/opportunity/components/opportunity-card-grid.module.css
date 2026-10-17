@@ -1,0 +1,89 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-lg);
+  background: var(--ods-color-surface);
+  color: var(--ods-color-text-primary);
+}
+
+.header,
+.meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.header h2 {
+  margin: 0.25rem 0 0;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: var(--ods-radius-md);
+  background: var(--ods-color-page);
+}
+
+.countdown,
+.meta > div:last-child {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.countdown {
+  padding: 0.75rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-md);
+  background: var(--ods-color-page);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+}
+
+.facts dt,
+.header span,
+.meta span,
+.meta small {
+  color: var(--ods-color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.facts dd {
+  margin: 0.25rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.footer {
+  margin-block-start: auto;
+}
+
+.footer a {
+  inline-size: 100%;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

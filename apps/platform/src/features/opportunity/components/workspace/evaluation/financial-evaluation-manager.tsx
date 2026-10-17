@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./evaluation-tables.module.css";
+
 import {
   useState,
   useTransition,
@@ -16,6 +18,9 @@ import type {
 
 import {
   Alert,
+  Badge,
+  EmptyState,
+  Button,
 } from "@oqood/design-system";
 
 type FinancialEvaluationManagerProps = {
@@ -122,10 +127,10 @@ export function FinancialEvaluationManager({
   }
 
   return (
-    <section className="opportunityWorkspaceCard offerEvaluationManager">
-      <header className="offerEvaluationManager__header">
+    <section className={styles.manager}>
+      <header className={styles.header}>
         <div>
-          <span className="opportunitySectionEyebrow">
+          <span className={styles.eyebrow}>
             التقييم المالي
           </span>
 
@@ -140,12 +145,12 @@ export function FinancialEvaluationManager({
           </p>
         </div>
 
-        <span className="opportunityEvaluationStatus">
+        <Badge tone="neutral">
           {evaluation.opportunity.status}
-        </span>
+        </Badge>
       </header>
 
-      <div className="offerEvaluationManager__summary">
+      <div className={styles.summary}>
         <article>
           <span>العروض المؤهلة</span>
           <strong>
@@ -202,26 +207,24 @@ export function FinancialEvaluationManager({
       )}
 
       {evaluation.offers.length === 0 ? (
-        <div className="opportunityWorkspaceEmptyPanel">
-          <h2>لا توجد عروض مؤهلة ماليًا</h2>
-          <p>
-            يجب قبول عرض واحد على الأقل فنيًا
-            قبل بدء التقييم المالي.
-          </p>
-        </div>
+        <EmptyState
+          title="لا توجد عروض مؤهلة ماليًا"
+          description="يجب قبول عرض واحد على الأقل فنيًا قبل بدء التقييم المالي."
+        />
       ) : (
-        <div className="opportunityEvaluationWorkspace__table">
-          <table>
+        <div className={styles.tableViewport} role="region" aria-label="ترتيب العروض المالية" tabIndex={0}>
+          <table className={styles.table}>
+              <caption>ترتيب العروض المالية</caption>
             <thead>
               <tr>
-                <th>الترتيب</th>
-                <th>المورد</th>
-                <th>رقم العرض</th>
-                <th>الإجمالي</th>
-                <th>الانحراف السعري</th>
-                <th>التسليم</th>
-                <th>الصلاحية</th>
-                <th>الحالة</th>
+                <th scope="col">الترتيب</th>
+                <th scope="col">المورد</th>
+                <th scope="col">رقم العرض</th>
+                <th scope="col">الإجمالي</th>
+                <th scope="col">الانحراف السعري</th>
+                <th scope="col">التسليم</th>
+                <th scope="col">الصلاحية</th>
+                <th scope="col">الحالة</th>
               </tr>
             </thead>
 
@@ -231,7 +234,7 @@ export function FinancialEvaluationManager({
                   <tr
                     className={
                       offer.recommended
-                        ? "is-selected"
+                        ? styles.selected
                         : undefined
                     }
                     key={offer.offerId}
@@ -248,9 +251,9 @@ export function FinancialEvaluationManager({
                       </strong>
 
                       {offer.recommended && (
-                        <span className="opportunitySectionEyebrow">
+                        <Badge tone="success">
                           موصى به
-                        </span>
+                        </Badge>
                       )}
                     </td>
 
@@ -286,14 +289,9 @@ export function FinancialEvaluationManager({
                     </td>
 
                     <td>
-                      <span
-                        className={
-                          `opportunityEvaluationStatus ` +
-                          `status-${offer.status.toLowerCase()}`
-                        }
-                      >
+                      <Badge tone="neutral">
                         {offer.status}
-                      </span>
+                      </Badge>
                     </td>
                   </tr>
                 ),
@@ -304,15 +302,15 @@ export function FinancialEvaluationManager({
       )}
 
       {canEvaluate && (
-        <footer className="offerEvaluationManager__footer">
+        <footer className={styles.footer}>
           <span>
             إكمال التقييم المالي لا يُعلن الفائز؛
             بل يجهز العروض لمرحلة توصية الترسية.
           </span>
 
-          <div className="opportunityActionGroup">
-            <button
-              className="secondaryButton compactButton"
+          <div className={styles.actions}>
+            <Button
+              variant="outline"
               disabled={
                 pending || !canComplete
               }
@@ -322,10 +320,10 @@ export function FinancialEvaluationManager({
               {pending
                 ? "جارٍ التنفيذ..."
                 : "إكمال التقييم المالي"}
-            </button>
+            </Button>
 
-            <button
-              className="primaryButton compactButton"
+            <Button
+              variant="primary"
               disabled={
                 pending || !canRecommend
               }
@@ -335,7 +333,7 @@ export function FinancialEvaluationManager({
               {pending
                 ? "جارٍ التنفيذ..."
                 : "إنشاء توصية الترسية"}
-            </button>
+            </Button>
           </div>
         </footer>
       )}

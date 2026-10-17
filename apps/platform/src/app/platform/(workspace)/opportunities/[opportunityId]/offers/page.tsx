@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { DashboardPanel, EmptyState } from "@oqood/design-system";
+
 import {
   getOpportunityOffersAction,
 } from "@/features/opportunity/actions";
@@ -36,12 +39,22 @@ export default async function OpportunityOffersPage({
 
   if (!result.success) {
     return (
-      <main className="opportunityWorkspaceSection">
-        <section className="opportunityWorkspaceEmptyPanel">
-          <h1>تعذر تحميل عروض الموردين</h1>
-          <p>{result.message}</p>
-        </section>
-      </main>
+      <DashboardPanel>
+        <EmptyState
+          tone="danger"
+          role="alert"
+          title="تعذر تحميل عروض الموردين"
+          description={result.message}
+          actions={
+            <Link
+              className="odsButton odsButton--ghost odsButton--md"
+              href={`/platform/opportunities/${opportunityId}`}
+            >
+              العودة إلى المنافسة
+            </Link>
+          }
+        />
+      </DashboardPanel>
     );
   }
 

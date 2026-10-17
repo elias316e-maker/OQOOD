@@ -1,0 +1,54 @@
+.card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.125rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-lg);
+  background: var(--ods-color-surface);
+}
+
+.line {
+  display: block;
+  inline-size: 100%;
+  block-size: 0.75rem;
+  border-radius: var(--ods-radius-full);
+  background: var(--ods-color-text-muted);
+  opacity: 0.2;
+}
+
+.short { inline-size: 35%; }
+.medium { inline-size: 55%; }
+.wide { inline-size: 78%; }
+
+.value {
+  inline-size: 25%;
+  block-size: 1.75rem;
+}
+
+.toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-block-end: 1.5rem;
+}
+
+.table {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 1rem;
+  min-block-size: 3rem;
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--ods-color-border);
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

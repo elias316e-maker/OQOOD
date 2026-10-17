@@ -17,12 +17,16 @@ import {
   } from "next/navigation";
 
 import {
+  Badge,
+  Button,
   Input,
   Select,
   Textarea,
   WorkspaceHeader,
   Alert,
   FormGuidance,
+  FormActions,
+  FormSection,
 } from "@oqood/design-system";
 
 import {
@@ -180,16 +184,16 @@ function SaveButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
-      className={styles.primaryButton}
+    <Button
       type="submit"
       disabled={pending}
       aria-disabled={pending}
+      aria-busy={pending}
     >
       {pending
         ? "جارٍ حفظ المسودة..."
         : "حفظ كمسودة"}
-    </button>
+    </Button>
   );
 }
 
@@ -230,7 +234,7 @@ export function OpportunityCreateForm({
           actions={
             <>
               <Link
-                className={styles.cancelButton}
+                className="odsButton odsButton--ghost odsButton--md"
                 href="/platform/opportunities"
               >
                 إلغاء
@@ -260,6 +264,7 @@ export function OpportunityCreateForm({
                 : styles.wizardStep
             }
                 key={step}
+                aria-current={index === 0 ? "step" : undefined}
               >
                 <span>{index + 1}</span>
 
@@ -276,20 +281,12 @@ export function OpportunityCreateForm({
             ))}
           </aside>
 
-          <section className={styles.wizardContent}>
-            <div className={styles.wizardSectionHeader}>
-              <div>
-                <h2>المعلومات الأساسية</h2>
-
-                <p>
-                  أدخل البيانات الرئيسية للفرصة.
-                </p>
-              </div>
-
-              <span className={styles.draftBadge}>
-                مسودة
-              </span>
-            </div>
+          <FormSection
+            className={styles.wizardContent}
+            title="المعلومات الأساسية"
+            description="أدخل البيانات الرئيسية للفرصة."
+            actions={<Badge tone="neutral">مسودة</Badge>}
+          >
 
             <FormGuidance
           icon="✓"
@@ -667,14 +664,13 @@ export function OpportunityCreateForm({
               </div>
             </div>
 
-            <div className={styles.footerBar}>
-              <span>
-                تُحفظ الفرصة أولًا كمسودة
-              </span>
-
+            <FormActions
+              status="تُحفظ الفرصة أولًا كمسودة"
+              sticky
+            >
               <SaveButton />
-            </div>
-          </section>
+            </FormActions>
+          </FormSection>
         </section>
       </form>
     </main>

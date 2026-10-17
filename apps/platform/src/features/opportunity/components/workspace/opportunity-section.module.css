@@ -1,0 +1,9 @@
+.workspace {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.content {
+  min-inline-size: 0;
+}

@@ -1,3 +1,6 @@
+import styles from "../page.module.css";
+import { DashboardPanel, EmptyState, WorkspaceHeader } from "@oqood/design-system";
+
 import Link from "next/link";
 
 import {
@@ -37,28 +40,24 @@ export default async function NewOpportunityPage() {
 
   if (!canCreate) {
     return (
-      <main className="platformContent">
-        <section className="dashboardPanel opportunityVisiblePanel">
-          <div
-            className="emptyState"
+      <main className={styles.page}>
+        <WorkspaceHeader title="إنشاء منافسة" eyebrow="إدارة المنافسات" />
+        <DashboardPanel>
+          <EmptyState
+            tone="danger"
+            title="ليس لديك صلاحية إنشاء المنافسات"
+            description="تواصل مع مسؤول مساحة العمل للحصول على الصلاحية المطلوبة."
             role="alert"
-            aria-live="polite"
-          >
-            <h1>ليس لديك صلاحية إنشاء الفرص</h1>
-
-            <p>
-              تواصل مع مسؤول مساحة العمل للحصول على
-              الصلاحية المطلوبة.
-            </p>
-
-            <Link
-              className="primaryButton compactButton"
-              href="/platform/opportunities"
-            >
-              العودة إلى قائمة الفرص
-            </Link>
-          </div>
-        </section>
+            actions={
+              <Link
+                className="odsButton odsButton--primary odsButton--md"
+                href="/platform/opportunities"
+              >
+                العودة إلى قائمة المنافسات
+              </Link>
+            }
+          />
+        </DashboardPanel>
       </main>
     );
   }

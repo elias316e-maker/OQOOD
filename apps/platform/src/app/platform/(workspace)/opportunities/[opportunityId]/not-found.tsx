@@ -1,25 +1,29 @@
+import styles from "../page.module.css";
 import Link from "next/link";
+import {
+  DashboardPanel,
+  EmptyState,
+  WorkspaceHeader,
+} from "@oqood/design-system";
 
 export default function OpportunityNotFound() {
   return (
-    <main className="platformContent">
-      <section className="dashboardPanel opportunityVisiblePanel">
-        <div className="emptyState">
-          <h1>الفرصة غير موجودة</h1>
-
-          <p>
-            قد تكون الفرصة حُذفت أو لم تعد متاحة
-            داخل مساحة العمل الحالية.
-          </p>
-
-          <Link
-            className="primaryButton compactButton"
-            href="/platform/opportunities"
-          >
-            العودة إلى قائمة الفرص
-          </Link>
-        </div>
-      </section>
+    <main className={styles.page}>
+      <WorkspaceHeader title="المنافسة غير موجودة" eyebrow="إدارة المنافسات" />
+      <DashboardPanel>
+        <EmptyState
+          title="لم يتم العثور على المنافسة"
+          description="قد تكون المنافسة حُذفت أو لم تعد متاحة داخل مساحة العمل الحالية."
+          actions={
+            <Link
+              className="odsButton odsButton--primary odsButton--md"
+              href="/platform/opportunities"
+            >
+              العودة إلى قائمة المنافسات
+            </Link>
+          }
+        />
+      </DashboardPanel>
     </main>
   );
 }

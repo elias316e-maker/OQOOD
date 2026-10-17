@@ -14,6 +14,10 @@ import {
 import Link from "next/link";
 
 import {
+  Badge,
+  Button,
+  EmptyState,
+  FormSection,
   Textarea,
   Alert,
   WorkspaceHeader,
@@ -54,15 +58,15 @@ function SaveInvitationsButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
-      className="primaryButton compactButton"
+    <Button
+      aria-busy={pending}
       disabled={pending}
       type="submit"
     >
       {pending
         ? "جارٍ حفظ الشركاء..."
         : "حفظ شركاء الأعمال"}
-    </button>
+    </Button>
   );
 }
 
@@ -110,34 +114,27 @@ export function OpportunityPartnersForm({
   }
 
   return (
-    <main className={`platformContent ${styles.setupRefresh}`}>
-      <form action={formAction} className="opportunitySetupShell">
+    <div className={styles.workspace}>
+      <form action={formAction} className={styles.shell}>
         <WorkspaceHeader
-        eyebrow="{opportunity.number}"
+        eyebrow={opportunity.number}
         title="دعوة شركاء الأعمال"
-        description="{opportunity.title}"
+        description={opportunity.title}
       />
 
         <nav className={styles.setupFlow} aria-label="مراحل إعداد المنافسة">
           <Link href={`/platform/opportunities/${opportunity.id}`}>1 <span>البيانات</span></Link>
           <Link href={`/platform/opportunities/${opportunity.id}/boq`}>2 <span>جدول الكميات</span></Link>
-          <strong>3 <span>الموردون</span></strong>
+          <strong aria-current="step">3 <span>الموردون</span></strong>
           <Link href={`/platform/opportunities/${opportunity.id}/offers`}>4 <span>العروض</span></Link>
         </nav>
 
-        <section className={styles.setupPanel}>
-          <div className="wizardSectionHeader">
-            <div>
-              <h2>شركاء الأعمال المؤهلون</h2>
-              <p>
-                اختر الشركات التي ستستقبل
-                الدعوة عند نشر الفرصة.
-              </p>
-            </div>
-            <span className="selectedPartnerBadge">
-              تم اختيار {selectedIds.length}
-            </span>
-          </div>
+        <FormSection
+          className={styles.panel}
+          title="شركاء الأعمال المؤهلون"
+          description="اختر الشركات التي ستستقبل الدعوة عند نشر المنافسة."
+          actions={<Badge tone="neutral">تم اختيار {selectedIds.length}</Badge>}
+        >
 
           {state.message && (
             <Alert
@@ -158,23 +155,20 @@ export function OpportunityPartnersForm({
           )}
 
           {partners.length === 0 ? (
-            <div className="emptyState">
-              <h2>
-                لا يوجد شركاء أعمال مسجلون
-              </h2>
-              <p>
-                أضف موردًا أولًا ثم عُد لاختيار
-                الشركات المدعوة.
-              </p>
-              <Link
-                className="primaryButton compactButton"
-                href="/platform/partners/new"
-              >
-                إضافة مورد
-              </Link>
-            </div>
+            <EmptyState
+              title="لا يوجد شركاء أعمال مسجلون"
+              description="أضف موردًا أولًا ثم عُد لاختيار الشركات المدعوة."
+              actions={
+                <Link
+                  className="odsButton odsButton--primary odsButton--md"
+                  href="/platform/partners/new"
+                >
+                  إضافة مورد
+                </Link>
+              }
+            />
           ) : (
-            <div className="partnerSelectionList">
+            <div className={styles.list}>
               {partners.map((partner) => {
                 const selected =
                   selectedIds.includes(
@@ -185,8 +179,8 @@ export function OpportunityPartnersForm({
                   <label
                     className={
                       selected
-                        ? "partnerSelectionCard selected"
-                        : "partnerSelectionCard"
+                        ? `${styles.card} ${styles.selected}`
+                        : styles.card
                     }
                     key={partner.id}
                   >
@@ -199,21 +193,19 @@ export function OpportunityPartnersForm({
                       }
                       type="checkbox"
                     />
-                    <span className="partnerAvatar">
+                    <span className={styles.avatar}>
                       {partner.name.charAt(0)}
                     </span>
-                    <span className="partnerInfo">
+                    <span className={styles.info}>
                       <strong>
                         {partner.name}
                         {partner.verified && (
-                          <span className="verifiedBadge">
-                            موثق
-                          </span>
+                          <Badge tone="success">موثق</Badge>
                         )}
                       </strong>
                       <small>{partner.city}</small>
                     </span>
-                    <span className="partnerScore">
+                    <span className={styles.score}>
                       <small>درجة الثقة</small>
                       <strong>
                         {partner.trustScore}
@@ -225,12 +217,12 @@ export function OpportunityPartnersForm({
             </div>
           )}
 
-          <div className="invitationSettings">
-            <div className="invitationSettings__intro">
+          <div className={styles.invitation}>
+            <div className={styles.intro}>
               <span aria-hidden="true">✉</span>
               <div><strong>رسالة موحدة للموردين</strong><small>ستُرفق الرسالة مع كل دعوة عند نشر المنافسة.</small></div>
             </div>
-            <div className="formField">
+            <div className={styles.field}>
               <label htmlFor="invitationMessage">
                 رسالة الدعوة
               </label>
@@ -248,18 +240,18 @@ export function OpportunityPartnersForm({
           <FormActions
         status="ستُحفظ الدعوات بحالة معلقة حتى نشر الفرصة."
       >
-        <div className="commandHeaderActions">
+        <div className={styles.actions}>
               <SaveInvitationsButton />
               <Link
-                className="secondaryButton compactButton"
+                className="odsButton odsButton--outline odsButton--md"
                 href={`/platform/opportunities/${opportunity.id}`}
               >
                 مراجعة الفرصة
               </Link>
             </div>
       </FormActions>
-        </section>
+        </FormSection>
       </form>
-    </main>
+    </div>
   );
 }

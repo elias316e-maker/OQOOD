@@ -6,10 +6,7 @@ import {
   OpportunityKpiGrid,
 } from "../dashboard";
 
-import {
-  WorkspaceCard,
-  WorkspaceSectionHeader,
-} from "../shared";
+import { FormSection } from "@oqood/design-system";
 
 import {
   OpportunityCriteriaManager,
@@ -86,13 +83,11 @@ export function OpportunityCriteriaWorkspace({
         ]}
       />
 
-      <WorkspaceCard>
-        <WorkspaceSectionHeader
-          eyebrow="معلومات داخلية خاصة"
-          title="معايير القبول والتقييم"
-          description="إدارة المعايير الفنية والمالية والتجارية، والأوزان، وحدود النجاح، والمتطلبات الإلزامية للمنافسة."
-        />
-      </WorkspaceCard>
+      <FormSection
+        eyebrow="معلومات داخلية خاصة"
+        title="معايير القبول والتقييم"
+        description="إدارة المعايير الفنية والمالية والتجارية، والأوزان، وحدود النجاح، والمتطلبات الإلزامية للمنافسة."
+      />
 
       <OpportunityCriteriaManager
         opportunityId={opportunityId}

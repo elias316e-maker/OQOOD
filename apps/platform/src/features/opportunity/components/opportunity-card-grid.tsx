@@ -1,4 +1,7 @@
+import styles from "./opportunity-card-grid.module.css";
+
 import Link from "next/link";
+import { Badge } from "@oqood/design-system";
 import type { CSSProperties } from "react";
 
 import type {
@@ -106,7 +109,7 @@ export function OpportunityCardGrid({
 }: OpportunityCardGridProps) {
   return (
     <div
-      className="opportunityCardGrid"
+      className={styles.grid}
       aria-label="قائمة الفرص والمنافسات"
     >
       {opportunities.map((opportunity) => {
@@ -116,25 +119,22 @@ export function OpportunityCardGrid({
 
         return (
           <article
-            className="opportunityCompactCard"
+            className={styles.card}
             key={opportunity.id}
           >
-            <header className="opportunityCompactCard__header">
-              <div className="opportunityCompactCard__mark">
+            <header className={styles.header}>
+              <div className={styles.mark}>
                 ع
               </div>
               <div>
                 <span>{opportunity.number}</span>
                 <h2>{opportunity.title}</h2>
               </div>
-              <span className="opportunityCompactCard__menu">
-                •••
-              </span>
             </header>
 
-            <div className="opportunityCompactCard__meta">
+            <div className={styles.meta}>
               <div
-                className="opportunityCountdown"
+                className={styles.countdown}
                 style={{
                   "--opportunity-progress":
                     `${remaining.progress}%`,
@@ -154,7 +154,7 @@ export function OpportunityCardGrid({
               </div>
             </div>
 
-            <dl className="opportunityCompactCard__facts">
+            <dl className={styles.facts}>
               <div>
                 <dt>نوع المنافسة</dt>
                 <dd>{typeLabels[opportunity.type]}</dd>
@@ -162,14 +162,9 @@ export function OpportunityCardGrid({
               <div>
                 <dt>الحالة</dt>
                 <dd>
-                  <span
-                    className={
-                      `opportunityState opportunityState--` +
-                      opportunity.status.toLowerCase()
-                    }
-                  >
+                  <Badge tone="neutral">
                     {statusLabels[opportunity.status]}
-                  </span>
+                  </Badge>
                 </dd>
               </div>
               <div>
@@ -187,14 +182,13 @@ export function OpportunityCardGrid({
               </div>
             </dl>
 
-            <footer className="opportunityCompactCard__footer">
+            <footer className={styles.footer}>
               <Link
-                className="opportunityCardAction"
+                className="odsButton odsButton--primary odsButton--md"
                 href={`/platform/opportunities/${opportunity.id}`}
               >
                 عرض تفاصيل المنافسة
               </Link>
-              <span aria-hidden="true">☆</span>
             </footer>
           </article>
         );

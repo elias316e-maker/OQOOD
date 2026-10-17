@@ -1,4 +1,7 @@
+import styles from "./opportunity-workspace-header.module.css";
+
 import Link from "next/link";
+import { Badge, WorkspaceHeader } from "@oqood/design-system";
 
 import type {
   OpportunityResponse,
@@ -131,46 +134,42 @@ export function OpportunityWorkspaceHeader({
   );
 
   return (
-    <header className="opportunityWorkspaceHeader">
-      <div className="opportunityWorkspaceHeader__top">
-        <div className="opportunityWorkspaceHeader__breadcrumbs">
+    <header className={styles.header}>
+      <div className={styles.top}>
+        <div className={styles.breadcrumbs}>
           <Link href="/platform/opportunities">
             المنافسات
           </Link>
-          <span>‹</span>
+          <span aria-hidden="true">‹</span>
           <span>تفاصيل المنافسة</span>
         </div>
 
-        <div className="opportunityWorkspaceHeader__actions">
-          <button
-            className="secondaryButton compactButton"
-            type="button"
-          >
-            مشاركة
-          </button>
+        <div className={styles.actions}>
 
           {canUpdate && (
             <Link
-              className="primaryButton compactButton"
+              className="odsButton odsButton--primary odsButton--md"
               href={`/platform/opportunities/${opportunity.id}/edit`}
             >
-              إجراءات سريعة
+              تعديل المنافسة
             </Link>
           )}
         </div>
       </div>
 
-      <div className="opportunityWorkspaceHeader__main">
-        <div className="opportunityWorkspaceHeader__identity">
-          <div className="opportunityWorkspaceHeader__titleRow">
-            <h1>{opportunity.title}</h1>
+      <div className={styles.main}>
+        <div className={styles.identity}>
+          <WorkspaceHeader
+            title={opportunity.title}
+            eyebrow="تفاصيل المنافسة"
+            badge={
+              <Badge tone="neutral">
+                {visibilityLabels[opportunity.visibility]}
+              </Badge>
+            }
+          />
 
-            <span className="opportunityWorkspaceHeader__visibility">
-              {visibilityLabels[opportunity.visibility]}
-            </span>
-          </div>
-
-          <dl className="opportunityWorkspaceHeader__meta">
+          <dl className={styles.meta}>
             <div>
               <dt>رقم المنافسة</dt>
               <dd>{opportunity.number}</dd>
@@ -202,29 +201,28 @@ export function OpportunityWorkspaceHeader({
           closingDate={opportunity.closingDate}
         />
 
-        <div className="opportunityWorkspaceHeader__status">
-          <div className="opportunityWorkspaceHeader__statusTop">
+        <div className={styles.status}>
+          <div className={styles.statusTop}>
             <span>حالة المنافسة</span>
 
-            <strong
-              className={
-                `opportunityWorkspaceHeader__statusBadge ` +
-                `status-${opportunity.status.toLowerCase()}`
-              }
-            >
+            <Badge tone="neutral">
               {statusLabels[opportunity.status]}
-            </strong>
+            </Badge>
           </div>
 
-          <div className="opportunityWorkspaceHeader__completion">
+          <div className={styles.completion}>
             <div>
               <span>نسبة الاكتمال</span>
               <strong>{normalizedCompletion}%</strong>
             </div>
 
             <div
-              className="opportunityWorkspaceHeader__progress"
-              aria-label={`نسبة اكتمال المنافسة ${normalizedCompletion}%`}
+              className={styles.progress}
+              role="progressbar"
+              aria-label="نسبة اكتمال المنافسة"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={normalizedCompletion}
             >
               <span
                 style={{
@@ -236,7 +234,7 @@ export function OpportunityWorkspaceHeader({
         </div>
       </div>
 
-      <div className="opportunityWorkspaceHeader__summary">
+      <div className={styles.summary}>
         <article>
           <span>القيمة التقديرية</span>
           <strong>
