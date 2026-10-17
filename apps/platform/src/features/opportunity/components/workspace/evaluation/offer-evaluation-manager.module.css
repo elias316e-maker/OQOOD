@@ -1,0 +1,154 @@
+.manager {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-lg);
+  background: var(--ods-color-surface);
+  color: var(--ods-color-text-primary);
+}
+
+.header,
+.criterion > header,
+.criterion > footer,
+.footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.header h2,
+.criterion h3 {
+  margin: 0.25rem 0;
+  overflow-wrap: anywhere;
+}
+
+.header p,
+.criterion p {
+  margin: 0.25rem 0 0;
+  color: var(--ods-color-text-secondary);
+}
+
+.eyebrow,
+.criterion > header span {
+  color: var(--ods-color-text-muted);
+  font-size: 0.875rem;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.summary article {
+  display: grid;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-md);
+  background: var(--ods-color-page);
+}
+
+.summary span {
+  color: var(--ods-color-text-secondary);
+  font-size: 0.875rem;
+}
+
+.summary strong {
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.criteria {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.criterion {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-md);
+}
+
+.criterion > header strong {
+  font-size: 0.875rem;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  align-items: start;
+  gap: 1rem;
+}
+
+.fields fieldset {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-md);
+}
+
+.fields legend {
+  padding-inline: 0.25rem;
+  color: var(--ods-color-text-secondary);
+}
+
+.fields fieldset label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+}
+
+.fields input[type="radio"] {
+  inline-size: 1rem;
+  block-size: 1rem;
+  accent-color: var(--ods-color-brand-600);
+}
+
+.notes {
+  min-inline-size: 0;
+}
+
+.criterion > footer span,
+.footer span {
+  color: var(--ods-color-text-secondary);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .criterion > footer,
+  .footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

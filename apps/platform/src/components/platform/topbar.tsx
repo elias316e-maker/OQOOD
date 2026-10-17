@@ -1,31 +1,81 @@
 import Link from "next/link";
+import {
+  Avatar,
+  Badge,
+  Button,
+  TopNavigation,
+  TopNavigationAction,
+  TopNavigationUser,
+} from "@oqood/design-system";
+import { getOperationalNotifications } from "@/features/notifications/operational-notifications";
+import { GlobalSearchBox } from "@/features/search/global-search-box";
+import { requireAuthenticatedUser } from "@/features/workspace/guards";
+import { requireCurrentWorkspace } from "@/lib/workspace-context";
 
-export function PlatformTopbar() {
+export async function PlatformTopbar() {
+  const [context, user] = await Promise.all([
+    requireCurrentWorkspace(),
+    requireAuthenticatedUser(),
+  ]);
+  const notifications = await getOperationalNotifications(context, user.id);
+  const unreadCount = notifications.filter((item) => !item.read).length;
+
   return (
-    <header className="platformTopbar">
-      <div className="globalSearch">
-        <span>⌕</span>
-        <input
-          type="search"
-          placeholder="ابحث في الفرص، العقود، الموردين والمستندات..."
-        />
-        <kbd>Ctrl K</kbd>
-      </div>
+    <TopNavigation
+      className="platformApprovedTopbar"
+      start={
+        <div className="approvedTopbarStatus">
+          <Badge dot tone="success">
+            النظام يعمل بكفاءة
+          </Badge>
+        </div>
+      }
+      center={
+        <GlobalSearchBox />
+      }
+      end={
+        <div className="approvedTopbarActions">
+          <Link href="/platform/notifications">
+          <TopNavigationAction
+            badge={unreadCount ? <span>{unreadCount > 99 ? "99+" : unreadCount}</span> : undefined}
+            label="الإشعارات"
+          >
+            <span aria-hidden="true">♢</span>
+          </TopNavigationAction>
+          </Link>
 
-      <div className="platformTopActions">
-        <button className="iconButton" type="button" aria-label="الإشعارات">
-          ♢
-          <span className="notificationDot" />
-        </button>
+          <TopNavigationAction
+            badge={<span>2</span>}
+            label="الرسائل"
+          >
+            <span aria-hidden="true">✉</span>
+          </TopNavigationAction>
 
-        <button className="iconButton" type="button" aria-label="المساعدة">
-          ؟
-        </button>
+          <TopNavigationAction label="المساعد الذكي">
+            <span aria-hidden="true">✦</span>
+          </TopNavigationAction>
 
-        <Link className="primaryButton smallButton" href="/platform/opportunities/new">
-          + إنشاء
-        </Link>
-      </div>
-    </header>
+          <Link href="/platform/opportunities/new">
+            <Button className="approvedTopbarCreate" size="sm">
+              <span aria-hidden="true">＋</span>
+              إنشاء جديد
+            </Button>
+          </Link>
+
+          <TopNavigationUser
+            action={<span aria-hidden="true">⌄</span>}
+            avatar={
+              <Avatar
+                name="علي محمد"
+                size="sm"
+                status="online"
+              />
+            }
+            name="علي محمد"
+            role="مدير المشتريات"
+          />
+        </div>
+      }
+    />
   );
 }

@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# local recovery artifacts
+**/node_modules/
+*.backup
+*.before-*
+apps/platform/prisma/schema.prisma.*

@@ -1,0 +1,171 @@
+.panel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.panel :global(.oqoodFormSection__content) {
+  padding: 0;
+}
+
+.panel :global(.oqoodFormSection__actions) a {
+  color: #7dd3b0;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.panel :global(.oqoodFormSection__actions) a:hover {
+  color: #a7f3d0;
+}
+
+.list {
+  display: grid;
+}
+
+.list article {
+  display: grid;
+  grid-template-columns:
+    auto
+    minmax(180px, 1fr)
+    auto
+    repeat(4, auto);
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.5rem 0.62rem;
+  border-bottom: 1px solid
+    rgb(148 163 184 / 8%);
+}
+
+.list article:nth-child(even) {
+  background:
+    rgb(31 54 84 / 25%);
+}
+
+.list article[data-archived="true"] {
+  background:
+    rgb(42 51 67 / 32%);
+  opacity: 0.76;
+}
+
+.icon {
+  padding: 0.45rem;
+  border-radius: 6px;
+  background:
+    rgb(16 185 129 / 13%);
+  color: #6ee7b7;
+  font-size: 0.56rem;
+  font-weight: 900;
+}
+
+.info {
+  display: grid;
+}
+
+.info strong {
+  color: #dce7f2;
+  font-size: 0.68rem;
+}
+
+.info span {
+  color: #8497ad;
+  font-size: 0.58rem;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.25rem 0.4rem;
+  border-radius: 999px;
+  background: #263b55;
+  color: #aebdcc;
+  font-size: 0.56rem;
+  font-weight: 800;
+}
+
+.status[data-status="APPROVED"] {
+  background:
+    rgb(16 185 129 / 13%);
+  color: #6ee7b7;
+}
+
+.status[data-status="PENDING_REVIEW"] {
+  background:
+    rgb(245 158 11 / 12%);
+  color: #f7c768;
+}
+
+.status[data-status="REJECTED"],
+.status[data-status="EXPIRED"] {
+  background:
+    rgb(244 63 94 / 10%);
+  color: #f59aaa;
+}
+
+.download {
+  color: #7dd3b0;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.download:hover {
+  color: #a7f3d0;
+}
+
+.list form {
+  margin: 0;
+}
+
+.list button {
+  padding: 0.3rem 0.4rem;
+  border: 1px solid
+    rgb(148 163 184 / 16%);
+  border-radius: 6px;
+  background: #172b46;
+  color: #aebdcc;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.56rem;
+  font-weight: 800;
+}
+
+.list button:hover {
+  border-color:
+    rgb(110 231 183 / 28%);
+  color: #d9fff2;
+}
+
+.list button[data-danger] {
+  border-color:
+    rgb(244 63 94 / 22%);
+  background:
+    rgb(244 63 94 / 10%);
+  color: #f59aaa;
+}
+
+.list button:focus-visible,
+.download:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+.empty {
+  min-height: 8rem;
+}
+
+@media (max-width: 850px) {
+  .panel {
+    overflow-x: auto;
+  }
+
+  .list {
+    min-width: 760px;
+  }
+
+  .list article {
+    grid-template-columns:
+      auto
+      minmax(180px, 1fr)
+      auto
+      repeat(4, auto);
+  }
+}

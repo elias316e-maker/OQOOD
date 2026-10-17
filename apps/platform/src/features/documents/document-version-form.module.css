@@ -1,0 +1,118 @@
+.trigger,
+.primary,
+.secondary {
+  min-height: 1.9rem;
+  padding: 0.28rem 0.45rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.58rem;
+  font-weight: 800;
+}
+
+.trigger,
+.primary {
+  border: 1px solid
+    rgb(110 231 183 / 20%);
+  background:
+    rgb(16 185 129 / 10%);
+  color: #75deb9;
+}
+
+.secondary {
+  border: 1px solid
+    rgb(148 163 184 / 18%);
+  background: #172b46;
+  color: #aebdcc;
+}
+
+.trigger:hover,
+.primary:hover:not(:disabled) {
+  border-color:
+    rgb(110 231 183 / 38%);
+  background:
+    rgb(16 185 129 / 16%);
+}
+
+.secondary:hover:not(:disabled) {
+  border-color:
+    rgb(110 231 183 / 28%);
+  color: #d9fff2;
+}
+
+.trigger:focus-visible,
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+.primary:disabled,
+.secondary:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.form {
+  display: grid;
+  min-width: 240px;
+  gap: 0.45rem;
+  padding: 0.5rem;
+  border: 1px solid
+    rgb(148 163 184 / 14%);
+  border-radius: 7px;
+  background: #142842;
+}
+
+.field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.field span {
+  color: #8fa2b8;
+  font-size: 0.56rem;
+  font-weight: 700;
+}
+
+.field input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.36rem;
+  border: 1px solid
+    rgb(148 163 184 / 17%);
+  border-radius: 5px;
+  outline: none;
+  background: #10233b;
+  color: #dce7f2;
+  font: inherit;
+  font-size: 0.58rem;
+}
+
+.field input:focus {
+  border-color: #2bb58d;
+  box-shadow:
+    0 0 0 2px
+    rgb(43 181 141 / 10%);
+}
+
+.feedback,
+.actions {
+  margin: 0;
+}
+
+.actions :global(.oqoodFormActions__status) {
+  display: none;
+}
+
+.actions :global(.oqoodFormActions__buttons) {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+  .form {
+    min-width: 200px;
+  }
+}

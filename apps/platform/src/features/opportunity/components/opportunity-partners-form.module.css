@@ -1,0 +1,160 @@
+.workspace,
+.shell,
+.list,
+.invitation,
+.field {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.panel {
+  min-inline-size: 0;
+}
+
+.panel > :global(.oqoodFormSection__content) {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+.setupFlow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.setupFlow a,
+.setupFlow strong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-block-size: 2.75rem;
+  padding: 0.5rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-md);
+  background: var(--ods-color-surface);
+  color: var(--ods-color-text-secondary);
+  text-align: center;
+  text-decoration: none;
+}
+
+.setupFlow strong,
+.setupFlow a:hover {
+  background: var(--ods-color-page);
+  color: var(--ods-color-text-primary);
+}
+
+.setupFlow a:focus-visible,
+.card:focus-within {
+  outline: 2px solid var(--ods-color-brand-600);
+  outline-offset: 3px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-inline-size: 0;
+  min-block-size: 2.75rem;
+  padding: 1rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-md);
+  background: var(--ods-color-surface);
+  color: var(--ods-color-text-primary);
+  cursor: pointer;
+}
+
+.selected {
+  border-color: var(--ods-color-brand-600);
+  background: color-mix(in srgb, var(--ods-color-brand-600) 10%, var(--ods-color-surface));
+}
+
+.card input {
+  flex: 0 0 auto;
+  inline-size: 1rem;
+  block-size: 1rem;
+  accent-color: var(--ods-color-brand-600);
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: var(--ods-radius-md);
+  background: var(--ods-color-page);
+}
+
+.info {
+  display: grid;
+  flex: 1;
+  gap: 0.25rem;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.info strong {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info small,
+.score small,
+.intro small {
+  color: var(--ods-color-text-secondary);
+}
+
+.score {
+  display: grid;
+  gap: 0.25rem;
+  text-align: end;
+}
+
+.invitation {
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--ods-color-border);
+}
+
+.intro,
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.intro > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.field {
+  gap: 0.5rem;
+}
+
+.field > label {
+  color: var(--ods-color-text-secondary);
+}
+
+@media (max-width: 900px) {
+  .setupFlow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    flex-wrap: wrap;
+  }
+
+  .score {
+    flex-basis: 100%;
+    text-align: start;
+  }
+}

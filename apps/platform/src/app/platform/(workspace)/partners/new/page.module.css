@@ -1,0 +1,47 @@
+.page {
+  display: grid;
+  gap: 0.7rem;
+  padding: 14px 18px 26px;
+  color: #dce7f2;
+}
+
+.header {
+  min-width: 0;
+}
+
+.backAction {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.48rem 0.72rem;
+  border: 1px solid
+    rgb(148 163 184 / 18%);
+  border-radius: 7px;
+  background: #172b46;
+  color: #a8d9c8;
+  font-size: 0.63rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.backAction:hover {
+  border-color:
+    rgb(110 231 183 / 35%);
+  color: #d9fff2;
+}
+
+.backAction:focus-visible {
+  outline: 2px solid #2bb58d;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding-inline: 10px;
+  }
+
+  .backAction {
+    width: 100%;
+  }
+}

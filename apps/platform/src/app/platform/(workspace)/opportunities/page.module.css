@@ -1,0 +1,42 @@
+.summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+  min-inline-size: 0;
+}
+
+@media (max-width: 1100px) {
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.page {
+  --ods-color-page: var(--oqood-dark-bg, #0b172a);
+  --ods-color-surface: var(--oqood-dark-surface, #12233a);
+  --ods-color-text-primary: var(--oqood-dark-text, #f8fafc);
+  --ods-color-text-secondary: var(--oqood-dark-text-secondary, #cbd5e1);
+  --ods-color-text-muted: var(--oqood-dark-text-muted, #71809a);
+  --ods-color-border: var(--oqood-dark-border, rgba(148, 163, 184, 0.11));
+  color-scheme: dark;
+
+  display: grid;
+  gap: 1.25rem;
+  min-inline-size: 0;
+  padding: 1.75rem;
+  background: var(--ods-color-page);
+  color: var(--ods-color-text-primary);
+}
+
+@media (max-width: 600px) {
+  .page {
+    gap: 1rem;
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,150 @@
+.hero {
+  min-height: 360px;
+  padding: 72px 24px 58px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  color: #f8fafc;
+  background:
+    radial-gradient(
+      circle at 18% 20%,
+      rgba(99, 102, 241, 0.22),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 84% 75%,
+      rgba(6, 182, 212, 0.17),
+      transparent 28%
+    ),
+    linear-gradient(145deg, #050b18, #081426 55%, #07101f);
+}
+
+.content {
+  max-width: 830px;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  padding: 7px 12px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  border-radius: 999px;
+  color: #93c5fd;
+  background: rgba(37, 99, 235, 0.08);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.content h1 {
+  margin: 20px 0 0;
+  font-size: clamp(38px, 6vw, 68px);
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+}
+
+.content > p {
+  max-width: 720px;
+  margin: 18px auto 0;
+  color: #9aa8bc;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.billingSwitch {
+  width: max-content;
+  max-width: 100%;
+  margin: 28px auto 0;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(16px);
+}
+
+.billingSwitchFocused {
+  border-color: rgba(96, 165, 250, 0.4);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+}
+
+.billingSwitch button {
+  min-height: 38px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #7f8da4;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.billingSwitch button.active {
+  color: #ffffff;
+  background:
+    linear-gradient(135deg, #2563eb, #4f46e5);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.25);
+}
+
+.billingSwitch > span {
+  margin-inline-start: 8px;
+  padding-inline: 9px;
+  color: #86efac;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.045;
+  background-image:
+    linear-gradient(rgba(96, 165, 250, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96, 165, 250, 0.35) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.glowOne,
+.glowTwo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(28px);
+}
+
+.glowOne {
+  width: 260px;
+  height: 260px;
+  top: -150px;
+  inset-inline-start: 24%;
+  background: rgba(99, 102, 241, 0.17);
+}
+
+.glowTwo {
+  width: 230px;
+  height: 230px;
+  bottom: -150px;
+  inset-inline-end: 20%;
+  background: rgba(6, 182, 212, 0.12);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 52px;
+  }
+
+  .billingSwitch {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .billingSwitch > span {
+    width: 100%;
+    margin: 4px 0 0;
+  }
+}

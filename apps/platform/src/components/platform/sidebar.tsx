@@ -1,65 +1,72 @@
+import { SidebarNavigation } from "./sidebar-navigation";
 import Link from "next/link";
+import {
+  Avatar,
+  OqoodLogo,
+  Sidebar as OqoodSidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+} from "@oqood/design-system";
 
-const navigationItems = [
-  { label: "مركز القيادة", href: "/platform", icon: "⌂" },
-  { label: "الفرص والمنافسات", href: "/platform/opportunities", icon: "◫" },
-  { label: "شركاء الأعمال", href: "/platform/partners", icon: "◎" },
-  { label: "المشاريع", href: "/platform/projects", icon: "◇" },
-  { label: "العقود", href: "/platform/contracts", icon: "▤" },
-  { label: "المستندات", href: "/platform/documents", icon: "□" },
-  { label: "التقارير", href: "/platform/reports", icon: "▥" },
-];
+import {
+  listWorkspaceOpportunitiesAction,
+} from "@/features/opportunity/actions/list-workspace-opportunities";
 
-export function Sidebar() {
+
+
+export async function Sidebar() {
+  const opportunityResult =
+    await listWorkspaceOpportunitiesAction({
+      page: 1,
+      pageSize: 1,
+    });
+
+  const opportunityCount =
+    opportunityResult.success
+      ? String(opportunityResult.data.total)
+      : undefined;
+
   return (
-    <aside className="platformSidebar">
-      <Link className="brand sidebarBrand" href="/">
-        <span className="brandMark">ع</span>
-        <span>
-          <strong>عقود</strong>
-          <small>OQOOD</small>
-        </span>
-      </Link>
-
-      <div className="workspaceCard">
-        <span className="workspaceLogo">ب</span>
-        <div>
-          <strong>شركة البحرين برو</strong>
-          <small>مساحة العمل الرئيسية</small>
-        </div>
-        <button type="button">⌄</button>
-      </div>
-
-      <nav className="platformNavigation" aria-label="تنقل المنصة">
-        <span className="navigationLabel">مساحة العمل</span>
-
-        {navigationItems.map((item, index) => (
-          <Link
-            className={index === 0 ? "platformNavItem active" : "platformNavItem"}
-            href={item.href}
-            key={item.href}
-          >
-            <span>{item.icon}</span>
-            {item.label}
+    <OqoodSidebar className="platformApprovedSidebar">
+      <SidebarHeader>
+        <div className="approvedSidebarBrand">
+          <Link aria-label="OQOOD" href="/platform">
+            <OqoodLogo compact inverted />
           </Link>
-        ))}
-
-        <span className="navigationLabel settingsLabel">الإدارة</span>
-
-        <Link className="platformNavItem" href="/platform/settings">
-          <span>⚙</span>
-          الإعدادات
-        </Link>
-      </nav>
-
-      <div className="sidebarUser">
-        <span className="userAvatar">ع</span>
-        <div>
-          <strong>علي المشمّع</strong>
-          <small>مدير مساحة العمل</small>
         </div>
-        <button type="button">⋮</button>
-      </div>
-    </aside>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarNavigation opportunityCount={opportunityCount} />
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <div className="approvedSidebarUser">
+          <Avatar
+            name="علي محمد"
+            size="sm"
+            status="online"
+          />
+
+          <div className="approvedSidebarUser__content">
+            <strong>علي محمد</strong>
+            <small>مدير المشتريات</small>
+          </div>
+
+          <button aria-label="قائمة المستخدم" type="button">
+           ⌄
+          </button>
+        </div>
+
+        <button className="approvedSidebarCollapse" type="button">
+          <span aria-hidden="true">↔</span>
+          <span>طي القائمة</span>
+        </button>
+      </SidebarFooter>
+    </OqoodSidebar>
   );
 }

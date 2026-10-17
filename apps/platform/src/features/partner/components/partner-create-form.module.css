@@ -1,0 +1,166 @@
+.form {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.pageGuidance,
+.feedback,
+.actions {
+  margin: 0;
+}
+
+.sections {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.section {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.section :global(.oqoodFormSection__content) {
+  padding: 0.75rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.grid :global(.odsField) {
+  min-width: 0;
+}
+
+.grid :global(.odsField__label) {
+  color: #9aacc0;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.grid :global(.odsField__hint) {
+  color: #70849a;
+  font-size: 0.53rem;
+}
+
+.grid :global(.odsInputWrapper),
+.grid :global(.odsSelect) {
+  min-height: 2.35rem;
+  border-color:
+    rgb(148 163 184 / 17%);
+  border-radius: 7px;
+  background: #10233b;
+  color: #dce7f2;
+}
+
+.grid :global(.odsInput) {
+  color: #dce7f2;
+}
+
+.grid :global(.odsInput)::placeholder {
+  color: #6f8298;
+}
+
+.grid :global(.odsInputWrapper:focus-within),
+.grid :global(.odsSelect:focus) {
+  border-color: #2bb58d;
+  outline: none;
+  box-shadow:
+    0 0 0 3px
+    rgb(43 181 141 / 12%);
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.actions :global(.oqoodFormActions__status) {
+  color: #8799ae;
+  font-size: 0.59rem;
+}
+
+.actions :global(.oqoodFormActions__buttons) {
+  display: flex;
+  gap: 0.45rem;
+  justify-content: flex-end;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  min-height: 2.3rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.78rem;
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.63rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primaryButton {
+  border: 1px solid #118766;
+  background:
+    linear-gradient(
+      135deg,
+      #118766,
+      #176e70
+    );
+  color: #fff;
+}
+
+.secondaryButton {
+  border: 1px solid
+    rgb(148 163 184 / 18%);
+  background: #172b46;
+  color: #a8d9c8;
+}
+
+.primaryButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.secondaryButton:hover {
+  border-color:
+    rgb(110 231 183 / 35%);
+  color: #d9fff2;
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible {
+  outline: 2px solid #6ee7b7;
+  outline-offset: 2px;
+}
+
+.primaryButton:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+@media (max-width: 700px) {
+  .section :global(.oqoodFormSection__content) {
+    padding: 0.65rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: auto;
+  }
+
+  .actions :global(.oqoodFormActions__buttons) {
+    width: 100%;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+}

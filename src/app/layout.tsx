@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { Button } from "@oqood/design-system";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 

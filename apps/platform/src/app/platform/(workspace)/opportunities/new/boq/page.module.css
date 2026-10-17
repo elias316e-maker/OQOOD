@@ -1,0 +1,30 @@
+.boqTableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.boqTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.boqTable th,
+.boqTable td {
+  vertical-align: middle;
+}
+
+.boqTable input,
+.boqTable select {
+  width: 100%;
+  min-width: 0;
+}
+
+.boqTable td:nth-child(2) input {
+  min-width: 16rem;
+}
+
+.boqTable input:focus,
+.boqTable select:focus {
+  position: relative;
+  z-index: 1;
+}

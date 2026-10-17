@@ -1,0 +1,245 @@
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid
+    rgb(148 163 184 / 10%);
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      145deg,
+      rgb(15 26 47 / 98%),
+      rgb(7 16 31 / 99%)
+    );
+  box-shadow:
+    0 14px 38px
+    rgb(0 0 0 / 15%),
+    inset 0 1px 0
+    rgb(255 255 255 / 2%);
+  color: #60a5fa;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.card::before {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 15%;
+  height: 1px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      currentColor,
+      transparent
+    );
+  content: "";
+  opacity: 0.38;
+}
+
+.card:hover {
+  border-color:
+    color-mix(
+      in srgb,
+      currentColor 30%,
+      transparent
+    );
+  box-shadow:
+    0 20px 45px
+    rgb(0 0 0 / 22%),
+    0 0 25px
+    color-mix(
+      in srgb,
+      currentColor 8%,
+      transparent
+    );
+  transform: translateY(-2px);
+}
+
+.card :global(.odsDashboardPanelCard__header) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 15px 16px 0;
+  border: 0;
+}
+
+.card :global(.odsDashboardPanelCard__title) {
+  overflow: hidden;
+  color: #8290a6;
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card :global(.odsDashboardPanelCard__action) {
+  flex: 0 0 auto;
+}
+
+.card :global(.odsDashboardPanelCard__body) {
+  padding: 14px 16px 8px;
+}
+
+.card :global(.odsDashboardPanelCard__footer) {
+  padding: 0 16px 15px;
+  border: 0;
+}
+
+.icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 9px;
+  background:
+    color-mix(
+      in srgb,
+      currentColor 14%,
+      transparent
+    );
+  color: currentColor;
+  font-weight: 900;
+}
+
+.main {
+  display: grid;
+  grid-template-columns:
+    minmax(0, auto)
+    minmax(55px, 1fr);
+  gap: 10px;
+  align-items: end;
+}
+
+.valueBlock {
+  display: grid;
+  min-width: 0;
+}
+
+.valueBlock strong {
+  overflow: hidden;
+  color: #f8fafc;
+  font-size: 1.55rem;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.valueBlock small {
+  margin-block-start: 4px;
+  color: #627088;
+  font-size: 0.5rem;
+  font-weight: 700;
+}
+
+.sparkline {
+  width: 100%;
+  height: 38px;
+  overflow: visible;
+  color: currentColor;
+}
+
+.sparkline polyline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter:
+    drop-shadow(
+      0 0 5px currentColor
+    );
+}
+
+.noChart {
+  display: block;
+  width: 100%;
+  height: 38px;
+  border-radius: 8px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgb(148 163 184 / 8%),
+      transparent
+    );
+}
+
+.trendBadge {
+  max-width: 100%;
+  font-size: 0.55rem;
+  font-weight: 800;
+}
+
+.trendIcon {
+  margin-inline-end: 0.22rem;
+  font-size: 0.66rem;
+}
+
+.tone-blue {
+  color: #3b82f6;
+}
+
+.tone-purple {
+  color: #8b5cf6;
+}
+
+.tone-green {
+  color: #10b981;
+}
+
+.tone-orange {
+  color: #f59e0b;
+}
+
+.tone-cyan {
+  color: #06b6d4;
+}
+
+.tone-red {
+  color: #f43f5e;
+}
+
+@media (max-width: 1280px) {
+  .grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .valueBlock strong {
+    font-size: 1.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}
