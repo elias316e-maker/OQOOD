@@ -268,6 +268,8 @@ enum UsageResetPeriod {
 }
 
 model User {
+  platformStaff PlatformStaff?
+
   id               String    @id @default(cuid())
   name             String
   email            String    @unique
@@ -317,6 +319,8 @@ model User {
 }
 
 model Session {
+  platformAssurance PlatformSessionAssurance?
+
   id        String   @id
   expiresAt DateTime
   token     String   @unique
@@ -365,6 +369,8 @@ model Verification {
 }
 
 model TwoFactor {
+  platformAssurances PlatformSessionAssurance[]
+
   id                      String    @id
   secret                  String
   backupCodes             String
@@ -1321,4 +1327,109 @@ model NotificationDelivery {
   @@index([status, scheduledAt])
   @@index([workspaceId, category])
   @@index([userId, createdAt])
+}
+
+// Platform administration is independent of workspace membership.
+
+enum PlatformStaffStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum PlatformStaffRole {
+  PLATFORM_ADMIN
+  SUPPORT
+  BILLING
+  AUDITOR
+}
+
+model PlatformStaff {
+  id                   String              @id @default(cuid())
+  userId               String              @unique
+  status               PlatformStaffStatus @default(SUSPENDED)
+  role                 PlatformStaffRole
+  authorizationVersion Int                 @default(1)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  user       User                       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  assurances PlatformSessionAssurance[]
+  auditLogs  PlatformAuditLog[]
+
+  @@index([role, status])
+}
+
+model PlatformSessionAssurance {
+  id                   String   @id @default(cuid())
+  sessionId            String   @unique
+  staffId              String
+  factorId             String
+  factorVersion        String
+  authorizationVersion Int
+  verifiedAt           DateTime
+  expiresAt            DateTime
+  createdAt            DateTime @default(now())
+
+  session Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  staff   PlatformStaff @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  factor  TwoFactor     @relation(fields: [factorId], references: [id], onDelete: Cascade)
+
+  @@index([staffId])
+  @@index([factorId])
+  @@index([expiresAt])
+}
+
+model PlatformAuditLog {
+  id                String   @id @default(cuid())
+  actorUserId       String
+  actorStaffId      String?
+  action            String
+  targetType        String
+  targetId          String?
+  targetWorkspaceId String?
+  requestId         String
+  metadata          Json?
+  createdAt         DateTime @default(now())
+
+  actorStaff PlatformStaff? @relation(fields: [actorStaffId], references: [id], onDelete: Restrict)
+
+  @@index([createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([actorStaffId])
+  @@index([targetType, targetId])
+  @@index([targetWorkspaceId, createdAt])
+  @@index([requestId])
+}
+
+// No row is seeded automatically. Provisioning will create and lock
+// the singleton transactionally before assigning the first administrator.
+model PlatformAdministrationControl {
+  id             String   @id
+  bootstrappedAt DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// Keys are domain-separated HMAC digests, never raw IP addresses,
+// session tokens, factor secrets, or submitted verification codes.
+model PlatformVerificationThrottle {
+  key           String   @id
+  attempts      Int      @default(0)
+  windowStartAt DateTime
+  blockedUntil  DateTime?
+  expiresAt     DateTime
+  updatedAt     DateTime @updatedAt
+
+  @@index([expiresAt])
+}
+
+// A unique claim prevents two administrative verifications from
+// consuming the same factor/code fingerprint concurrently.
+// Retention must cover the provider's complete acceptance window.
+model PlatformVerificationReplay {
+  key        String   @id
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([expiresAt])
 }

@@ -1,0 +1,46 @@
+.page {
+  --ods-color-page: #0b172a;
+  --ods-color-surface: #12233a;
+  --ods-color-text-primary: #f8fafc;
+  --ods-color-text-secondary: #cbd5e1;
+  --ods-color-text-muted: #94a3b8;
+  --ods-color-border: #263550;
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  min-block-size: 100vh;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: var(--ods-color-page);
+  color: var(--ods-color-text-primary);
+  color-scheme: dark;
+}
+
+.panel {
+  inline-size: min(100%, 42rem);
+  min-inline-size: 0;
+  margin-inline: auto;
+  padding: 1.5rem;
+  border: 1px solid var(--ods-color-border);
+  border-radius: var(--ods-radius-lg);
+  background: var(--ods-color-surface);
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+}
+
+.panel h1 {
+  margin-block-start: 0;
+}
+
+.panel p {
+  color: var(--ods-color-text-secondary);
+  line-height: 1.8;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
