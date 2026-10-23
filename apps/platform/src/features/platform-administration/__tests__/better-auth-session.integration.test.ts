@@ -4,12 +4,13 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { PrismaClient } from "@/generated/prisma/client";
 import { bootstrapPlatformAdministrator } from "../bootstrap-platform-administrator";
 
-// Email delivery is outside this authentication test.
-// Fail explicitly if the tested flow unexpectedly attempts to send email.
+const emailDelivery = vi.hoisted(() => ({
+  send: vi.fn(),
+}));
+
+// Capture delivery only; use the real provider for token creation/validation.
 vi.mock("@/lib/auth-email", () => ({
-  sendAuthenticationEmail: vi.fn(async () => {
-    throw new Error("Unexpected email delivery in isolated authentication test.");
-  }),
+  sendAuthenticationEmail: emailDelivery.send,
 }));
 
 const connectionString = process.env.ADMIN_AUTH_TEST_DATABASE_URL;
@@ -211,4 +212,117 @@ describe.skipIf(!connectionString)("Better Auth administrative session integrati
     const current = await auth.api.getSession({ headers: requestHeaders() });
     expect(current?.session.id).toBe(sessionId);
   });
+
+  describe("administrative email verification links", () => {
+    async function emailFixture() {
+      vi.stubEnv("RESEND_API_KEY", "isolated-email-provider-fixture");
+      vi.stubEnv("NOTIFICATION_FROM_EMAIL", "OQOOD <test@example.invalid>");
+      emailDelivery.send.mockReset().mockResolvedValue(undefined);
+
+      const email = `${randomUUID()}@example.invalid`;
+      const signup = await auth.handler(new Request(
+        `${origin}/api/auth/sign-up/email`,
+        {
+          method: "POST",
+          headers: { origin, "content-type": "application/json" },
+          body: JSON.stringify({
+            name: "Email verification fixture",
+            email,
+            password: "Isolated-email-fixture-password-2026!",
+          }),
+        },
+      ));
+      expect(signup.status).toBe(200);
+      expect(emailDelivery.send).not.toHaveBeenCalled();
+
+      const cookies = signup.headers.getSetCookie()
+        .map((cookie) => cookie.split(";")[0])
+        .join("; ");
+      const headers = new Headers({ origin, cookie: cookies });
+
+      const user = await db.user.findUniqueOrThrow({ where: { email } });
+      expect(user.emailVerified).toBe(false);
+
+      await auth.api.sendVerificationEmail({
+        headers,
+        body: { email, callbackURL: "/admin/verify" },
+      });
+      expect(emailDelivery.send).toHaveBeenCalledTimes(1);
+
+      const message = emailDelivery.send.mock.calls[0][0] as {
+        to: string;
+        text: string;
+      };
+      expect(message.to).toBe(email);
+      const linkText = message.text
+        .split(String.fromCharCode(10))
+        .map((line) => line.trim())
+        .find((line) =>
+          line.startsWith("http://") || line.startsWith("https://"),
+        );
+      if (!linkText) throw new Error("Missing verification link.");
+      const link = new URL(linkText);
+      expect(link.origin).toBe(origin);
+      expect(link.searchParams.get("token")).toBeTruthy();
+
+      return { user, link };
+    }
+
+    it("verifies only the target account without granting administrative access", async () => {
+      try {
+        const { user, link } = await emailFixture();
+        const other = await db.user.create({
+          data: {
+            name: "Unrelated account",
+            email: `${randomUUID()}@example.invalid`,
+          },
+        });
+        const response = await auth.handler(new Request(link));
+        expect([200, 302, 303]).toContain(response.status);
+        expect(await db.user.findUniqueOrThrow({
+          where: { id: user.id },
+        })).toMatchObject({ emailVerified: true });
+        expect(await db.user.findUniqueOrThrow({
+          where: { id: other.id },
+        })).toMatchObject({ emailVerified: false });
+        expect(await db.platformStaff.findUnique({
+          where: { userId: user.id },
+        })).toBeNull();
+        expect(await db.platformSessionAssurance.count({
+          where: { session: { userId: user.id } },
+        })).toBe(0);
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    });
+
+    it("rejects a malformed verification token", async () => {
+      try {
+        const { user, link } = await emailFixture();
+        link.searchParams.set("token", "invalid-verification-token");
+        await auth.handler(new Request(link));
+        expect(await db.user.findUniqueOrThrow({
+          where: { id: user.id },
+        })).toMatchObject({ emailVerified: false });
+      } finally {
+        vi.unstubAllEnvs();
+      }
+    });
+
+    it("rejects an expired verification link", async () => {
+      try {
+        const { user, link } = await emailFixture();
+        vi.useFakeTimers({ toFake: ["Date"] });
+        vi.setSystemTime(new Date(Date.now() + 2 * 60 * 60_000));
+        await auth.handler(new Request(link));
+        expect(await db.user.findUniqueOrThrow({
+          where: { id: user.id },
+        })).toMatchObject({ emailVerified: false });
+      } finally {
+        vi.useRealTimers();
+        vi.unstubAllEnvs();
+      }
+    });
+  });
+
 });

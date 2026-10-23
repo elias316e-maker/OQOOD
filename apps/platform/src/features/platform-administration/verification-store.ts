@@ -101,8 +101,9 @@ export async function reservePlatformVerificationAttempt(
 /**
  * Call only after provider verification succeeds, inside the same
  * transaction that writes session assurance and its audit event.
- * No expired claim is reused here. Cleanup remains disabled until
- * retention is validated against the complete provider acceptance window.
+ * The installed provider accepts adjacent 30-second periods.
+ * Retain claims for 15 minutes, beyond its 90-second acceptance span.
+ * Only sufficiently old, expired claims may be replaced atomically.
  */
 export async function claimPlatformVerificationCode(
   tx: Prisma.TransactionClient,
@@ -123,12 +124,59 @@ export async function claimPlatformVerificationCode(
     INSERT INTO "PlatformVerificationReplay"
       ("key", "expiresAt", "createdAt")
     VALUES
-      (${key}, CURRENT_TIMESTAMP + INTERVAL '15 minutes', CURRENT_TIMESTAMP)
-    ON CONFLICT ("key") DO NOTHING
+      (${key}, statement_timestamp() + INTERVAL '15 minutes',
+       statement_timestamp())
+    ON CONFLICT ("key") DO UPDATE SET
+      "expiresAt" = EXCLUDED."expiresAt",
+      "createdAt" = EXCLUDED."createdAt"
+    WHERE
+      "PlatformVerificationReplay"."expiresAt" <= statement_timestamp()
+      AND "PlatformVerificationReplay"."createdAt"
+        <= statement_timestamp() - INTERVAL '15 minutes'
     RETURNING "key"
   `;
 
   if (accepted.length !== 1) {
     throw new PlatformVerificationReplayError();
   }
+}
+
+/**
+ * Bounded maintenance of ephemeral verification state only.
+ * Preserve live replay claims, active attempt windows and blocked counters.
+ * SKIP LOCKED avoids waiting on concurrent verification transactions.
+ */
+export async function prunePlatformVerificationState(
+  db: PrismaClient,
+): Promise<void> {
+  await db.$transaction(async (tx) => {
+    await tx.$executeRaw`
+      WITH expired AS (
+        SELECT "key" FROM "PlatformVerificationReplay"
+        WHERE "expiresAt" <= statement_timestamp()
+          AND "createdAt" <= statement_timestamp() - INTERVAL '15 minutes'
+        ORDER BY "expiresAt", "key"
+        LIMIT 100
+        FOR UPDATE SKIP LOCKED
+      )
+      DELETE FROM "PlatformVerificationReplay" AS state
+      USING expired
+      WHERE state."key" = expired."key"
+    `;
+
+    await tx.$executeRaw`
+      WITH expired AS (
+        SELECT "key" FROM "PlatformVerificationThrottle"
+        WHERE "expiresAt" <= statement_timestamp()
+          AND "windowStartAt" <= statement_timestamp() - INTERVAL '15 minutes'
+          AND ("blockedUntil" IS NULL OR "blockedUntil" <= statement_timestamp())
+        ORDER BY "expiresAt", "key"
+        LIMIT 100
+        FOR UPDATE SKIP LOCKED
+      )
+      DELETE FROM "PlatformVerificationThrottle" AS state
+      USING expired
+      WHERE state."key" = expired."key"
+    `;
+  });
 }

@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 import { AdminVerificationForm } from "./verification-form";
+import { EmailVerificationForm } from "./email-verification-form";
 import styles from "../admin.module.css";
 
 export default async function AdminVerificationPage() {
@@ -23,14 +24,18 @@ export default async function AdminVerificationPage() {
           أدخل رمز تطبيق المصادقة الخاص بحسابك.
           يتطلب الدخول عضوية إدارية نشطة وبريدًا موثقًا.
         </p>
-        <AdminVerificationForm />
+        {!session.user.emailVerified ? (
+          <EmailVerificationForm />
+        ) : (
+          <AdminVerificationForm />
+        )}
         <p>
           إذا لم تكن قد أعددت تطبيق المصادقة، أكمل إعداد أمان
           الحساب قبل المتابعة.
         </p>
         <Link
           className="odsButton odsButton--ghost odsButton--md"
-          href="/platform/settings"
+          href="/admin/security"
         >
           إعدادات الحساب
         </Link>

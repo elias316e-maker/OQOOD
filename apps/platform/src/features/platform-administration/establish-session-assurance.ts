@@ -4,6 +4,7 @@ import { factorFingerprint } from "./factor-fingerprint";
 import { platformRoleHasPermission, PlatformPermissions } from "./permissions";
 import {
   claimPlatformVerificationCode,
+  prunePlatformVerificationState,
   reservePlatformVerificationAttempt,
 } from "./verification-store";
 
@@ -92,13 +93,16 @@ export async function establishPlatformSessionAssurance(
   }
 
   const original = await eligibleSession(db, input);
+  await prunePlatformVerificationState(db);
 
   // Committed separately: provider failure must not refund the attempt.
   await reservePlatformVerificationAttempt(
     db, input.userId, input.trustedSource,
   );
 
-  if (!await verifyWithProvider()) {
+  const providerStarted = performance.now();
+  const providerAccepted = await verifyWithProvider();
+  if (!providerAccepted || performance.now() - providerStarted > 30_000) {
     throw new PlatformVerificationDeniedError();
   }
 
@@ -155,5 +159,9 @@ export async function establishPlatformSessionAssurance(
     });
 
     return { expiresAt };
-  }, { isolationLevel: "Serializable" });
+  }, {
+    isolationLevel: "Serializable",
+    maxWait: 5_000,
+    timeout: 10_000,
+  });
 }

@@ -5,6 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import {
   claimPlatformVerificationCode,
+  prunePlatformVerificationState,
   reservePlatformVerificationAttempt,
   PlatformVerificationRateLimitError,
   PlatformVerificationReplayError,
@@ -117,4 +118,105 @@ suite("Administrative verification PostgreSQL concurrency", () => {
       )).resolves.toBeUndefined();
     }
   });
+
+  it("replaces an old expired claim exactly once under concurrency", async () => {
+    const factor = randomUUID();
+    const before = new Set(
+      (await db.platformVerificationReplay.findMany()).map((row) => row.key),
+    );
+    await db.$transaction((tx) =>
+      claimPlatformVerificationCode(tx, factor, "456789"),
+    );
+    const claim = (await db.platformVerificationReplay.findMany())
+      .find((row) => !before.has(row.key));
+    if (!claim) throw new Error("Missing claim fixture.");
+
+    await db.platformVerificationReplay.update({
+      where: { key: claim.key },
+      data: {
+        createdAt: new Date(Date.now() - 16 * 60_000),
+        expiresAt: new Date(Date.now() - 60_000),
+      },
+    });
+
+    const results = await Promise.allSettled(
+      Array.from({ length: 8 }, () =>
+        db.$transaction((tx) =>
+          claimPlatformVerificationCode(tx, factor, "456789"),
+        ),
+      ),
+    );
+    expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
+    expect(results.filter((r) => r.status === "rejected")).toHaveLength(7);
+  });
+
+  it("does not replace a recently created claim even if its expiry is past", async () => {
+    const factor = randomUUID();
+    const before = new Set(
+      (await db.platformVerificationReplay.findMany()).map((row) => row.key),
+    );
+    await db.$transaction((tx) =>
+      claimPlatformVerificationCode(tx, factor, "567890"),
+    );
+    const claim = (await db.platformVerificationReplay.findMany())
+      .find((row) => !before.has(row.key));
+    if (!claim) throw new Error("Missing claim fixture.");
+
+    await db.platformVerificationReplay.update({
+      where: { key: claim.key },
+      data: { expiresAt: new Date(Date.now() - 1_000) },
+    });
+    await prunePlatformVerificationState(db);
+    expect(await db.platformVerificationReplay.findUnique({
+      where: { key: claim.key },
+    })).not.toBeNull();
+
+    await expect(db.$transaction((tx) =>
+      claimPlatformVerificationCode(tx, factor, "567890"),
+    )).rejects.toBeInstanceOf(PlatformVerificationReplayError);
+  });
+
+  it("cleans old state while retaining live claims and blocked counters", async () => {
+    const old = new Date(Date.now() - 20 * 60_000);
+    const future = new Date(Date.now() + 20 * 60_000);
+    const expiredKey = randomUUID();
+    const liveKey = randomUUID();
+    const expiredCounter = randomUUID();
+    const blockedCounter = randomUUID();
+
+    await db.platformVerificationReplay.createMany({
+      data: [
+        { key: expiredKey, createdAt: old, expiresAt: old },
+        { key: liveKey, createdAt: new Date(), expiresAt: future },
+      ],
+    });
+    await db.platformVerificationThrottle.createMany({
+      data: [
+        {
+          key: expiredCounter, attempts: 5,
+          windowStartAt: old, expiresAt: old,
+        },
+        {
+          key: blockedCounter, attempts: 5,
+          windowStartAt: old, expiresAt: old, blockedUntil: future,
+        },
+      ],
+    });
+
+    await prunePlatformVerificationState(db);
+
+    expect(await db.platformVerificationReplay.findUnique({
+      where: { key: expiredKey },
+    })).toBeNull();
+    expect(await db.platformVerificationReplay.findUnique({
+      where: { key: liveKey },
+    })).not.toBeNull();
+    expect(await db.platformVerificationThrottle.findUnique({
+      where: { key: expiredCounter },
+    })).toBeNull();
+    expect(await db.platformVerificationThrottle.findUnique({
+      where: { key: blockedCounter },
+    })).not.toBeNull();
+  });
+
 });
