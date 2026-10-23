@@ -35,6 +35,12 @@ export default async function PlatformAdministrationPage() {
         <nav className={styles.links} aria-label="التنقل الإداري">
           <Link
             className="odsButton odsButton--outline odsButton--md"
+            href="/admin/staff"
+          >
+            موظفو المنصة والصلاحيات
+          </Link>
+          <Link
+            className="odsButton odsButton--outline odsButton--md"
             href="/admin/verify"
           >
             إعادة التحقق

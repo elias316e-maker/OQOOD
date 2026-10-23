@@ -14,7 +14,8 @@
     "smoke:staging": "node scripts/smoke-staging.mjs",
     "db:generate": "prisma generate",
     "db:deploy": "prisma migrate deploy",
-    "db:status": "prisma migrate status"
+    "db:status": "prisma migrate status",
+    "test:admin": "python3 scripts/test-platform-administration.py"
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "^1.6.23",
