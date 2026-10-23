@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { authReturnPathFromSearch } from "@/lib/auth-return-path";
 import { OqoodLogo } from "@oqood/design-system";
 import { Button } from "@oqood/design-system";
 import { Input } from "@oqood/design-system";
@@ -32,8 +33,15 @@ export default function LoginPage() {
       return;
     }
 
-    const callbackUrl = new URLSearchParams(window.location.search).get("callbackURL");
-    router.push(callbackUrl?.startsWith("/") ? callbackUrl : "/platform");
+    if (
+      result.data &&
+      "twoFactorRedirect" in result.data &&
+      result.data.twoFactorRedirect
+    ) {
+      return;
+    }
+
+    router.push(authReturnPathFromSearch(window.location.search));
     router.refresh();
   }
 

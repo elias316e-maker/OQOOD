@@ -74,6 +74,9 @@ jobs:
       - name: Test
         run: pnpm --filter @oqood/platform test
 
+      - name: Administrative security tests
+        run: pnpm --filter @oqood/platform test:admin
+
       - name: Build
         run: pnpm --filter @oqood/platform build
 

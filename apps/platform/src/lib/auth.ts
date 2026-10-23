@@ -52,6 +52,26 @@ export const auth = betterAuth({
     },
   },
 
+  emailVerification: {
+    sendOnSignUp: false,
+    sendOnSignIn: false,
+    autoSignInAfterVerification: false,
+    expiresIn: 60 * 60,
+    sendVerificationEmail: async ({ user, url }) => {
+      if (
+        !process.env.RESEND_API_KEY ||
+        !process.env.NOTIFICATION_FROM_EMAIL
+      ) {
+        throw new Error("Authentication email delivery is not configured.");
+      }
+      await sendAuthenticationEmail({
+        to: user.email,
+        subject: "توثيق البريد الإلكتروني في OQOOD",
+        text: `لتوثيق بريدك الإلكتروني، استخدم الرابط التالي خلال ساعة واحدة:\n\n${url}\n\nإذا لم تطلب التوثيق، تجاهل هذه الرسالة.`,
+      });
+    },
+  },
+
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 12,

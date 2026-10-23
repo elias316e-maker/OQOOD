@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { authClient } from "@/lib/auth-client";
+import { authReturnPathFromSearch } from "@/lib/auth-return-path";
 
 export default function TwoFactorPage() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function TwoFactorPage() {
       return;
     }
 
-    router.replace("/platform");
+    router.replace(authReturnPathFromSearch(window.location.search));
     router.refresh();
   }
 
