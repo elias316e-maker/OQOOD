@@ -55,7 +55,8 @@ async function eligibleSession(
     !platformRoleHasPermission(staff.role, PlatformPermissions.portalAccess) ||
     factors.length !== 1 ||
     !factor ||
-    !factor.verified
+    !factor.verified ||
+    (factor.lockedUntil !== null && factor.lockedUntil.getTime() > Date.now())
   ) {
     throw new PlatformVerificationDeniedError();
   }

@@ -370,4 +370,21 @@ describe.skipIf(!connectionString)("platform staff mutations", () => {
     ).resolves.toHaveProperty("staffId");
   });
 
+
+  it("denies mutation when the actor factor is locked", async () => {
+    const actor = await fixture();
+    const target = await fixture("SUPPORT");
+    await db.twoFactor.update({
+      where: { id: actor.factor.id },
+      data: { lockedUntil: new Date(Date.now() + 60_000) },
+    });
+    await expect(
+      updatePlatformStaff(db, input(actor, target)),
+    ).rejects.toThrow();
+    expect(await db.platformAuditLog.count()).toBe(0);
+    expect(await db.platformStaff.findUniqueOrThrow({
+      where: { id: target.staff.id },
+    })).toMatchObject({ status: "ACTIVE", authorizationVersion: 1 });
+  });
+
 });

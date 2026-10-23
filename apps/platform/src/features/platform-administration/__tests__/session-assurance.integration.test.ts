@@ -168,4 +168,35 @@ suite("Administrative session assurance transactions", () => {
       db, input, async () => true,
     )).resolves.toHaveProperty("expiresAt");
   });
+
+  it("rejects a locked factor before calling the provider", async () => {
+    const { input, factor } = await fixture();
+    await db.twoFactor.update({
+      where: { id: factor.id },
+      data: { lockedUntil: new Date(Date.now() + 60_000) },
+    });
+    const provider = vi.fn(async () => true);
+    await expect(
+      establishPlatformSessionAssurance(db, input, provider),
+    ).rejects.toBeInstanceOf(PlatformVerificationDeniedError);
+    expect(provider).not.toHaveBeenCalled();
+    expect(await db.platformSessionAssurance.count({
+      where: { sessionId: input.sessionId },
+    })).toBe(0);
+  });
+
+  it("rejects a factor locked during provider verification", async () => {
+    const { input, factor } = await fixture();
+    await expect(establishPlatformSessionAssurance(db, input, async () => {
+      await db.twoFactor.update({
+        where: { id: factor.id },
+        data: { lockedUntil: new Date(Date.now() + 60_000) },
+      });
+      return true;
+    })).rejects.toBeInstanceOf(PlatformVerificationDeniedError);
+    expect(await db.platformSessionAssurance.count({
+      where: { sessionId: input.sessionId },
+    })).toBe(0);
+  });
+
 });

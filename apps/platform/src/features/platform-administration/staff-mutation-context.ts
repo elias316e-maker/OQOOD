@@ -86,6 +86,7 @@ export async function requireStaffMutationContext(
         id: assurance.factor.id,
         userId: assurance.factor.userId,
         verified: assurance.factor.verified,
+        lockedUntil: assurance.factor.lockedUntil,
         version: factorFingerprint(
           assurance.factor.id, assurance.factor.secret,
         ),

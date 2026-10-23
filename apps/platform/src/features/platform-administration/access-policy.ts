@@ -23,6 +23,7 @@ export type PlatformAccessState = {
     id: string;
     userId: string;
     verified: boolean;
+    lockedUntil?: Date | null;
     version: string;
   };
   assurance: {
@@ -67,6 +68,10 @@ export function canAccessPlatform(
     user.twoFactorEnabled &&
     staff.status === "ACTIVE" &&
     factor.verified &&
+    (!factor.lockedUntil || (
+      Number.isFinite(factor.lockedUntil.getTime()) &&
+      factor.lockedUntil.getTime() <= current
+    )) &&
     session.userId === user.id &&
     staff.userId === user.id &&
     factor.userId === user.id &&

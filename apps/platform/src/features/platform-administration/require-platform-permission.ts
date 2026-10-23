@@ -62,6 +62,7 @@ export async function requirePlatformPermission(
               userId: true,
               verified: true,
               secret: true,
+              lockedUntil: true,
             },
           },
         },
@@ -96,6 +97,7 @@ export async function requirePlatformPermission(
       id: assurance.factor.id,
       userId: assurance.factor.userId,
       verified: assurance.factor.verified,
+      lockedUntil: assurance.factor.lockedUntil,
       version: factorFingerprint(
         assurance.factor.id,
         assurance.factor.secret,
